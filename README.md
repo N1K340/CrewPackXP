@@ -35,9 +35,6 @@ Installation and use of this package is at your own risk.
 This is the first time I have coded a plugin, any feedback is welcome.
 Bug reports, please include the x-plane log.txt file in the main x-plane folder for the flight in question. 
 
-NovemberLima Productions
-Email: NovemberLimaProductions@gmail.com
-
 
 
 
