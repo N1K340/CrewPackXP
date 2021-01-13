@@ -43,5 +43,6 @@ Email: NovemberLimaProductions@gmail.com
 
 Change Log
 ==========
-* V0.1 - Initial Beta Release
+* V0.1 - Initial Beta Release.
 * v0.2 - local variable corrections to TOGA, Speedbrakes and Horseplay.
+* v0.3 - Complete crosscheck and tweak of local variables.
