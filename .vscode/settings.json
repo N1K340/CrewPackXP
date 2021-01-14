@@ -1,0 +1,13 @@
+{
+    "Lua.diagnostics.globals": [
+        "PLANE_ICAO",
+        "dataref",
+        "load_WAV_file",
+        "SCRIPT_DIRECTORY",
+        "SIM_TIME",
+        "XPLMFindDataRef",
+        "do_often",
+        "play_sound",
+        "set"
+    ]
+}

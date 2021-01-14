@@ -119,28 +119,28 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         end
             -- Delay based on 757 specific variables
             if (XPLMFindDataRef("757Avionics/adc1/outIas") ~= nil) then
-                DataRef("IAS", "757Avionics/adc1/outIas")
+                dataref("IAS", "757Avionics/adc1/outIas")
             end
             if (XPLMFindDataRef("757Avionics/fms/v1") ~= nil) then
-                DataRef("V1", "757Avionics/fms/v1")
+                dataref("V1", "757Avionics/fms/v1")
             end
             if (XPLMFindDataRef("757Avionics/fms/vr") ~= nil) then
-                DataRef("VR", "757Avionics/fms/vr")
+                dataref("VR", "757Avionics/fms/vr")
             end
             if (XPLMFindDataRef("757Avionics/adc1/outVs") ~= nil) then
-                DataRef("VSI", "757Avionics/adc1/outVs")
+                dataref("VSI", "757Avionics/adc1/outVs")
             end
             if (XPLMFindDataRef("757Avionics/fms/accel_height") ~= nil) then
-                DataRef("FMSaccel", "757Avionics/fms/accel_height")
+                dataref("FMS_ACCEL_HT", "757Avionics/fms/accel_height")
             end
             if (XPLMFindDataRef("757Avionics/adc1/adc_fail") ~= nil) then
-                DataRef("ADC1", "757Avionics/adc1/adc_fail")
+                dataref("ADC1", "757Avionics/adc1/adc_fail")
             end
             if (XPLMFindDataRef("757Avionics/fms/vref30") ~= nil) then
-                DataRef("ref30", "757Avionics/fms/vref30")
+                dataref("VREF_30", "757Avionics/fms/vref30")
             end
             if (XPLMFindDataRef("757Avionics/options/ND/advEfisPanel") ~= nil) then
-                DataRef("EFISpanel", "757Avionics/options/ND/advEfisPanel")
+                dataref("EFIS_TYPE", "757Avionics/options/ND/advEfisPanel")
             end
             if (XPLMFindDataRef("anim/armCapt/1") == nil) then
                return
@@ -195,7 +195,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         if not cockpitSetup then
             set("anim/armCapt/1", 2)
             set("anim/armFO/1", 2)
-            if EFISpanel == 1 then
+            if EFIS_TYPE == 1 then
                 set("1-sim/ndpanel/1/hsiModeRotary", 2)
                 set("1-sim/ndpanel/1/hsiRangeRotary", 1)
                 set("1-sim/ndpanel/1/hsiRangeButton", 1)
@@ -203,7 +203,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
                 set("1-sim/ndpanel/2/hsiRangeRotary", 2)
                 set("1-sim/ndpanel/1/hsiRangeButton", 1)
             end
-            if EFISpanel == 0 then
+            if EFIS_TYPE == 0 then
                 set("1-sim/ndpanel/1/hsiModeRotary", 4)
                 set("1-sim/ndpanel/1/hsiRangeRotary", 1)
                 set("1-sim/ndpanel/1/hsiRangeButton", 1)
@@ -327,7 +327,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         if not ready then
             return
         end
-        if toCalloutMode and (AGL / 0.3048) > FMSaccel + 50 and not vnavPlayed and VNAV_ENGAGED_LT == 0 then
+        if toCalloutMode and (AGL / 0.3048) > FMS_ACCEL_HT + 50 and not vnavPlayed and VNAV_ENGAGED_LT == 0 then
             print(ENGINE_MODE .. " " .. VNAV)
             if VNAV_BUTTON == 0 and not vnavPressed then
                 set("1-sim/AP/vnavButton", 1)
@@ -345,7 +345,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
             calloutTimer = 0
             vnavPlayed = true
             toCalloutMode = false
-            print("767Callouts: VNAV at " .. FMSaccel .. " accel height")
+            print("767Callouts: VNAV at " .. FMS_ACCEL_HT .. " accel height")
             print("767Callouts: TO Mode off")
         end
     end
@@ -609,7 +609,7 @@ function GoAround()
         play_sound(PosRate_snd)
         set("1-sim/cockpit/switches/gear_handle", 0)
         print("767Callouts: Go Around Positive Rate " ..math.floor(AGL / 0.3048) .. " AGL and " .. math.floor(VSI) .. " ft/min")
-        print("767Callouts: Waiting for accel height of " .. FMSaccel .. " ft")
+        print("767Callouts: Waiting for accel height of " .. FMS_ACCEL_HT .. " ft")
         posRatePlayed = true
     end
     if togaEvent and GEAR_HANDLE == 0 and (AGL / 0.3048) > 410 and posRatePlayed and not lnavPressed and LNAV_BUTTON == 0 then
@@ -622,36 +622,36 @@ function GoAround()
         print("767Callouts: Attempting to engage LNAV")
         lnavPressed = true
     end
-    if togaEvent and (AGL / 0.3048) > FMSaccel and not clbThrustPlayed then
+    if togaEvent and (AGL / 0.3048) > FMS_ACCEL_HT and not clbThrustPlayed then
         set("1-sim/eng/thrustRefMode", 32)
         play_sound(ClbThrust_snd)
         clbThrustPlayed = true
-        print("767Callouts: Go Around Climb Thrust " .. FMSaccel)
+        print("767Callouts: Go Around Climb Thrust " .. FMS_ACCEL_HT)
     end
-    if togaEvent and (AGL / 0.3048) > FMSaccel and clbThrustPlayed and VNAV_BUTTON == 0 and not gaVnavPressed then
+    if togaEvent and (AGL / 0.3048) > FMS_ACCEL_HT and clbThrustPlayed and VNAV_BUTTON == 0 and not gaVnavPressed then
         set("1-sim/AP/vnavButton", 1)
         print("767Callouts: Attempting VNAV")
         gaVnavPressed = true
     end
-    if togaEvent and (AGL / 0.3048) > FMSaccel and clbThrustPlayed and VNAV_BUTTON == 1 and not gaVnavPressed then
+    if togaEvent and (AGL / 0.3048) > FMS_ACCEL_HT and clbThrustPlayed and VNAV_BUTTON == 1 and not gaVnavPressed then
         set("1-sim/AP/vnavButton", 0)
         print("767Callouts: Attempting VNAV")
         gaVnavPressed = true
     end
-    if togaEvent and (AGL / 0.3048) > FMSaccel and gaVnavPressed and VNAV_ENGAGED_LT ~= 0.8 and FLCH_BUTTON == 0 and not flchPressed then
+    if togaEvent and (AGL / 0.3048) > FMS_ACCEL_HT and gaVnavPressed and VNAV_ENGAGED_LT ~= 0.8 and FLCH_BUTTON == 0 and not flchPressed then
         set("1-sim/AP/flchButton", 1)
         print("767Callouts: Negative VNAV ".. VNAV_ENGAGED_LT .." , attempting FLCH")
         flchPressed = true
     end
-    if togaEvent and (AGL / 0.3048) > FMSaccel and gaVnavPressed and VNAV_ENGAGED_LT ~= 0.8 and FLCH_BUTTON == 1 and not flchPressed then
+    if togaEvent and (AGL / 0.3048) > FMS_ACCEL_HT and gaVnavPressed and VNAV_ENGAGED_LT ~= 0.8 and FLCH_BUTTON == 1 and not flchPressed then
         set("1-sim/AP/flchButton", 0)
         print("767Callouts: Negative VNAV ".. VNAV_ENGAGED_LT .." , attempting FLCH")
         flchPressed = true
     end
-    if togaEvent and not gaPlayed and (AGL / 0.3048) > (FMSaccel + 100) then
+    if togaEvent and not gaPlayed and (AGL / 0.3048) > (FMS_ACCEL_HT + 100) then
         if flchPressed then
-            set("757Avionics/ap/spd_act", ref30 + 80)
-            print("767Callouts: FLCH Vref+80 = " .. math.floor(ref30 + 80))
+            set("757Avionics/ap/spd_act", VREF_30 + 80)
+            print("767Callouts: FLCH Vref+80 = " .. math.floor(VREF_30 + 80))
         end
         gaPlayed = true
         togaEvent = false
