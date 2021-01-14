@@ -11,19 +11,18 @@ Includes:
 * Landing speedbrake calls.
 * Go around calls with PNF actively managing aircraft configuration. When pressing the TOGA clickspot on the MCP, the PNF will select flaps 20, select the gear up,   attempt to engage LNAV at 400ft AGL, select climb thrust at the acceleration height, attempt to engage VNAV or FLCH at Flap 0 speed if there is no valid VNAV path.
 
-
-Installation
-============
-
-Copy the 767Callouts folder and the 767CrewPack.lua file into the Scripts folder of FlyWithLua.
-If sucesfull the First Officer should announce his entery the cockpit roughly 15 seconds after loading in.
-
-
 Prerequisite
 ============
 This plugin uses the FlyWithLUA plugin to interface with X-Plane.
 It is available freely from the .org 
+
 https://forums.x-plane.org/index.php?/files/file/38445-flywithlua-ng-next-generation-edition-for-x-plane-11-win-lin-mac/
+
+Installation
+============
+
+Copy the 767Callouts folder and the 767CrewPack.lua file into the X-Plane 11 > Resources > plugins > FlyWithLua > Scripts folder.
+If sucesfull the First Officer should announce his entery the cockpit roughly 15 seconds after loading in.
 
 
 Disclaimer / Feedback

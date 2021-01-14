@@ -9,12 +9,13 @@
 	Changelog:
 	V0.1 - Initial Test Beta
     V0.2 - Variable name corrections
+    V0.3 - Crosscheck and correction of variable adjustments
 --]]
 
 
 if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE_ICAO == "B763" then
     -- Initialisation Variables
-    local version = "0.2-beta"
+    local version = "0.3-beta"
     local initDelay = 15
     local startTime = 0
     dataref("SIM_TIME", "sim/time/total_running_time_sec")
@@ -222,7 +223,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
 
     do_often("CockpitSetup()")
 
--- Engine Rate Monitor
+-- Engine Rate Monitor - Reset by: VNAV action in TO and GA as appropriate
     --TOGA 6 | TO 1, 11, 12 |
     function EngRateMonitor()
         if not ready then
@@ -250,13 +251,13 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
     do_every_frame("EngRateMonitor()")
 
 
--- Takeoff Calls
+-- Takeoff Calls - Reset by: Master Reset
     function TakeoffCalls()
         if not ready then
             return
         end
 
-        -- TO Callout Mode (Reset by: VNAV call at accel
+        -- TO Callout Mode - Reset by: VNAV call at accel
         if toEngRate and WEIGHT_ON_WHEELS == 1 then
             toCalloutMode = true
         end
@@ -305,7 +306,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
 
     do_often("TakeoffCalls()")
 
--- TakeoffNoSpeeds
+-- TakeoffNoSpeeds - Reset by: Master Reset
     function TakeoffNoSpeeds()
         if not ready then
             return
@@ -322,7 +323,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
 
     do_often("TakeoffNoSpeeds()")
 
--- Takeoff VNAV Call
+-- Takeoff VNAV Call - Reset by Master Reset
     function TakeoffVNAV()
         if not ready then
             return
@@ -362,6 +363,10 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
             gearUpPlayed = true
             gearDownPlayed = false
             flightOccoured = true
+            spdBrkNotPlayed = false
+            spdBrkPlayed = false
+            sixtyPlayed = false            
+            horsePlayed = false
             set("1-sim/lights/landingN/switch", 0)
             print("767Callouts: Gear Up")
         end
@@ -374,9 +379,6 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
             posRatePlayed = false
             togaEvent = false
             togaMsg = false
-            spdBrkPlayed = false
-            SixtyPlayed = false
-            HorsePlay = false
             set("1-sim/lights/landingN/switch", 1)
             print("767Callouts: Gear Down")
         end
@@ -386,7 +388,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
     
 -- Flaps Selection
    
-    -- Flaps Callouts
+    -- Flaps Callouts in air only
     function FlapsSelection()
         if not ready then
             return
@@ -456,25 +458,26 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         if not ready then
             return
         end
-        -- Loc Capture Right of localiser (CDI Left)
+        -- Loc Capture Right of localiser (CDI Left) Reset by: Full scale LOC deflection
         if LOC_RECEIVED == 1 and LOC_DEVIATION < -1.95 and LOC_DEVIATION >= 0 and not locPlayed and not togaEvent and not toCalloutMode then
             play_sound(LOCcap_snd)
-            locPlayed = true
-            calloutTimer = 0
             print("767Callouts: LOC Active")
+            calloutTimer = 0
+            locPlayed = true
         end
         if LOC_DEVIATION <= -2.5 and locPlayed then
-            locPlayed = false
-            gsPlayed = false
             print("767Callouts: Reset Loc Active Logic")
             print("767Callouts: Reset GS Alive Logic")
+            locPlayed = false
+            gsPlayed = false
         end
         -- Loc Capture Left of localiser (CDI Right)
         if LOC_RECEIVED == 1 and LOC_DEVIATION < 1.95 and LOC_DEVIATION >= 0 and not locPlayed  and not togaEvent then
             play_sound(LOCcap_snd)
-            locPlayed = true
-            calloutTimer = 0
             print("767Callouts: LOC Active")
+            calloutTimer = 0
+            locPlayed = true
+            
         end
         if LOC_DEVIATION >= 2.5 and locPlayed then
             locPlayed = false
@@ -485,14 +488,14 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         -- GS
         if GS_RECEIVED == 1 and GS_DEVIATION > -1.95 and GS_DEVIATION < 1 and locPlayed and not gsPlayed and calloutTimer >= 2  and not togaEvent and not toCalloutMode then
             play_sound(GScap_snd)
-            gsPlayed = true
             print("767Callouts: GS Alive")
+            gsPlayed = true
         end
     end
 
     do_often("LocGsAlive()")
 
--- Landing Roll / Speedbrakes (Requires Gear Up, Ground Reset)
+-- Landing Roll / Speedbrakes - Reset by: Gear Up
     function Landing()
         if not ready then
             return
@@ -544,17 +547,19 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         if IAS > 30 and IAS < 40 and WEIGHT_ON_WHEELS == 1 then
             playSeq = 0
             posRatePlayed = false
-            GearUp_Played = false
-            GearDown_Played = true
-            VNAV_msg = false
+            gearUpPlayed = false
+            gearDownPlayed = true
+           -- vnav = false
             toEngRate = false
+            invalidVSpeed = true
+            vnavPlayed = false
             print("767Callouts: Reset For Flight")
         end
     end
 
     do_often("MasterReset()")
 
--- Shut Down Message
+-- Shut Down Message Reset by: Gear Up
     function ShutDown()
         if not ready then
             return
@@ -594,7 +599,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
 
     do_often("TogaMonitor()")
         
--- Go Around Function
+-- Go Around Function - Reset by Toga Trigger, cancels on FMS Accel height
 
 function GoAround()
     if WEIGHT_ON_WHEELS == 0 and togaEvent and ENGINE_MODE == 6 and not flaps20Retracted then
