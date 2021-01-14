@@ -10,6 +10,7 @@
 	V0.1 - Initial Test Beta
     V0.2 - Variable name corrections
     V0.3 - Crosscheck and correction of variable adjustments
+    V0.4 - Corrected TO VNAV and LOC logic Bug#3
 --]]
 
 
@@ -459,7 +460,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
             return
         end
         -- Loc Capture Right of localiser (CDI Left) Reset by: Full scale LOC deflection
-        if LOC_RECEIVED == 1 and LOC_DEVIATION < -1.95 and LOC_DEVIATION >= 0 and not locPlayed and not togaEvent and not toCalloutMode then
+        if LOC_RECEIVED == 1 and LOC_DEVIATION > -1.95 and LOC_DEVIATION <= 0 and not locPlayed and not togaEvent and not toCalloutMode then
             play_sound(LOCcap_snd)
             print("767Callouts: LOC Active")
             calloutTimer = 0
@@ -549,10 +550,10 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
             posRatePlayed = false
             gearUpPlayed = false
             gearDownPlayed = true
-           -- vnav = false
             toEngRate = false
             invalidVSpeed = true
             vnavPlayed = false
+            vnavPressed = false
             print("767Callouts: Reset For Flight")
         end
     end
