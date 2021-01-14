@@ -328,7 +328,6 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
             return
         end
         if toCalloutMode and (AGL / 0.3048) > FMS_ACCEL_HT + 50 and not vnavPlayed and VNAV_ENGAGED_LT == 0 then
-            print(ENGINE_MODE .. " " .. VNAV)
             if VNAV_BUTTON == 0 and not vnavPressed then
                 set("1-sim/AP/vnavButton", 1)
                 print("767Callouts: VNAV pressed")
@@ -562,7 +561,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         end
 
         if ENG1_N2 < 25 and ENG2_N2 < 25 and WEIGHT_ON_WHEELS == 1 and PARK_BRAKE == 1 and flightOccoured and not horsePlayed then
-            play_sound(Horse)
+            play_sound(Horse_snd)
             horsePlayed = true
             flightOccoured = false
             print("767Callouts: You Suck")
@@ -650,7 +649,7 @@ function GoAround()
     end
     if togaEvent and not gaPlayed and (AGL / 0.3048) > (FMS_ACCEL_HT + 100) then
         if flchPressed then
-            set("757Avionics/ap/spd_act", VREF_30 + 80)
+            set("757Avionics/ap/spd_act", math.ceil(VREF_30 + 80))
             print("767Callouts: FLCH Vref+80 = " .. math.floor(VREF_30 + 80))
         end
         gaPlayed = true
