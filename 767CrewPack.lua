@@ -14,49 +14,49 @@
 
 if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE_ICAO == "B763" then
     -- Initialisation Variables
-    local Version = 1.0
-    local InitDelay = 15
-    local StartTime = 0
-    dataref("SimTime", "sim/time/total_running_time_sec")
+    local version = "0.2-beta"
+    local initDelay = 15
+    local startTime = 0
+    dataref("SIM_TIME", "sim/time/total_running_time_sec")
 
     -- Local Variables
 
     local ready = false
-    local Start_Played = false
-    local PlaySeq = 0
-    local PosRatePlayed = false
-    local GearUpPlayed = false
-    local FlapPos = 0.000000
-    local FlapTime = 3
-    local GearDownPlayed = true
-    local SpdBrkPlayed = false
-    local SpdBrkNotPlayed = false
-    local Sixty_Played = true
-    local Gnd_Time = 0
-    local Horse_Played = false
-    local LOC_Played = false
-    local GS_Played = false
-    local CockpitSet = false
-    local flightoccoured = false
-    local GA_Played = false
-    local TOGA_msg = false
-    local vnavplayed = true
-    local vnavpressed = true
-    local Flaps20Retract = true
-    local TOEngRate = false
-	local TOGAevent = false
-    local TogaState = nil
-    local TOCalloutMode = false
-    local TOCallTimer = 4
-    local InvalidVSpeed = false
-    local CLBthrustplayed = false
-    local FLCHpressed = true
-    local GA_VNAV_Press = true
-    local LNAVpressed = true
+    local startPlayed = false
+    local playSeq = 0
+    local posRatePlayed = false
+    local gearUpPlayed = false
+    local flapPos = 0.000000
+    local flapTime = 3
+    local gearDownPlayed = true
+    local spdBrkPlayed = false
+    local spdBrkNotPlayed = false
+    local sixtyPlayed = true
+    local gndTime = 0
+    local horsePlayed = false
+    local locPlayed = false
+    local gsPlayed = false
+    local cockpitSetup = false
+    local flightOccoured = false
+    local gaPlayed = false
+    local togaMsg = false
+    local vnavPlayed = true
+    local vnavPressed = true
+    local flaps20Retracted = true
+    local toEngRate = false
+	local togaEvent = false
+    local togaState = nil
+    local toCalloutMode = false
+    local calloutTimer = 4
+    local invalidVSpeed = false
+    local clbThrustPlayed = false
+    local flchPressed = true
+    local gaVnavPressed = true
+    local lnavPressed = true
     
 
     -- Sound Files
-    local Eightykts_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/pnf_pf_80kts.wav")
+    local EightyKts_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/pnf_pf_80kts.wav")
     local V1_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/pnf_V1.wav")
     local VR_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/pnf_VR.wav")
     local PosRate_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/pnf_PosRate.wav")
@@ -77,44 +77,44 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
     local Horse_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/gnd_horse.wav")
     local Start757_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/pnf_start_757.wav")
     local Start767_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/pnf_start_767.wav")
-    local clbthrust_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/pf_ClbThr.wav")
+    local ClbThrust_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/pf_ClbThr.wav")
     local VNAV_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/pf_VNAV.wav")
 
     -- Generic Datarefs
     dataref("AGL", "sim/flightmodel/position/y_agl")
-    dataref("FlapLvr", "sim/flightmodel/controls/flaprqst", "writeable")
-    dataref("GearHndl", "1-sim/cockpit/switches/gear_handle")
-    dataref("SpdBrk", "sim/cockpit2/controls/speedbrake_ratio")
-    dataref("WtWheel", "sim/cockpit2/tcas/targets/position/weight_on_wheels", "readonly", 0)
-    dataref("PrkBrk", "sim/cockpit2/controls/parking_brake_ratio")
-    dataref("Eng1N2", "sim/flightmodel2/engines/N2_percent", "readonly", 0)
-    dataref("Eng2N2", "sim/flightmodel2/engines/N2_percent", "readonly", 1)
-    dataref("loc", "sim/cockpit/radios/nav2_hdef_dot")
-    dataref("locThere", "1-sim/radios/isReceivingIlsLoc1")
-    dataref("gs", "sim/cockpit/radios/nav2_vdef_dot")
-    dataref("gsThere", "1-sim/radios/isReceivingIlsGs1")
-    dataref("Strobes", "sim/cockpit2/switches/strobe_lights_on")
-    dataref("EngRate", "1-sim/eng/thrustRefMode") --TOGA 6 -- TO 1 / 11 / 12
-    dataref("MCPspd", "sim/cockpit/autopilot/airspeed", "writeable")
-    dataref("FLCH", "1-sim/AP/flchButton", "writeable")
-    dataref("VNAVeng", "1-sim/AP/lamp/4")
-    dataref("VNAV", "1-sim/AP/vnavButton", "writeable")
-    dataref("LNAV", "1-sim/AP/lnavButton", "writeable")
-    dataref("ATO", "1-sim/gauges/autoBrakeModeSwitcher", "writeable")
-    dataref("TogaBut", "1-sim/AP/togaButton")
+    dataref("FLAP_LEVER", "sim/flightmodel/controls/flaprqst", "writeable")
+    dataref("GEAR_HANDLE", "1-sim/cockpit/switches/gear_handle")
+    dataref("SPEED_BRAKE", "sim/cockpit2/controls/speedbrake_ratio")
+    dataref("WEIGHT_ON_WHEELS", "sim/cockpit2/tcas/targets/position/weight_on_wheels", "readonly", 0)
+    dataref("PARK_BRAKE", "sim/cockpit2/controls/parking_brake_ratio")
+    dataref("ENG1_N2", "sim/flightmodel2/engines/N2_percent", "readonly", 0)
+    dataref("ENG2_N2", "sim/flightmodel2/engines/N2_percent", "readonly", 1)
+    dataref("LOC_DEVIATION", "sim/cockpit/radios/nav2_hdef_dot")
+    dataref("LOC_RECEIVED", "1-sim/radios/isReceivingIlsLoc1")
+    dataref("GS_DEVIATION", "sim/cockpit/radios/nav2_vdef_dot")
+    dataref("GS_RECEIVED", "1-sim/radios/isReceivingIlsGs1")
+    dataref("STROBE_SWITCH", "sim/cockpit2/switches/strobe_lights_on")
+    dataref("ENGINE_MODE", "1-sim/eng/thrustRefMode") --TOGA 6 -- TO 1 / 11 / 12
+    dataref("MCP_SPEED", "sim/cockpit/autopilot/airspeed", "writeable")
+    dataref("FLCH_BUTTON", "1-sim/AP/flchButton", "writeable")
+    dataref("VNAV_ENGAGED_LT", "1-sim/AP/lamp/4")
+    dataref("VNAV_BUTTON", "1-sim/AP/vnavButton", "writeable")
+    dataref("LNAV_BUTTON", "1-sim/AP/lnavButton", "writeable")
+    dataref("AUTO_BRAKE", "1-sim/gauges/autoBrakeModeSwitcher", "writeable")
+    dataref("TOGA_BUTTON", "1-sim/AP/togaButton")
 
-    print("767Callouts: Initialising version " .. Version)
-    print("767Callouts: Starting at sim time " .. math.floor(SimTime))
+    print("767Callouts: Initialising version " .. version)
+    print("767Callouts: Starting at sim time " .. math.floor(SIM_TIME))
 
 --	Delaying initialisation of datarefs till aircraft loaded
     function DelayedInit()
         -- Dealy based on time
 
-        if StartTime == 0 then
-            StartTime = (SimTime + InitDelay)
+        if startTime == 0 then
+            startTime = (SIM_TIME + initDelay)
         end
-        if (SimTime < StartTime) then
-            print("767Callouts: Init Delay " .. math.floor(SimTime) .. " waiting for " .. math.floor(StartTime) .. " --")
+        if (SIM_TIME < startTime) then
+            print("767Callouts: Init Delay " .. math.floor(SIM_TIME) .. " waiting for " .. math.floor(startTime) .. " --")
             return
         end
             -- Delay based on 757 specific variables
@@ -147,7 +147,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
             end
             
             if not ready then
-                print("767Callouts: Datarefs Initialised for " .. PLANE_ICAO .. " at time " .. math.floor(SimTime))
+                print("767Callouts: Datarefs Initialised for " .. PLANE_ICAO .. " at time " .. math.floor(SIM_TIME))
                 ready = true
             end
     end -- End of DelayedInit
@@ -159,16 +159,16 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         if not ready then
            return
         end
-        if Start_Played == false then
+        if startPlayed == false then
             if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" then
                 play_sound(Start757_snd)
-                print("767Callouts: Script ready at time " .. math.floor(SimTime))
-                Start_Played = true
+                print("767Callouts: Script ready at time " .. math.floor(SIM_TIME))
+                startPlayed = true
             end
             if PLANE_ICAO == "B762" or PLANE_ICAO == "B763" then
                 play_sound(Start767_snd)
-                print("767Callouts: Script ready at time " .. math.floor(SimTime))
-                Start_Played = true
+                print("767Callouts: Script ready at time " .. math.floor(SIM_TIME))
+                startPlayed = true
             end
         end
     end
@@ -192,7 +192,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         if not ready then
             return
         end
-        if not CockpitSet then
+        if not cockpitSetup then
             set("anim/armCapt/1", 2)
             set("anim/armFO/1", 2)
             if EFISpanel == 1 then
@@ -215,7 +215,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
             set("sim/cockpit2/controls/elevator_trim", 0.046353)
             set("1-sim/ndpanel/1/dhRotary", 0.00)
             set("1-sim/ndpanel/2/dhRotary", 0.00)
-            CockpitSet = true
+            cockpitSetup = true
             print("767Callouts: Attempting to setup cockpit")
         end
     end -- End of CockpitSetup
@@ -228,21 +228,21 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         if not ready then
             return
         end
-        if EngRate == 6 and not TOGA_msg then
+        if ENGINE_MODE == 6 and not togaMsg then
            -- GAEngRate = true
 			print("767Callouts: GA Mode Armed")
-            TOGA_msg = true
+            togaMsg = true
         end
-        if not TOEngRate  and EngRate == 1 then
-            TOEngRate = true
+        if not toEngRate  and ENGINE_MODE == 1 then
+            toEngRate = true
             print("767Callouts: TO Mode detected")
         end
-        if not TOEngRate  and EngRate == 11 then
-            TOEngRate = true
+        if not toEngRate  and ENGINE_MODE == 11 then
+            toEngRate = true
             print("767Callouts: TO-1 Mode detected")
         end
-        if not TOEngRate  and EngRate == 12 then
-            TOEngRate = true
+        if not toEngRate  and ENGINE_MODE == 12 then
+            toEngRate = true
             print("767Callouts: TO-2 Mode detected")
         end
     end
@@ -257,49 +257,49 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         end
 
         -- TO Callout Mode (Reset by: VNAV call at accel
-        if TOEngRate and WtWheel == 1 then
-            TOCalloutMode = true
+        if toEngRate and WEIGHT_ON_WHEELS == 1 then
+            toCalloutMode = true
         end
 
         -- TO Call Times
-        if TOCallTimer < 3 then
-            TOCallTimer = (TOCallTimer + 1)
-            print("767Callouts: Call Timer" .. TOCallTimer)
+        if calloutTimer < 3 then
+            calloutTimer = (calloutTimer + 1)
+            print("767Callouts: Call Timer" .. calloutTimer)
         end
 
         -- 80 Kts
-        if TOCalloutMode and IAS > 78 and PlaySeq == 0 then
-            play_sound(Eightykts_snd)
-            PlaySeq = 1
-            TOCallTimer = 0
+        if toCalloutMode and IAS > 78 and playSeq == 0 then
+            play_sound(EightyKts_snd)
+            calloutTimer = 0
             print("767Callouts: 80 Kts Played at " .. math.floor(IAS).. " kts")
             -- Confirm XPDR TA/RA and Brakes RTO
             set("anim/rhotery/35", 5)
             set("1-sim/gauges/autoBrakeModeSwitcher", -1)
+			playSeq = 1
         end
 
         -- V1
-        if TOCalloutMode and IAS > V1 - 2 and PlaySeq == 1 and TOCallTimer >= 2 then
+        if toCalloutMode and IAS > V1 - 3 and playSeq == 1 and calloutTimer >= 2 then
             play_sound(V1_snd)
-            PlaySeq = 2
-            TOCallTimer = 0
+            calloutTimer = 0
             print("767Callouts: V1 of " .. math.floor(V1) .. " Played at " .. math.floor(IAS) .. " kts")
+			playSeq = 2
         end
 
         -- VR
-        if TOCalloutMode and IAS > VR - 2 and PlaySeq == 2 and TOCallTimer >= 2 then
+        if toCalloutMode and IAS > VR - 3 and playSeq == 2 and calloutTimer >= 2 then
             play_sound(VR_snd)
-            PlaySeq = 3
-            TOCallTimer = 0
+            calloutTimer = 0
             print("767Callouts: VR of " .. math.floor(VR) .. " Played at " .. math.floor(IAS) .. " kts")
+			playSeq = 3
         end
 
         -- Positive Rate
-        if TOCalloutMode and AGL > 15 and VSI > 10 and PlaySeq == 3 and TOCallTimer >= 2 then
+        if toCalloutMode and AGL > 15 and VSI > 10 and playSeq == 3 and calloutTimer >= 2 then
             play_sound(PosRate_snd)
-            PlaySeq = 4
-            TOCallTimer = 0
+            calloutTimer = 0
             print("767Callouts: Positive Rate " .. math.floor(AGL) .. " AGL and " .. math.floor(VSI) .. " ft/min")
+			playSeq = 4
         end
     end
 
@@ -310,13 +310,13 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         if not ready then
             return
         end
-        if not InvalidVSpeed and TOCalloutMode and IAS > 100 and V1 < 100 then
+        if not invalidVSpeed and toCalloutMode and IAS > 100 and V1 < 100 then
             print("767Callouts: V1 Speed invalid value " .. math.floor(V1))
-            InvalidVSpeed = true
+            invalidVSpeed = true
         end
-        if not InvalidVSpeed and TOCalloutMode and IAS > 100 and VR < 100 then
+        if not invalidVSpeed and toCalloutMode and IAS > 100 and VR < 100 then
             print("767Callouts: VR Speed invalid value " .. math.floor(VR))
-            InvalidVSpeed = true
+            invalidVSpeed = true
         end
     end
 
@@ -327,24 +327,24 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         if not ready then
             return
         end
-        if TOCalloutMode and (AGL / 0.3048) > FMSaccel + 50 and not vnavplayed and VNAVeng == 0 then
-            print(EngRate .. " " .. VNAV)
-            if VNAV == 0 and not vnavpressed then
+        if toCalloutMode and (AGL / 0.3048) > FMSaccel + 50 and not vnavPlayed and VNAV_ENGAGED_LT == 0 then
+            print(ENGINE_MODE .. " " .. VNAV)
+            if VNAV_BUTTON == 0 and not vnavPressed then
                 set("1-sim/AP/vnavButton", 1)
                 print("767Callouts: VNAV pressed")
-                vnavpressed = true
+                vnavPressed = true
             end
-            if VNAV == 1 and not vnavpressed then
+            if VNAV_BUTTON == 1 and not vnavPressed then
                 set("1-sim/AP/vnavButton", 0)
                 print("767Callouts: VNAV pressed")
-                vnavpressed = true
+                vnavPressed = true
             end
         end
-        if not vnavplayed and VNAVeng > 0 then
+        if not vnavPlayed and VNAV_ENGAGED_LT > 0 then
             play_sound(VNAV_snd)
-            TOCallTimer = 0
-            vnavplayed = true
-            TOCalloutMode = false
+            calloutTimer = 0
+            vnavPlayed = true
+            toCalloutMode = false
             print("767Callouts: VNAV at " .. FMSaccel .. " accel height")
             print("767Callouts: TO Mode off")
         end
@@ -357,25 +357,25 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         if not ready then
             return
         end
-        if AGL > 15 and GearHndl == 0 and TOCallTimer >= 2 and not GearUpPlayed then
+        if AGL > 15 and GEAR_HANDLE == 0 and calloutTimer >= 2 and not gearUpPlayed then
             play_sound(GearUp_snd)
-            TOCallTimer = 0
-            GearUpPlayed = true
-            GearDownPlayed = false
-            flightoccoured = true
+            calloutTimer = 0
+            gearUpPlayed = true
+            gearDownPlayed = false
+            flightOccoured = true
             set("1-sim/lights/landingN/switch", 0)
             print("767Callouts: Gear Up")
         end
         -- Gear Down
-        if AGL > 15 and GearHndl == 1 and TOCallTimer >= 2 and not GearDownPlayed then
+        if AGL > 15 and GEAR_HANDLE == 1 and calloutTimer >= 2 and not gearDownPlayed then
             play_sound(GearDwn_snd)
-            TOCallTimer = 0
-            GearUpPlayed = false
-            GearDownPlayed = true
-            PosRatePlayed = false
-            TOGAevent = false
-            TOGA_msg = false
-            SpdBrkPlayed = false
+            calloutTimer = 0
+            gearUpPlayed = false
+            gearDownPlayed = true
+            posRatePlayed = false
+            togaEvent = false
+            togaMsg = false
+            spdBrkPlayed = false
             SixtyPlayed = false
             HorsePlay = false
             set("1-sim/lights/landingN/switch", 1)
@@ -392,39 +392,39 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         if not ready then
             return
         end
-        if FlapPos == 0 and FlapTime == 1 and WtWheel == 0 then
+        if flapPos == 0 and flapTime == 1 and WEIGHT_ON_WHEELS == 0 then
             play_sound(Flap0_snd)
-            TOCallTimer = 0
+            calloutTimer = 0
             print("767Callouts: Flaps 0 position for 1 Seconds -- ")
         end
-        if FlapPos > 0 and FlapPos < 0.2 and FlapTime == 1 and WtWheel == 0 then
+        if flapPos > 0 and flapPos < 0.2 and flapTime == 1 and WEIGHT_ON_WHEELS == 0 then
             play_sound(Flap1_snd)
-            TOCallTimer = 0
+            calloutTimer = 0
             print("767Callouts: Flaps 1 position for 1 Seconds -- ")
         end
-        if FlapPos > 0.3 and FlapPos < 0.4 and FlapTime == 1 and WtWheel == 0 then
+        if flapPos > 0.3 and flapPos < 0.4 and flapTime == 1 and WEIGHT_ON_WHEELS == 0 then
             play_sound(Flap5_snd)
-            TOCallTimer = 0
+            calloutTimer = 0
             print("767Callouts: Flaps 5 position for 1 Seconds -- ")
         end
-        if FlapPos == 0.5 and FlapTime == 1 and WtWheel == 0 then
+        if flapPos == 0.5 and flapTime == 1 and WEIGHT_ON_WHEELS == 0 then
             play_sound(Flap15_snd)
-            TOCallTimer = 0
+            calloutTimer = 0
             print("767Callouts: 15 position for 1 Seconds -- ")
         end
-        if FlapPos > 0.6 and FlapPos < 0.7 and FlapTime == 1 and WtWheel == 0 then
+        if flapPos > 0.6 and flapPos < 0.7 and flapTime == 1 and WEIGHT_ON_WHEELS == 0 then
             play_sound(Flap20_snd)
-            TOCallTimer = 0
+            calloutTimer = 0
             print("767Callouts: Flaps 20 position for 1 Seconds -- ")
         end
-        if FlapPos > 0.8 and FlapPos < 0.9 and FlapTime == 1 and WtWheel == 0 then
+        if flapPos > 0.8 and flapPos < 0.9 and flapTime == 1 and WEIGHT_ON_WHEELS == 0 then
             play_sound(Flap25_snd)
-            TOCallTimer = 0
+            calloutTimer = 0
             print("767Callouts: Flaps 25 position for 1 Seconds -- ")
         end
-        if FlapPos == 1 and FlapTime == 1 and WtWheel == 0 then
+        if flapPos == 1 and flapTime == 1 and WEIGHT_ON_WHEELS == 0 then
             play_sound(Flap30_snd)
-            TOCallTimer = 0
+            calloutTimer = 0
             print("767Callouts: Flaps 30 position for 1 Seconds -- ")
         end
     end
@@ -436,16 +436,16 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         if not ready then
             return
         end
-        if FlapPos ~= FlapLvr then
-            FlapTime = 0
-            FlapPos = FlapLvr
-            print("767Callouts: FlapPos = " .. FlapPos)
-            print("767Callouts: FlapLvr = " .. FlapLvr)
-            print("767Callouts: Flaps Moved to " .. FlapPos .. " --")
+        if flapPos ~= FLAP_LEVER then
+            flapTime = 0
+            flapPos = FLAP_LEVER
+            print("767Callouts: FlapPos = " .. flapPos)
+            print("767Callouts: FLAP_LEVER = " .. FLAP_LEVER)
+            print("767Callouts: Flaps Moved to " .. flapPos .. " --")
         else
-            if FlapTime <= 1 then
-                FlapTime = FlapTime + 1
-                print("767Callouts: FlapTime = " .. FlapTime)
+            if flapTime <= 1 then
+                flapTime = flapTime + 1
+                print("767Callouts: FlapTime = " .. flapTime)
             end
         end
     end -- End FlapPosCheck
@@ -458,35 +458,35 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
             return
         end
         -- Loc Capture Right of localiser (CDI Left)
-        if locThere == 1 and loc < -1.95 and loc >= 0 and not LOC_Played and not TOGAevent and not TOCalloutMode then
+        if LOC_RECEIVED == 1 and LOC_DEVIATION < -1.95 and LOC_DEVIATION >= 0 and not locPlayed and not togaEvent and not toCalloutMode then
             play_sound(LOCcap_snd)
-            LOC_Played = true
-            TOCallTimer = 0
+            locPlayed = true
+            calloutTimer = 0
             print("767Callouts: LOC Active")
         end
-        if loc <= -2.5 and LOC_Played then
-            LOC_Played = false
-            GS_Played = false
+        if LOC_DEVIATION <= -2.5 and locPlayed then
+            locPlayed = false
+            gsPlayed = false
             print("767Callouts: Reset Loc Active Logic")
             print("767Callouts: Reset GS Alive Logic")
         end
         -- Loc Capture Left of localiser (CDI Right)
-        if locThere == 1 and loc < 1.95 and loc >= 0 and not LOC_Played  and not TOGAevent then
+        if LOC_RECEIVED == 1 and LOC_DEVIATION < 1.95 and LOC_DEVIATION >= 0 and not locPlayed  and not togaEvent then
             play_sound(LOCcap_snd)
-            LOC_Played = true
-            TOCallTimer = 0
+            locPlayed = true
+            calloutTimer = 0
             print("767Callouts: LOC Active")
         end
-        if loc >= 2.5 and LOC_Played then
-            LOC_Played = false
-            GS_Played = false
+        if LOC_DEVIATION >= 2.5 and locPlayed then
+            locPlayed = false
+            gsPlayed = false
             print("767Callouts: Reset Loc Active Logic")
             print("767Callouts: Reset GS Alive Logic")
         end
         -- GS
-        if gsThere == 1 and gs > -1.95 and gs < 1 and LOC_Played and not GS_Played and TOCallTimer >= 2  and not TOGAevent and not TOCalloutMode then
+        if GS_RECEIVED == 1 and GS_DEVIATION > -1.95 and GS_DEVIATION < 1 and locPlayed and not gsPlayed and calloutTimer >= 2  and not togaEvent and not toCalloutMode then
             play_sound(GScap_snd)
-            GS_Played = true
+            gsPlayed = true
             print("767Callouts: GS Alive")
         end
     end
@@ -498,21 +498,21 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         if not ready then
             return
         end
-        if WtWheel == 1 and flightoccoured then
-            if SpdBrk == 1  and not SpdBrkPlayed then
+        if WEIGHT_ON_WHEELS == 1 and flightOccoured then
+            if SPEED_BRAKE == 1  and not spdBrkPlayed then
                 play_sound(SpdBrkUp_snd)
-                SpdBrkPlayed = true
+                spdBrkPlayed = true
                 print("767Callouts: Speed Brake On Landing")
             end
-            if SpdBrk ~= 1 and Gnd_Time == 5 and not SpdBrkPlayed and not SpdBrkNotPlayed then
+            if SPEED_BRAKE ~= 1 and gndTime == 5 and not spdBrkPlayed and not spdBrkNotPlayed then
                 play_sound(SpdBrkNot_snd)
-                SpdBrkNotPlayed = true
+                spdBrkNotPlayed = true
                 print("767Callouts: Speed Brake Not Up On Landing")
             end
         end
-        if WtWheel == 1 and flightoccoured and not Sixty_Played and IAS <= 62 then
+        if WEIGHT_ON_WHEELS == 1 and flightOccoured and not sixtyPlayed and IAS <= 62 then
             play_sound(SixtyKts_snd)
-            Sixty_Played = true
+            sixtyPlayed = true
             print("767Callouts: 60kts on landing played at " .. math.floor(IAS))
         end
     end
@@ -523,14 +523,14 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         if not ready then
             return
         end
-        if WtWheel == 0 then
-            Gnd_Time = 0
+        if WEIGHT_ON_WHEELS == 0 then
+            gndTime = 0
         else
-            if Gnd_Time <= 5 then
-                Gnd_Time = Gnd_Time + 1
+            if gndTime <= 5 then
+                gndTime = gndTime + 1
             end
-            if Gnd_Time == 5 then
-                print("767Callouts: Sustained Weight on wheels for " .. Gnd_Time .. " seconds")
+            if gndTime == 5 then
+                print("767Callouts: Sustained Weight on wheels for " .. gndTime .. " seconds")
             end
         end
     end -- End of OnGrndCheck
@@ -542,13 +542,13 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         if not ready then
             return
         end
-        if IAS > 30 and IAS < 40 and WtWheel == 1 then
-            PlaySeq = 0
-            PosRatePlayed = false
+        if IAS > 30 and IAS < 40 and WEIGHT_ON_WHEELS == 1 then
+            playSeq = 0
+            posRatePlayed = false
             GearUp_Played = false
             GearDown_Played = true
             VNAV_msg = false
-            TOEngRate = false
+            toEngRate = false
             print("767Callouts: Reset For Flight")
         end
     end
@@ -561,12 +561,12 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
             return
         end
 
-        if Eng1N2 < 25 and Eng2N2 < 25 and WtWheel == 1 and flightoccoured and not Horse_Played then
+        if ENG1_N2 < 25 and ENG2_N2 < 25 and WEIGHT_ON_WHEELS == 1 and PARK_BRAKE == 1 and flightOccoured and not horsePlayed then
             play_sound(Horse)
-            Horse_Played = true
-            flightoccoured = false
+            horsePlayed = true
+            flightOccoured = false
             print("767Callouts: You Suck")
-            print("767Callouts: " .. math.floor(Eng1N2) .. " | " .. math.floor(Eng2N2))
+            print("767Callouts: " .. math.floor(ENG1_N2) .. " | " .. math.floor(ENG2_N2))
         end
     end
 
@@ -575,20 +575,20 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
 -- Go Around Monitor
 
     function TogaTrigger()
-        TOGAevent = true
-        Flaps20Retract = false
-        FLCHpressed = false
-        GA_VNAV_Press = false
-        LNAVpressed = false
-        GA_Played = false
-        print("767Callouts: TOGA Event Detected at time " .. math.floor(SimTime))
-        TogaState = TogaBut
+        togaEvent = true
+        flaps20Retracted = false
+        flchPressed = false
+        gaVnavPressed = false
+        lnavPressed = false
+        gaPlayed = false
+        print("767Callouts: TOGA Event Detected at time " .. math.floor(SIM_TIME))
+        togaState = TOGA_BUTTON
     end
 
     function TogaMonitor()
-        if TogaState == nil then
-            TogaState = TogaBut
-        elseif TogaState ~= TogaBut then
+        if togaState == nil then
+            togaState = TOGA_BUTTON
+        elseif togaState ~= TOGA_BUTTON then
             TogaTrigger()
         end
     end
@@ -598,63 +598,63 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
 -- Go Around Function
 
 function GoAround()
-    if WtWheel == 0 and TOGAevent and EngRate == 6 and not Flaps20Retract then
-        if FlapPos > 0.8 then
+    if WEIGHT_ON_WHEELS == 0 and togaEvent and ENGINE_MODE == 6 and not flaps20Retracted then
+        if flapPos > 0.8 then
             set("sim/flightmodel/controls/flaprqst", 0.66667)
             print("767Callouts: Go Around - Flaps 20 selected")
-            Flaps20Retract = true
+            flaps20Retracted = true
         end
     end
-    if TOGAevent and not PosRatePlayed and VSI > 10 then
+    if togaEvent and not posRatePlayed and VSI > 10 then
         play_sound(PosRate_snd)
         set("1-sim/cockpit/switches/gear_handle", 0)
         print("767Callouts: Go Around Positive Rate " ..math.floor(AGL / 0.3048) .. " AGL and " .. math.floor(VSI) .. " ft/min")
         print("767Callouts: Waiting for accel height of " .. FMSaccel .. " ft")
-        PosRatePlayed = true
+        posRatePlayed = true
     end
-    if TOGAevent and GearHndl == 0 and (AGL / 0.3048) > 410 and PosRatePlayed and not LNAVpressed and LNAV == 0 then
+    if togaEvent and GEAR_HANDLE == 0 and (AGL / 0.3048) > 410 and posRatePlayed and not lnavPressed and LNAV_BUTTON == 0 then
        set("1-sim/AP/lnavButton", 1)
        print("767Callouts: Attempting to engage LNAV")
-       LNAVpressed = true
+       lnavPressed = true
     end
-    if TOGAevent and GearHndl == 0 and (AGL / 0.3048) > 410 and PosRatePlayed and not LNAVpressed and LNAV == 1 then
+    if togaEvent and GEAR_HANDLE == 0 and (AGL / 0.3048) > 410 and posRatePlayed and not lnavPressed and LNAV_BUTTON == 1 then
         set("1-sim/AP/lnavButton", 0)
         print("767Callouts: Attempting to engage LNAV")
-        LNAVpressed = true
+        lnavPressed = true
     end
-    if TOGAevent and (AGL / 0.3048) > FMSaccel and not CLBthrustplayed then
+    if togaEvent and (AGL / 0.3048) > FMSaccel and not clbThrustPlayed then
         set("1-sim/eng/thrustRefMode", 32)
-        play_sound(clbthrust_snd)
-        CLBthrustplayed = true
+        play_sound(ClbThrust_snd)
+        clbThrustPlayed = true
         print("767Callouts: Go Around Climb Thrust " .. FMSaccel)
     end
-    if TOGAevent and (AGL / 0.3048) > FMSaccel and CLBthrustplayed and VNAV == 0 and not GA_VNAV_Press then
+    if togaEvent and (AGL / 0.3048) > FMSaccel and clbThrustPlayed and VNAV_BUTTON == 0 and not gaVnavPressed then
         set("1-sim/AP/vnavButton", 1)
         print("767Callouts: Attempting VNAV")
-        GA_VNAV_Press = true
+        gaVnavPressed = true
     end
-    if TOGAevent and (AGL / 0.3048) > FMSaccel and CLBthrustplayed and VNAV == 1 and not GA_VNAV_Press then
+    if togaEvent and (AGL / 0.3048) > FMSaccel and clbThrustPlayed and VNAV_BUTTON == 1 and not gaVnavPressed then
         set("1-sim/AP/vnavButton", 0)
         print("767Callouts: Attempting VNAV")
-        GA_VNAV_Press = true
+        gaVnavPressed = true
     end
-    if TOGAevent and (AGL / 0.3048) > FMSaccel and GA_VNAV_Press and VNAVeng ~= 0.8 and FLCH == 0 and not FLCHpressed then
+    if togaEvent and (AGL / 0.3048) > FMSaccel and gaVnavPressed and VNAV_ENGAGED_LT ~= 0.8 and FLCH_BUTTON == 0 and not flchPressed then
         set("1-sim/AP/flchButton", 1)
-        print("767Callouts: Negative VNAV ".. VNAVeng .." , attempting FLCH")
-        FLCHpressed = true
+        print("767Callouts: Negative VNAV ".. VNAV_ENGAGED_LT .." , attempting FLCH")
+        flchPressed = true
     end
-    if TOGAevent and (AGL / 0.3048) > FMSaccel and GA_VNAV_Press and VNAVeng ~= 0.8 and FLCH == 1 and not FLCHpressed then
+    if togaEvent and (AGL / 0.3048) > FMSaccel and gaVnavPressed and VNAV_ENGAGED_LT ~= 0.8 and FLCH_BUTTON == 1 and not flchPressed then
         set("1-sim/AP/flchButton", 0)
-        print("767Callouts: Negative VNAV ".. VNAVeng .." , attempting FLCH")
-        FLCHpressed = true
+        print("767Callouts: Negative VNAV ".. VNAV_ENGAGED_LT .." , attempting FLCH")
+        flchPressed = true
     end
-    if TOGAevent and not GA_Played and (AGL / 0.3048) > (FMSaccel + 100) then
-        if FLCHpressed then
+    if togaEvent and not gaPlayed and (AGL / 0.3048) > (FMSaccel + 100) then
+        if flchPressed then
             set("757Avionics/ap/spd_act", ref30 + 80)
             print("767Callouts: FLCH Vref+80 = " .. math.floor(ref30 + 80))
         end
-        GA_Played = true
-        TOGAevent = false
+        gaPlayed = true
+        togaEvent = false
         print("767Callouts: GA Mode Off")
     end
 end
