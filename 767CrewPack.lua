@@ -219,6 +219,8 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
             set("sim/cockpit2/controls/elevator_trim", 0.046353)
             set("1-sim/ndpanel/1/dhRotary", 0.00)
             set("1-sim/ndpanel/2/dhRotary", 0.00)
+            set("1-sim/vor1/isAuto", 1)
+            set("1-sim/vor1/isAuto", 2)
             cockpitSetup = true
             print("767Callouts: Attempting to setup cockpit")
         end
