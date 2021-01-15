@@ -43,3 +43,5 @@ Change Log
 * v0.2 - local variable corrections to TOGA, Speedbrakes and Horseplay.
 * v0.3 - Complete crosscheck and tweak of local variables.
 * v0.4 - VNAV on Takeoff and LOC intercept right of localiser issues fixed.
+* v0.5 - Added logic to cockpit setup / shutdown to connect the GPU (setup brings online), open L1, fwd/aft cargo and brings in belt loaders.
+            N.B. Attempting to disconnect the GPU whilst it is on bus will cause the GPU circuit of the aircraft to fail.

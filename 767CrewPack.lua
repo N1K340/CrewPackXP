@@ -11,12 +11,13 @@
     V0.2 - Variable name corrections
     V0.3 - Crosscheck and correction of variable adjustments
     V0.4 - Corrected TO VNAV and LOC logic Bug#3
+    v0.5 - Added GPU connection logic to cockpit setup and shutdown. Cargo doors and L1 open on eng off setup with belt loaders. N.B. Ext Pwr will fail if disconnected whilst on bus.
 --]]
 
 
 if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE_ICAO == "B763" then
     -- Initialisation Variables
-    local version = "0.3-beta"
+    local version = "0.5-beta"
     local initDelay = 15
     local startTime = 0
     dataref("SIM_TIME", "sim/time/total_running_time_sec")
@@ -215,10 +216,22 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
                 set("1-sim/ndpanel/2/hsiRangeRotary", 2)
                 set("1-sim/ndpanel/1/hsiRangeButton", 1)
             end
+            if WEIGHT_ON_WHEELS == 1 and ENG1_N2 < 20 and ENG2_N2 < 20 and get("params/gpu") ~= 1 then
+                set("params/gpu", 1)
+                set("anim/16/button", 1)
+                set("anim/17/button", 1)
+                set("anim/18/button", 1)
+                print("Attempt GPU")
+                return
+            end
             set("anim/43/button", 1)
             set("sim/cockpit2/controls/elevator_trim", 0.046353)
             set("1-sim/ndpanel/1/dhRotary", 0.00)
             set("1-sim/ndpanel/2/dhRotary", 0.00)
+            set_array("sim/cockpit2/switches/custom_slider_on",2,1) 
+            set_array("sim/cockpit2/switches/custom_slider_on",3,1)
+            set("params/LSU", 1)
+            set_array("sim/cockpit2/switches/custom_slider_on",0,1) 
             set("1-sim/vor1/isAuto", 1)
             set("1-sim/vor1/isAuto", 2)
             cockpitSetup = true
@@ -268,7 +281,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         end
 
         -- TO Call Times
-        if calloutTimer < 3 then
+        if calloutTimer < 4 then
             calloutTimer = (calloutTimer + 1)
             print("767Callouts: Call Timer" .. calloutTimer)
         end
@@ -574,8 +587,16 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
             play_sound(Horse_snd)
             horsePlayed = true
             flightOccoured = false
+            calloutTimer = 0
             print("767Callouts: You Suck")
             print("767Callouts: " .. math.floor(ENG1_N2) .. " | " .. math.floor(ENG2_N2))
+        end
+        if ENG1_N2 < 25 and ENG2_N2 < 25 and WEIGHT_ON_WHEELS == 1 and PARK_BRAKE == 1 and calloutTimer == 4 and horsePlayed and get("sim/cockpit2/switches/beacon_on") == 0 then
+            set("params/gpu", 1)
+            set_array("sim/cockpit2/switches/custom_slider_on",2,1) 
+            set_array("sim/cockpit2/switches/custom_slider_on",3,1)
+            set("params/LSU", 1)
+            set_array("sim/cockpit2/switches/custom_slider_on",0,1) 
         end
     end
 

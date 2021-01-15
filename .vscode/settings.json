@@ -1,6 +1,5 @@
 {
     "Lua.diagnostics.globals": [
-        
         "dataref",
         "load_WAV_file",
         "SCRIPT_DIRECTORY",
@@ -36,6 +35,8 @@
         "TOGA_BUTTON",
         "LNAV_BUTTON",
         "FLCH_BUTTON",
-        "VREF_30"
+        "VREF_30",
+        "set_array",
+        "get"
     ]
 }
