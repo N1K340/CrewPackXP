@@ -197,13 +197,15 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         if not cockpitSetup then
             set("anim/armCapt/1", 2)
             set("anim/armFO/1", 2)
-            if EFIS_TYPE == 1 then
+            if EFIS_TYPE == 1 then -- New Type 757
                 set("1-sim/ndpanel/1/hsiModeRotary", 2)
                 set("1-sim/ndpanel/1/hsiRangeRotary", 1)
                 set("1-sim/ndpanel/1/hsiRangeButton", 1)
                 set("1-sim/ndpanel/2/hsiModeRotary", 2)
                 set("1-sim/ndpanel/2/hsiRangeRotary", 2)
                 set("1-sim/ndpanel/1/hsiRangeButton", 1)
+                set("1-sim/inst/HD/L", -11)
+                set("1-sim/inst/HD/R", -11)
             end
             if EFIS_TYPE == 0 then
                 set("1-sim/ndpanel/1/hsiModeRotary", 4)
