@@ -33,7 +33,8 @@ Installation and use of this package is at your own risk.
 
 This is the first time I have coded a plugin, any feedback is welcome.
 Bug reports, please include the x-plane log.txt file in the main x-plane folder for the flight in question. 
-Plugin is still a work in progress, to be considered as public beta. Errors may exist.
+
+This plugin is still a work in progress, to be considered as public beta. Errors may exist.
 
 
 
