@@ -2,8 +2,8 @@
 	Crew Pack Script for Flight Factor B757 / B767
 	
 	Voices by https://www.naturalreaders.com/
-	Captn: Ronald
-	FO: Guy
+	Captn: Guy
+	FO: Ranald
     Ground Crew: en-AU-B-Male (what a name...)
 	
 	Changelog:
@@ -12,12 +12,13 @@
     V0.3 - Crosscheck and correction of variable adjustments
     V0.4 - Corrected TO VNAV and LOC logic Bug#3
     v0.5 - Added GPU connection logic to cockpit setup and shutdown. Cargo doors and L1 open on eng off setup with belt loaders. N.B. Ext Pwr will fail if disconnected whilst on bus.
+    v0.5.1 - Finally found chocks dataref. Adjust doors logic per frame. Added beacon on to remove all GSE. Cockpit Setup expanded to FO preflight and Baro sync.
 --]]
 
 
 if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE_ICAO == "B763" then
     -- Initialisation Variables
-    local version = "0.5-beta"
+    local version = "0.5.1-beta"
     local initDelay = 15
     local startTime = 0
     dataref("SIM_TIME", "sim/time/total_running_time_sec")
@@ -36,7 +37,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
     local spdBrkNotPlayed = false
     local sixtyPlayed = true
     local gndTime = 0
-    local horsePlayed = false
+    local horsePlayed = true
     local locPlayed = false
     local gsPlayed = false
     local cockpitSetup = false
@@ -56,6 +57,10 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
     local flchPressed = true
     local gaVnavPressed = true
     local lnavPressed = true
+    local gpuDisconnect = false
+    local leftStart = false
+    local rightStart = false
+    local rightBaro = nil
     
 
     -- Sound Files
@@ -82,6 +87,10 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
     local Start767_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/pnf_start_767.wav")
     local ClbThrust_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/pf_ClbThr.wav")
     local VNAV_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/pf_VNAV.wav")
+    local LNAV_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/pf_LNAV.wav")
+    local StartLeft_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/pf_StartLeft.wav")
+    local StartRight_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/pf_StartRight.wav")
+
 
     -- Generic Datarefs
     dataref("AGL", "sim/flightmodel/position/y_agl")
@@ -105,6 +114,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
     dataref("LNAV_BUTTON", "1-sim/AP/lnavButton", "writeable")
     dataref("AUTO_BRAKE", "1-sim/gauges/autoBrakeModeSwitcher", "writeable")
     dataref("TOGA_BUTTON", "1-sim/AP/togaButton")
+    dataref("BEACON", "sim/cockpit2/switches/beacon_on")
 
     print("767Callouts: Initialising version " .. version)
     print("767Callouts: Starting at sim time " .. math.floor(SIM_TIME))
@@ -216,30 +226,124 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
                 set("1-sim/ndpanel/2/hsiRangeRotary", 2)
                 set("1-sim/ndpanel/1/hsiRangeButton", 1)
             end
-            if WEIGHT_ON_WHEELS == 1 and ENG1_N2 < 20 and ENG2_N2 < 20 and get("params/gpu") ~= 1 then
-                set("params/gpu", 1)
-                set("anim/16/button", 1)
-                set("anim/17/button", 1)
-                set("anim/18/button", 1)
-                print("Attempt GPU")
-                return
+            calloutTimer = 0
+            set("anim/14/button", 1)
+            set("1-sim/electrical/stbyPowerSelector", 1)
+            if WEIGHT_ON_WHEELS == 1 and ENG1_N2 < 20 and ENG2_N2 < 20 then
+                if  PLANE_ICAO == "B762" or PLANE_ICAO == "B763" then
+                    set_array("sim/cockpit2/switches/custom_slider_on",2,1) 
+                    set_array("sim/cockpit2/switches/custom_slider_on",3,1)
+                    set_array("sim/cockpit2/switches/custom_slider_on",0,1) 
+                end
+                if PLANE_ICAO == "B753" or PLANE_ICAO == "B752" then
+                    set_array("sim/cockpit2/switches/custom_slider_on",6,1) 
+                    set_array("sim/cockpit2/switches/custom_slider_on",7,1)
+                    set_array("sim/cockpit2/switches/custom_slider_on",0,1) 
+                end
+                set("params/LSU", 1)
+                set("params/stop", 1)
+                set("params/gate", 1)
+                set("anim/43/button", 1)
+                set("sim/cockpit2/controls/elevator_trim", 0.046353)
+                set("1-sim/ndpanel/1/dhRotary", 0.00)
+                set("1-sim/ndpanel/2/dhRotary", 0.00)
+                set("1-sim/vor1/isAuto", 1)
+                set("1-sim/vor1/isAuto", 2)
+                cockpitSetup = true
+                print("767Callouts: Attempting basic setup")
+            -- FO Preflight
+            set("anim/1/button", 1)
+            set("anim/2/button", 1)
+            if PLANE_ICAO == "B763" or PLANE_ICAO == "B762" then
+                set("anim/3/button", 1)
+                set("anim/4/button", 1)
             end
-            set("anim/43/button", 1)
-            set("sim/cockpit2/controls/elevator_trim", 0.046353)
-            set("1-sim/ndpanel/1/dhRotary", 0.00)
-            set("1-sim/ndpanel/2/dhRotary", 0.00)
-            set_array("sim/cockpit2/switches/custom_slider_on",2,1) 
-            set_array("sim/cockpit2/switches/custom_slider_on",3,1)
-            set("params/LSU", 1)
-            set_array("sim/cockpit2/switches/custom_slider_on",0,1) 
-            set("1-sim/vor1/isAuto", 1)
-            set("1-sim/vor1/isAuto", 2)
-            cockpitSetup = true
-            print("767Callouts: Attempting to setup cockpit")
+            set("anim/8/button", 1)
+            set("anim/11/button", 1)
+            set("anim/17/button", 1)
+            set("anim/18/button", 1)
+            set("anim/20/button", 1)
+            set("anim/21/button", 1)
+            set("anim/22/button", 1)
+            set("anim/25/button", 1)
+            set("lights/aux_rhe", 0.2)
+            set("lights/buttomflood_rhe", 0.2)
+            set("lights/glareshield1_rhe", 0.2)
+            set("lights/aisel_rhe", 1)
+            set("1-sim/emer/lightsCover", 0)
+            set("1-sim/engine/ignitionSelector", math.random(0,2))
+            set("anim/rhotery/8", 1)
+            set("anim/rhotery/9", 1)
+            set("anim/47/button", 1)
+            set("anim/48/button", 1)
+            set("anim/49/button", 1)
+            set("anim/50/button", 1)
+            set("sim/cockpit/switches/no_smoking", 1)
+            set("1-sim/press/rateLimitSelector", 0.3)
+            set("1-sim/press/landingAltitudeSelector", ((AGL / 0.3048)/1000)-2)
+            set("1-sim/press/modeSelector", math.random(0,1))
+            set("1-sim/cond/fltdkTempControl", 0.5)
+            set("1-sim/cond/fwdTempControl", 0.5)
+            set("1-sim/cond/aftTempControl", 0.5)
+            set("anim/54/button", 1)
+            set("anim/55/button", 1)
+            set("anim/56/button", 1)
+            set("1-sim/cond/leftPackSelector", 1)
+            set("1-sim/cond/rightPackSelector", 1)
+            set("anim/59/button", 1)
+            set("anim/60/button", 1)
+            set("anim/61/button", 1)
+            set("anim/62/button", 1)
+            set("1-sim/AP/fd2Switcher", 0)
+            set("1-sim/eicas/stat2but", 1)
+            set("sim/cockpit/misc/barometer_setting", get("sim/weather/barometer_current_inhg"))
+            set("sim/cockpit/misc/barometer_setting2", get("sim/weather/barometer_current_inhg"))
+            end
         end
     end -- End of CockpitSetup
 
     do_often("CockpitSetup()")
+
+-- AutoSync Alt Settings
+
+    function SyncBaro()
+        if not ready then
+            return
+        end
+        if get("sim/cockpit/misc/barometer_setting") ~= rightBaro then
+            rightBaro = get("sim/cockpit/misc/barometer_setting")
+            print("767Callouts: FO Altimiter Synced")
+            set("sim/cockpit/misc/barometer_setting2", rightBaro)
+        end
+    end
+
+    do_sometimes("SyncBaro()")
+
+-- Engine Start Calls
+
+    function EngineStart()
+        if not ready then
+            return
+        end
+        if ENG1_N2 < 20 and get("1-sim/engine/leftStartSelector") == 0 and not leftStart then
+            print("767Callouts: Start Left Engine")
+            play_sound(StartLeft_snd)
+            leftStart = true
+        end
+        if ENG1_N2 == 0 then
+            leftStart = false
+        end
+        if ENG2_N2 < 20 and get("1-sim/engine/rightStartSelector") == 0 and not rightStart then
+            print("767Callouts: Start Right Engine")
+            play_sound(StartRight_snd)
+            rightStart = true
+        end
+        if ENG2_N2 == 0 then
+            rightStart = false
+        end
+    end
+
+    do_often("EngineStart()")
 
 -- Engine Rate Monitor - Reset by: VNAV action in TO and GA as appropriate
     --TOGA 6 | TO 1, 11, 12 |
@@ -416,32 +520,32 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
             calloutTimer = 0
             print("767Callouts: Flaps 0 position for 1 Seconds -- ")
         end
-        if flapPos > 0 and flapPos < 0.2 and flapTime == 1 and WEIGHT_ON_WHEELS == 0 then
+        if flapPos > 0 and flapPos < 0.2 and flapTime == 1 then
             play_sound(Flap1_snd)
             calloutTimer = 0
             print("767Callouts: Flaps 1 position for 1 Seconds -- ")
         end
-        if flapPos > 0.3 and flapPos < 0.4 and flapTime == 1 and WEIGHT_ON_WHEELS == 0 then
+        if flapPos > 0.3 and flapPos < 0.4 and flapTime == 1  then
             play_sound(Flap5_snd)
             calloutTimer = 0
             print("767Callouts: Flaps 5 position for 1 Seconds -- ")
         end
-        if flapPos == 0.5 and flapTime == 1 and WEIGHT_ON_WHEELS == 0 then
+        if flapPos == 0.5 and flapTime == 1 then
             play_sound(Flap15_snd)
             calloutTimer = 0
             print("767Callouts: 15 position for 1 Seconds -- ")
         end
-        if flapPos > 0.6 and flapPos < 0.7 and flapTime == 1 and WEIGHT_ON_WHEELS == 0 then
+        if flapPos > 0.6 and flapPos < 0.7 and flapTime == 1 then
             play_sound(Flap20_snd)
             calloutTimer = 0
             print("767Callouts: Flaps 20 position for 1 Seconds -- ")
         end
-        if flapPos > 0.8 and flapPos < 0.9 and flapTime == 1 and WEIGHT_ON_WHEELS == 0 then
+        if flapPos > 0.8 and flapPos < 0.9 and flapTime == 1 then
             play_sound(Flap25_snd)
             calloutTimer = 0
             print("767Callouts: Flaps 25 position for 1 Seconds -- ")
         end
-        if flapPos == 1 and flapTime == 1 and WEIGHT_ON_WHEELS == 0 then
+        if flapPos == 1 and flapTime == 1 then
             play_sound(Flap30_snd)
             calloutTimer = 0
             print("767Callouts: Flaps 30 position for 1 Seconds -- ")
@@ -571,6 +675,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
             invalidVSpeed = true
             vnavPlayed = false
             vnavPressed = false
+            gpuDisconnect = false
             print("767Callouts: Reset For Flight")
         end
     end
@@ -588,19 +693,58 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
             horsePlayed = true
             flightOccoured = false
             calloutTimer = 0
+            set("params/stop", 1)
             print("767Callouts: You Suck")
             print("767Callouts: " .. math.floor(ENG1_N2) .. " | " .. math.floor(ENG2_N2))
         end
-        if ENG1_N2 < 25 and ENG2_N2 < 25 and WEIGHT_ON_WHEELS == 1 and PARK_BRAKE == 1 and calloutTimer == 4 and horsePlayed and get("sim/cockpit2/switches/beacon_on") == 0 then
+        if ENG1_N2 < 25 and ENG2_N2 < 25 and WEIGHT_ON_WHEELS == 1 and PARK_BRAKE == 1 and calloutTimer > 3 and horsePlayed and BEACON == 0 then
+            set("params/stop", 1)
             set("params/gpu", 1)
-            set_array("sim/cockpit2/switches/custom_slider_on",2,1) 
-            set_array("sim/cockpit2/switches/custom_slider_on",3,1)
+            if PLANE_ICAO == "B762" or PLANE_ICAO == "B763" then
+                set_array("sim/cockpit2/switches/custom_slider_on",2,1) 
+                set_array("sim/cockpit2/switches/custom_slider_on",3,1)
+                set_array("sim/cockpit2/switches/custom_slider_on",0,1) 
+            elseif PLANE_ICAO == "B753" or PLANE_ICAO == "B752" then
+                set_array("sim/cockpit2/switches/custom_slider_on",6,1) 
+                set_array("sim/cockpit2/switches/custom_slider_on",7,1)
+                set_array("sim/cockpit2/switches/custom_slider_on",0,1) 
+            end
             set("params/LSU", 1)
-            set_array("sim/cockpit2/switches/custom_slider_on",0,1) 
+            set("params/gate", 1)
+            gpuDisconnect = false
         end
     end
 
     do_often("ShutDown()")
+
+-- Clear GSE for departure Reset by: Beacon
+
+    function ClearGse()
+        if not ready then
+            return
+        end
+        if BEACON == 1 and horsePlayed and not gpuDisconnect then
+            set("anim/16/button", 0)
+            calloutTimer = 0
+            set_array("sim/cockpit2/switches/custom_slider_on",0,0)
+            set_array("sim/cockpit2/switches/custom_slider_on",1,0)
+            set_array("sim/cockpit2/switches/custom_slider_on",2,0)
+            set_array("sim/cockpit2/switches/custom_slider_on",3,0)
+            set_array("sim/cockpit2/switches/custom_slider_on",4,0)
+            set_array("sim/cockpit2/switches/custom_slider_on",5,0)
+            set_array("sim/cockpit2/switches/custom_slider_on",6,0)
+            set_array("sim/cockpit2/switches/custom_slider_on",7,0)
+            set("params/LSU", 0)
+            set("params/gate", 0)
+            set("params/stop", 0)
+            gpuDisconnect = true
+        end
+        if BEACON == 1 and get ("params/gpu") == 1 and calloutTimer > 2 then
+            set("params/gpu", 0)
+        end
+    end
+
+    do_often("ClearGse()")
 
 -- Go Around Monitor
 

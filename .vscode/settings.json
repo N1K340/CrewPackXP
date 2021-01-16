@@ -37,6 +37,8 @@
         "FLCH_BUTTON",
         "VREF_30",
         "set_array",
-        "get"
+        "get",
+        "BEACON",
+        "do_sometimes"
     ]
 }
