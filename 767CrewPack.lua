@@ -13,6 +13,7 @@
     V0.4 - Corrected TO VNAV and LOC logic Bug#3
     v0.5 - Added GPU connection logic to cockpit setup and shutdown. Cargo doors and L1 open on eng off setup with belt loaders. N.B. Ext Pwr will fail if disconnected whilst on bus.
     v0.5.1 - Finally found chocks dataref. Adjust doors logic per frame. Added beacon on to remove all GSE. Cockpit Setup expanded to FO preflight and Baro sync.
+    v0.6 - Added settings widnow, require LIP module to save and load settigns. Options added for ammount of automation.
 --]]
 
 
@@ -22,6 +23,10 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
     local initDelay = 15
     local startTime = 0
     dataref("SIM_TIME", "sim/time/total_running_time_sec")
+
+    -- dependencies
+    local LIP = require("LIP")
+    --local toboolean = require("toboolean")
 
     -- Local Variables
 
@@ -61,6 +66,10 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
     local leftStart = false
     local rightStart = false
     local rightBaro = nil
+    local showSettingsWindow = true
+    local FO767_preflight_set = false
+    local CrewPack767SettingsFile = "/767CrewPack.ini"
+    local CrewPack767Settings = {}
     
 
     -- Sound Files
@@ -251,53 +260,57 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
                 set("1-sim/vor1/isAuto", 2)
                 cockpitSetup = true
                 print("767Callouts: Attempting basic setup")
-            -- FO Preflight
-            set("anim/1/button", 1)
-            set("anim/2/button", 1)
-            if PLANE_ICAO == "B763" or PLANE_ICAO == "B762" then
-                set("anim/3/button", 1)
-                set("anim/4/button", 1)
             end
-            set("anim/8/button", 1)
-            set("anim/11/button", 1)
-            set("anim/17/button", 1)
-            set("anim/18/button", 1)
-            set("anim/20/button", 1)
-            set("anim/21/button", 1)
-            set("anim/22/button", 1)
-            set("anim/25/button", 1)
-            set("lights/aux_rhe", 0.2)
-            set("lights/buttomflood_rhe", 0.2)
-            set("lights/glareshield1_rhe", 0.2)
-            set("lights/aisel_rhe", 1)
-            set("1-sim/emer/lightsCover", 0)
-            set("1-sim/engine/ignitionSelector", math.random(0,2))
-            set("anim/rhotery/8", 1)
-            set("anim/rhotery/9", 1)
-            set("anim/47/button", 1)
-            set("anim/48/button", 1)
-            set("anim/49/button", 1)
-            set("anim/50/button", 1)
-            set("sim/cockpit/switches/no_smoking", 1)
-            set("1-sim/press/rateLimitSelector", 0.3)
-            set("1-sim/press/landingAltitudeSelector", ((AGL / 0.3048)/1000)-2)
-            set("1-sim/press/modeSelector", math.random(0,1))
-            set("1-sim/cond/fltdkTempControl", 0.5)
-            set("1-sim/cond/fwdTempControl", 0.5)
-            set("1-sim/cond/aftTempControl", 0.5)
-            set("anim/54/button", 1)
-            set("anim/55/button", 1)
-            set("anim/56/button", 1)
-            set("1-sim/cond/leftPackSelector", 1)
-            set("1-sim/cond/rightPackSelector", 1)
-            set("anim/59/button", 1)
-            set("anim/60/button", 1)
-            set("anim/61/button", 1)
-            set("anim/62/button", 1)
-            set("1-sim/AP/fd2Switcher", 0)
-            set("1-sim/eicas/stat2but", 1)
-            set("sim/cockpit/misc/barometer_setting", get("sim/weather/barometer_current_inhg"))
-            set("sim/cockpit/misc/barometer_setting2", get("sim/weather/barometer_current_inhg"))
+            -- FO Preflight
+            if FO767_preflight_set then 
+                set("anim/1/button", 1)
+                set("anim/2/button", 1)
+                if PLANE_ICAO == "B763" or PLANE_ICAO == "B762" then
+                    set("anim/3/button", 1)
+                    set("anim/4/button", 1)
+                end
+                set("anim/8/button", 1)
+                set("anim/11/button", 1)
+                set("anim/17/button", 1)
+                set("anim/18/button", 1)
+                set("anim/20/button", 1)
+                set("anim/21/button", 1)
+                set("anim/22/button", 1)
+                set("anim/25/button", 1)
+                set("lights/aux_rhe", 0.2)
+                set("lights/buttomflood_rhe", 0.2)
+                set("lights/glareshield1_rhe", 0.2)
+                set("lights/aisel_rhe", 1)
+                set("1-sim/emer/lightsCover", 0)
+                set("1-sim/engine/ignitionSelector", math.random(0,2))
+                set("anim/rhotery/8", 1)
+                set("anim/rhotery/9", 1)
+                set("anim/47/button", 1)
+                set("anim/48/button", 1)
+                set("anim/49/button", 1)
+                set("anim/50/button", 1)
+                set("sim/cockpit/switches/no_smoking", 1)
+                set("1-sim/press/rateLimitSelector", 0.3)
+                set("1-sim/press/landingAltitudeSelector", ((AGL / 0.3048)/1000)-2)
+                set("1-sim/press/modeSelector", math.random(0,1))
+                set("1-sim/cond/fltdkTempControl", 0.5)
+                set("1-sim/cond/fwdTempControl", 0.5)
+                set("1-sim/cond/aftTempControl", 0.5)
+                set("anim/54/button", 1)
+                set("anim/55/button", 1)
+                set("anim/56/button", 1)
+                set("1-sim/cond/leftPackSelector", 1)
+                set("1-sim/cond/rightPackSelector", 1)
+                set("anim/59/button", 1)
+                set("anim/60/button", 1)
+                set("anim/61/button", 1)
+                set("anim/62/button", 1)
+                set("1-sim/AP/fd2Switcher", 0)
+                set("1-sim/eicas/stat2but", 1)
+                set("sim/cockpit/misc/barometer_setting", get("sim/weather/barometer_current_inhg"))
+                set("sim/cockpit/misc/barometer_setting2", get("sim/weather/barometer_current_inhg"))
+            else
+                print("FO Preflight inhibited by settings")
             end
         end
     end -- End of CockpitSetup
@@ -835,6 +848,83 @@ end
 
 do_often("GoAround()")
 
+-- Settings
+
+    
+    
+
+    if not SUPPORTS_FLOATING_WINDOWS then
+        -- to make sure the script doesn't stop old FlyWithLua versions
+        print("imgui not supported by your FlyWithLua version, please update to latest version")
+    end
+
+    -- Create Settings window
+    function ShowCrewPack767Settings_wnd()
+        ParseCrewPack767Settings()
+        CrewPack767Settings_wnd = float_wnd_create(400, 200, 2, true)
+        float_wnd_set_title(CrewPack767Settings_wnd, "767 Crew Pack Settings")
+        float_wnd_set_imgui_builder(CrewPack767Settings_wnd, "CrewPack767Settings_contents")
+        float_wnd_set_onclose(CrewPack767Settings_wnd, "CloseCrewPack767Settings_wnd")
+    end
+
+    function CrewPack767Settings_contents(CrewPack767Settings_wnd, x, y)
+        local winWidth = imgui.GetWindowWidth()
+        local winHeight = imgui.GetWindowHeight()
+        local titleText = "767 Crew Pack Settings"
+        local titleTextWidth, titileTextHeight = imgui.CalcTextSize(titleText)
+        
+        
+        imgui.SetCursorPos(winWidth / 2 - titleTextWidth / 2, imgui.GetCursorPosY())
+        imgui.TextUnformatted(titleText)
+        
+        imgui.Separator()
+        local changed, newVal = imgui.Checkbox("FO Performs Preflight Scan Flow", FO767_preflight_set)
+            if changed then
+                FO767_preflight_set = newVal
+                print("767Callout: FO PreScan set to - "..tostring(FO767_preflight_set))
+                 
+              CrewPack767Settings =
+               {
+                    CrewPack767 =
+                    {
+                        FO767_preflight_set = tostring(FO767_preflight_set),
+                    }
+
+                }
+                SaveCrewPack767Settings(CrewPack767Settings)        
+                
+            end
+    end
+
+    function CloseCrewPack767Settings_wnd()
+        if CrewPack767Settings_wnd then
+            float_wnd_destroy(CrewPack767Settings_wnd)
+        end
+    end
+
+    function ToggleCrewPack767Settings()
+        if not showSettingsWindow then
+            ShowCrewPack767Settings_wnd()
+            showSettingsWindow = true
+        elseif showSettingsWindow then
+            CloseCrewPack767Settings_wnd()
+            showSettingsWindow = false
+        end
+    end
+
+    function ParseCrewPack767Settings()
+        CrewPack767Settings = LIP.load(SCRIPT_DIRECTORY..CrewPack767SettingsFile);
+        FO767_preflight_set = CrewPack767Settings.CrewPack767.FO767_preflight_set
+        --GSE767_beacon_set = CrewPack767Settings.CrewPack767.GSE767_beacon_set
+        print("Read Settings Preflight ="..tostring(FO767_preflight_set))
+    end
+    
+    function SaveCrewPack767Settings(CrewPack767Settings)
+        LIP.save(SCRIPT_DIRECTORY..CrewPack767SettingsFile, CrewPack767Settings);
+    end
+
+    add_macro("767 Crew Pack Settings", "ShowCrewPack767Settings_wnd()", "CloseCrewPack767Settings_wnd()","activate")
+    create_command("FlyWithLua/767CrewPack/toggle_settings", "toggle 767 Crew Pack Settings", "ToggleCrewPack767Settings()", "", "")
 
 --------
 
