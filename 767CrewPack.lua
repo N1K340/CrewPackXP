@@ -20,7 +20,7 @@
 if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE_ICAO == "B763" then
     -- Initialisation Variables
     local version = "0.5.1-beta"
-    local initDelay = 15
+    local initDelay = 0
     local startTime = 0
     dataref("SIM_TIME", "sim/time/total_running_time_sec")
 
@@ -67,7 +67,11 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
     local rightStart = false
     local rightBaro = nil
     local showSettingsWindow = true
-    local FO767_preflight_set = false
+    local foPreflight = false
+    local gseOnBeacon = false
+    local syncAlt = false
+    local goAroundAutomation = false
+    local startMsg = false
     local CrewPack767SettingsFile = "/767CrewPack.ini"
     local CrewPack767Settings = {}
     
@@ -162,7 +166,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
                 dataref("VREF_30", "757Avionics/fms/vref30")
             end
             if (XPLMFindDataRef("757Avionics/options/ND/advEfisPanel") ~= nil) then
-                dataref("EFIS_TYPE", "757Avionics/options/ND/advEfisPanel")
+                dataref("EFIS_TYPE", "1-sim/ngpanel")
             end
             if (XPLMFindDataRef("anim/armCapt/1") == nil) then
                return
@@ -181,7 +185,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         if not ready then
            return
         end
-        if startPlayed == false then
+        if startMsg and not startPlayed then
             if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" then
                 play_sound(Start757_snd)
                 print("767Callouts: Script ready at time " .. math.floor(SIM_TIME))
@@ -224,8 +228,8 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
                 set("1-sim/ndpanel/2/hsiModeRotary", 2)
                 set("1-sim/ndpanel/2/hsiRangeRotary", 2)
                 set("1-sim/ndpanel/1/hsiRangeButton", 1)
-                set("1-sim/inst/HD/L", -11)
-                set("1-sim/inst/HD/R", -11)
+                --  set("1-sim/inst/HD/L", 0) 
+                --  set("1-sim/inst/HD/R", 0)
             end
             if EFIS_TYPE == 0 then
                 set("1-sim/ndpanel/1/hsiModeRotary", 4)
@@ -234,6 +238,8 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
                 set("1-sim/ndpanel/2/hsiModeRotary", 4)
                 set("1-sim/ndpanel/2/hsiRangeRotary", 2)
                 set("1-sim/ndpanel/1/hsiRangeButton", 1)
+                set("1-sim/ndpanel/1/dhRotary", 0.00)
+                set("1-sim/ndpanel/2/dhRotary", 0.00)
             end
             calloutTimer = 0
             set("anim/14/button", 1)
@@ -254,15 +260,13 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
                 set("params/gate", 1)
                 set("anim/43/button", 1)
                 set("sim/cockpit2/controls/elevator_trim", 0.046353)
-                set("1-sim/ndpanel/1/dhRotary", 0.00)
-                set("1-sim/ndpanel/2/dhRotary", 0.00)
                 set("1-sim/vor1/isAuto", 1)
                 set("1-sim/vor1/isAuto", 2)
                 cockpitSetup = true
                 print("767Callouts: Attempting basic setup")
             end
             -- FO Preflight
-            if FO767_preflight_set then 
+            if foPreflight then 
                 set("anim/1/button", 1)
                 set("anim/2/button", 1)
                 if PLANE_ICAO == "B763" or PLANE_ICAO == "B762" then
@@ -282,7 +286,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
                 set("lights/glareshield1_rhe", 0.2)
                 set("lights/aisel_rhe", 1)
                 set("1-sim/emer/lightsCover", 0)
-                set("1-sim/engine/ignitionSelector", math.random(0,2))
+                set("1-sim/engine/ignitionSelector", 0)
                 set("anim/rhotery/8", 1)
                 set("anim/rhotery/9", 1)
                 set("anim/47/button", 1)
@@ -292,7 +296,8 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
                 set("sim/cockpit/switches/no_smoking", 1)
                 set("1-sim/press/rateLimitSelector", 0.3)
                 set("1-sim/press/landingAltitudeSelector", ((AGL / 0.3048)/1000)-2)
-                set("1-sim/press/modeSelector", math.random(0,1))
+                math.randomseed(os.time())
+                set("1-sim/press/modeSelector", (math.random(0,1)))
                 set("1-sim/cond/fltdkTempControl", 0.5)
                 set("1-sim/cond/fwdTempControl", 0.5)
                 set("1-sim/cond/aftTempControl", 0.5)
@@ -307,8 +312,8 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
                 set("anim/62/button", 1)
                 set("1-sim/AP/fd2Switcher", 0)
                 set("1-sim/eicas/stat2but", 1)
-                set("sim/cockpit/misc/barometer_setting", get("sim/weather/barometer_current_inhg"))
-                set("sim/cockpit/misc/barometer_setting2", get("sim/weather/barometer_current_inhg"))
+                set("sim/cockpit/misc/barometer_setting", (math.floor((tonumber(get("sim/weather/barometer_sealevel_inhg")))*100)/100))
+                set("sim/cockpit/misc/barometer_setting2", (math.floor((tonumber(get("sim/weather/barometer_sealevel_inhg")))*100)/100))
             else
                 print("FO Preflight inhibited by settings")
             end
@@ -323,10 +328,18 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         if not ready then
             return
         end
-        if get("sim/cockpit/misc/barometer_setting") ~= rightBaro then
-            rightBaro = get("sim/cockpit/misc/barometer_setting")
-            print("767Callouts: FO Altimiter Synced")
-            set("sim/cockpit/misc/barometer_setting2", rightBaro)
+        if syncAlt then
+            if get("sim/cockpit/misc/barometer_setting") ~= rightBaro then
+                rightBaro = get("sim/cockpit/misc/barometer_setting")
+                if EFIS_TYPE == 0 then
+                print("767Callouts: FO Altimiter Synced")
+                set("sim/cockpit/misc/barometer_setting2", rightBaro)
+                else
+                print("767Callouts: Unable to sync altimeters in new style 757")
+                end
+            end
+        elseif syncAlt and EFIS_TYPE == 1 then
+            print("767Callouts: Unable to sync baros in new 757 EFIS")
         end
     end
 
@@ -710,7 +723,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
             print("767Callouts: You Suck")
             print("767Callouts: " .. math.floor(ENG1_N2) .. " | " .. math.floor(ENG2_N2))
         end
-        if ENG1_N2 < 25 and ENG2_N2 < 25 and WEIGHT_ON_WHEELS == 1 and PARK_BRAKE == 1 and calloutTimer > 3 and horsePlayed and BEACON == 0 then
+        if gseOnBeacon and ENG1_N2 < 25 and ENG2_N2 < 25 and WEIGHT_ON_WHEELS == 1 and PARK_BRAKE == 1 and calloutTimer > 3 and horsePlayed and BEACON == 0 then
             set("params/stop", 1)
             set("params/gpu", 1)
             if PLANE_ICAO == "B762" or PLANE_ICAO == "B763" then
@@ -736,7 +749,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         if not ready then
             return
         end
-        if BEACON == 1 and horsePlayed and not gpuDisconnect then
+        if gseOnBeacon and BEACON == 1 and horsePlayed and not gpuDisconnect then
             set("anim/16/button", 0)
             calloutTimer = 0
             set_array("sim/cockpit2/switches/custom_slider_on",0,0)
@@ -784,74 +797,71 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         
 -- Go Around Function - Reset by Toga Trigger, cancels on FMS Accel height
 
-function GoAround()
-    if WEIGHT_ON_WHEELS == 0 and togaEvent and ENGINE_MODE == 6 and not flaps20Retracted then
-        if flapPos > 0.8 then
-            set("sim/flightmodel/controls/flaprqst", 0.66667)
-            print("767Callouts: Go Around - Flaps 20 selected")
-            flaps20Retracted = true
+    function GoAround()
+        if WEIGHT_ON_WHEELS == 0 and togaEvent and ENGINE_MODE == 6 and goAroundAutomation and not flaps20Retracted then
+            if flapPos > 0.8 then
+                set("sim/flightmodel/controls/flaprqst", 0.66667)
+                print("767Callouts: Go Around - Flaps 20 selected")
+                flaps20Retracted = true
+            end
         end
-    end
-    if togaEvent and not posRatePlayed and VSI > 10 then
-        play_sound(PosRate_snd)
-        set("1-sim/cockpit/switches/gear_handle", 0)
-        print("767Callouts: Go Around Positive Rate " ..math.floor(AGL / 0.3048) .. " AGL and " .. math.floor(VSI) .. " ft/min")
-        print("767Callouts: Waiting for accel height of " .. FMS_ACCEL_HT .. " ft")
-        posRatePlayed = true
-    end
-    if togaEvent and GEAR_HANDLE == 0 and (AGL / 0.3048) > 410 and posRatePlayed and not lnavPressed and LNAV_BUTTON == 0 then
-       set("1-sim/AP/lnavButton", 1)
-       print("767Callouts: Attempting to engage LNAV")
-       lnavPressed = true
-    end
-    if togaEvent and GEAR_HANDLE == 0 and (AGL / 0.3048) > 410 and posRatePlayed and not lnavPressed and LNAV_BUTTON == 1 then
-        set("1-sim/AP/lnavButton", 0)
+        if togaEvent and not posRatePlayed and VSI > 10 then
+            play_sound(PosRate_snd)
+            set("1-sim/cockpit/switches/gear_handle", 0)
+            print("767Callouts: Go Around Positive Rate " ..math.floor(AGL / 0.3048) .. " AGL and " .. math.floor(VSI) .. " ft/min")
+            print("767Callouts: Waiting for accel height of " .. FMS_ACCEL_HT .. " ft")
+            posRatePlayed = true
+        end
+        if togaEvent and goAroundAutomation and GEAR_HANDLE == 0 and (AGL / 0.3048) > 410 and posRatePlayed and not lnavPressed and LNAV_BUTTON == 0 then
+        set("1-sim/AP/lnavButton", 1)
         print("767Callouts: Attempting to engage LNAV")
         lnavPressed = true
-    end
-    if togaEvent and (AGL / 0.3048) > FMS_ACCEL_HT and not clbThrustPlayed then
-        set("1-sim/eng/thrustRefMode", 32)
-        play_sound(ClbThrust_snd)
-        clbThrustPlayed = true
-        print("767Callouts: Go Around Climb Thrust " .. FMS_ACCEL_HT)
-    end
-    if togaEvent and (AGL / 0.3048) > FMS_ACCEL_HT and clbThrustPlayed and VNAV_BUTTON == 0 and not gaVnavPressed then
-        set("1-sim/AP/vnavButton", 1)
-        print("767Callouts: Attempting VNAV")
-        gaVnavPressed = true
-    end
-    if togaEvent and (AGL / 0.3048) > FMS_ACCEL_HT and clbThrustPlayed and VNAV_BUTTON == 1 and not gaVnavPressed then
-        set("1-sim/AP/vnavButton", 0)
-        print("767Callouts: Attempting VNAV")
-        gaVnavPressed = true
-    end
-    if togaEvent and (AGL / 0.3048) > FMS_ACCEL_HT and gaVnavPressed and VNAV_ENGAGED_LT ~= 0.8 and FLCH_BUTTON == 0 and not flchPressed then
-        set("1-sim/AP/flchButton", 1)
-        print("767Callouts: Negative VNAV ".. VNAV_ENGAGED_LT .." , attempting FLCH")
-        flchPressed = true
-    end
-    if togaEvent and (AGL / 0.3048) > FMS_ACCEL_HT and gaVnavPressed and VNAV_ENGAGED_LT ~= 0.8 and FLCH_BUTTON == 1 and not flchPressed then
-        set("1-sim/AP/flchButton", 0)
-        print("767Callouts: Negative VNAV ".. VNAV_ENGAGED_LT .." , attempting FLCH")
-        flchPressed = true
-    end
-    if togaEvent and not gaPlayed and (AGL / 0.3048) > (FMS_ACCEL_HT + 100) then
-        if flchPressed then
-            set("757Avionics/ap/spd_act", math.ceil(VREF_30 + 80))
-            print("767Callouts: FLCH Vref+80 = " .. math.floor(VREF_30 + 80))
         end
-        gaPlayed = true
-        togaEvent = false
-        print("767Callouts: GA Mode Off")
+        if togaEvent and goAroundAutomation and GEAR_HANDLE == 0 and (AGL / 0.3048) > 410 and posRatePlayed and not lnavPressed and LNAV_BUTTON == 1 then
+            set("1-sim/AP/lnavButton", 0)
+            print("767Callouts: Attempting to engage LNAV")
+            lnavPressed = true
+        end
+        if togaEvent and (AGL / 0.3048) > FMS_ACCEL_HT and not clbThrustPlayed then
+            set("1-sim/eng/thrustRefMode", 32)
+            play_sound(ClbThrust_snd)
+            clbThrustPlayed = true
+            print("767Callouts: Go Around Climb Thrust " .. FMS_ACCEL_HT)
+        end
+        if togaEvent and goAroundAutomation and (AGL / 0.3048) > FMS_ACCEL_HT and clbThrustPlayed and VNAV_BUTTON == 0 and not gaVnavPressed then
+            set("1-sim/AP/vnavButton", 1)
+            print("767Callouts: Attempting VNAV")
+            gaVnavPressed = true
+        end
+        if togaEvent and goAroundAutomation and (AGL / 0.3048) > FMS_ACCEL_HT and clbThrustPlayed and VNAV_BUTTON == 1 and not gaVnavPressed then
+            set("1-sim/AP/vnavButton", 0)
+            print("767Callouts: Attempting VNAV")
+            gaVnavPressed = true
+        end
+        if togaEvent and goAroundAutomation and (AGL / 0.3048) > FMS_ACCEL_HT and gaVnavPressed and VNAV_ENGAGED_LT ~= 0.8 and FLCH_BUTTON == 0 and not flchPressed then
+            set("1-sim/AP/flchButton", 1)
+            print("767Callouts: Negative VNAV ".. VNAV_ENGAGED_LT .." , attempting FLCH")
+            flchPressed = true
+        end
+        if togaEvent and goAroundAutomation and (AGL / 0.3048) > FMS_ACCEL_HT and gaVnavPressed and VNAV_ENGAGED_LT ~= 0.8 and FLCH_BUTTON == 1 and not flchPressed then
+            set("1-sim/AP/flchButton", 0)
+            print("767Callouts: Negative VNAV ".. VNAV_ENGAGED_LT .." , attempting FLCH")
+            flchPressed = true
+        end
+        if togaEvent and not gaPlayed and (AGL / 0.3048) > (FMS_ACCEL_HT + 100) then
+            if goAroundAutomation and flchPressed then
+                set("757Avionics/ap/spd_act", math.ceil(VREF_30 + 80))
+                print("767Callouts: FLCH Vref+80 = " .. math.floor(VREF_30 + 80))
+            end
+            gaPlayed = true
+            togaEvent = false
+            print("767Callouts: GA Mode Off")
+        end
     end
-end
 
 do_often("GoAround()")
 
 -- Settings
-
-    
-    
 
     if not SUPPORTS_FLOATING_WINDOWS then
         -- to make sure the script doesn't stop old FlyWithLua versions
@@ -861,7 +871,7 @@ do_often("GoAround()")
     -- Create Settings window
     function ShowCrewPack767Settings_wnd()
         ParseCrewPack767Settings()
-        CrewPack767Settings_wnd = float_wnd_create(400, 200, 2, true)
+        CrewPack767Settings_wnd = float_wnd_create(400, 200, 1, true)
         float_wnd_set_title(CrewPack767Settings_wnd, "767 Crew Pack Settings")
         float_wnd_set_imgui_builder(CrewPack767Settings_wnd, "CrewPack767Settings_contents")
         float_wnd_set_onclose(CrewPack767Settings_wnd, "CloseCrewPack767Settings_wnd")
@@ -872,28 +882,42 @@ do_often("GoAround()")
         local winHeight = imgui.GetWindowHeight()
         local titleText = "767 Crew Pack Settings"
         local titleTextWidth, titileTextHeight = imgui.CalcTextSize(titleText)
-        
-        
+
         imgui.SetCursorPos(winWidth / 2 - titleTextWidth / 2, imgui.GetCursorPosY())
         imgui.TextUnformatted(titleText)
-        
-        imgui.Separator()
-        local changed, newVal = imgui.Checkbox("FO Performs Preflight Scan Flow", FO767_preflight_set)
-            if changed then
-                FO767_preflight_set = newVal
-                print("767Callout: FO PreScan set to - "..tostring(FO767_preflight_set))
-                 
-              CrewPack767Settings =
-               {
-                    CrewPack767 =
-                    {
-                        FO767_preflight_set = tostring(FO767_preflight_set),
-                    }
 
-                }
-                SaveCrewPack767Settings(CrewPack767Settings)        
-                
-            end
+        imgui.Separator()
+        imgui.TextUnformatted("")
+        local changed, newVal = imgui.Checkbox("FO Performs Preflight Scan Flow", foPreflight)
+        if changed then
+            foPreflight = newVal
+            SaveCrewPack767Data()
+            print("767Callout: FO PreScan logic set to " .. tostring(foPreflight))
+        end
+        local changed, newVal = imgui.Checkbox("FO automation on go around", goAroundAutomation)
+        if changed then
+            goAroundAutomation = newVal
+            SaveCrewPack767Data()
+            print("767Callout: Go Around automation logic set to " .. tostring(goAroundAutomation))
+        end
+        local changed, newVal = imgui.Checkbox("Chocks, Doors and belt loaders tied to Beacon on/off", gseOnBeacon)
+        if changed then
+            gseOnBeacon = newVal
+            SaveCrewPack767Data()
+            print("767Callout: GSE on beacon set to " .. tostring(gseOnBeacon))
+        end
+        local changed, newVal = imgui.Checkbox("Auto sync Cpt and FO Altimiters", syncAlt)
+        if changed then
+            syncAlt = newVal
+            SaveCrewPack767Data()
+            print("767Callout: Altimiter Symc logic set to " .. tostring(syncAlt))
+        end
+        local changed, newVal = imgui.Checkbox("Play corny sound bite on loading", startMsg)
+        if changed then
+            startMsg = newVal
+            SaveCrewPack767Data()
+            print("767Callout: Start message logic set to " .. tostring(startMsg))
+        end
     end
 
     function CloseCrewPack767Settings_wnd()
@@ -913,18 +937,35 @@ do_often("GoAround()")
     end
 
     function ParseCrewPack767Settings()
-        CrewPack767Settings = LIP.load(SCRIPT_DIRECTORY..CrewPack767SettingsFile);
-        FO767_preflight_set = CrewPack767Settings.CrewPack767.FO767_preflight_set
-        --GSE767_beacon_set = CrewPack767Settings.CrewPack767.GSE767_beacon_set
-        print("Read Settings Preflight ="..tostring(FO767_preflight_set))
-    end
-    
-    function SaveCrewPack767Settings(CrewPack767Settings)
-        LIP.save(SCRIPT_DIRECTORY..CrewPack767SettingsFile, CrewPack767Settings);
+        CrewPack767Settings = LIP.load(SCRIPT_DIRECTORY .. CrewPack767SettingsFile)
+        foPreflight = CrewPack767Settings.CrewPack767.foPreflight
+        gseOnBeacon = CrewPack767Settings.CrewPack767.gseOnBeacon
+        syncAlt = CrewPack767Settings.CrewPack767.syncAlt
+        goAroundAutomation = CrewPack767Settings.CrewPack767.goAroundAutomation
+        startMsg = CrewPack767Settings.CrewPack767.startMsg
+        print("Read Settings Preflight")
     end
 
-    add_macro("767 Crew Pack Settings", "ShowCrewPack767Settings_wnd()", "CloseCrewPack767Settings_wnd()","activate")
-    create_command("FlyWithLua/767CrewPack/toggle_settings", "toggle 767 Crew Pack Settings", "ToggleCrewPack767Settings()", "", "")
+    function SaveCrewPack767Settings(CrewPack767Settings)
+        LIP.save(SCRIPT_DIRECTORY .. CrewPack767SettingsFile, CrewPack767Settings)
+    end
+
+    function SaveCrewPack767Data()
+        CrewPack767Settings = {
+            CrewPack767 = {
+                foPreflight = tostring(foPreflight),
+                gseOnBeacon = tostring(gseOnBeacon),
+                syncAlt = tostring(syncAlt),
+                goAroundAutomation = tostring(goAroundAutomation),
+                startMsg = tostring(startMsg)
+            }
+        }
+        SaveCrewPack767Settings(CrewPack767Settings)
+    end
+
+    add_macro("767 Crew Pack Settings", "ShowCrewPack767Settings_wnd()", "CloseCrewPack767Settings_wnd()", "deactivate")
+    create_command("FlyWithLua/767CrewPack/toggle_settings", "toggle 767 Crew Pack Settings", "ToggleCrewPack767Settings()",  "",  "")
+
 
 --------
 
