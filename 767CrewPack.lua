@@ -129,6 +129,8 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
     dataref("AUTO_BRAKE", "1-sim/gauges/autoBrakeModeSwitcher", "writeable")
     dataref("TOGA_BUTTON", "1-sim/AP/togaButton")
     dataref("BEACON", "sim/cockpit2/switches/beacon_on")
+    dataref("LEFT_STARTER", "sim/flightmodel2/engines/starter_is_running", "readonly", 0)
+    dataref("RIGHT_STARTER", "sim/flightmodel2/engines/starter_is_running", "readonly", 1)
 
     print("767CrewPack: Initialising version " .. version)
     print("767CrewPack: Starting at sim time " .. math.floor(SIM_TIME))
@@ -171,7 +173,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
             if (XPLMFindDataRef("757Avionics/options/ND/advEfisPanel") ~= nil) then
                 dataref("EFIS_TYPE", "1-sim/ngpanel")
             end
-            if (XPLMFindDataRef("anim/armCapt/1") == nil) then
+            if (XPLMFindDataRef("anim/17/button") == nil) then
                return
             end
             
@@ -351,23 +353,23 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
 -- Engine Start Calls
 
     function EngineStart()
-        if not ready and cockpitSetup then
+        if not ready then
             return
         end
-        if ENG1_N2 < 20 and get("1-sim/engine/leftStartSelector") == 0 and not leftStart then
+        if LEFT_STARTER == 1 and not leftStart then
             print("767CrewPack: Start Left Engine")
             play_sound(StartLeft_snd)
             leftStart = true
         end
-        if ENG1_N2 == 0 then
+        if LEFT_STARTER == 0 then
             leftStart = false
         end
-        if ENG2_N2 < 20 and get("1-sim/engine/rightStartSelector") == 0 and not rightStart then
+        if RIGHT_STARTER == 1 and not rightStart then
             print("767CrewPack: Start Right Engine")
             play_sound(StartRight_snd)
             rightStart = true
         end
-        if ENG2_N2 == 0 then
+        if RIGHT_STARTER == 0 then
             rightStart = false
         end
     end
