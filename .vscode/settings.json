@@ -39,6 +39,15 @@
         "set_array",
         "get",
         "BEACON",
-        "do_sometimes"
+        "do_sometimes",
+        "SUPPORTS_FLOATING_WINDOWS",
+        "float_wnd_create",
+        "float_wnd_set_title",
+        "float_wnd_set_imgui_builder",
+        "float_wnd_set_onclose",
+        "imgui",
+        "float_wnd_destroy",
+        "add_macro",
+        "create_command"
     ]
 }
