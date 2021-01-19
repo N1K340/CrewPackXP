@@ -25,7 +25,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
 
     -- dependencies
     local LIP = require("LIP")
-    --local toboolean = require("toboolean")
+    
 
     -- Local Variables
 
@@ -76,8 +76,8 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
     local CrewPack767Settings = {}
     local soundVol = 1.0
     local master = true
-    local gpuConnect = true
-    local apuConnect = true
+    local gpuConnect = false
+    local apuConnect = false
     local apuStart = true
     local beaconSetup = false
 
@@ -1015,7 +1015,19 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
             SaveCrewPack767Data()
             print("767CrewPack: Plugin turned on" .. tostring(master))
         end
-        local changed, newVal = imgui.Checkbox("FO Performs Preflight Scan Flow", foPreflight)
+        local changed, newVal = imgui.Checkbox("Play corny sound bite on loading", startMsg)
+        if changed then
+            startMsg = newVal
+            SaveCrewPack767Data()
+            print("767CrewPack: Start message logic set to " .. tostring(startMsg))
+        end
+		local changed, newVal = imgui.Checkbox("Play Localiser and Glideslop calls", locgsCalls)
+        if changed then
+            locgsCalls = newVal
+            SaveCrewPack767Data()
+            print("767CrewPack: LOC / GS Call logic set to " .. tostring(syncAlt))
+        end
+		local changed, newVal = imgui.Checkbox("FO Performs Preflight Scan Flow", foPreflight)
         if changed then
             foPreflight = newVal
             SaveCrewPack767Data()
@@ -1039,33 +1051,21 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
             SaveCrewPack767Data()
             print("767CrewPack: Altimiter Sync logic set to " .. tostring(syncAlt))
         end
-        local changed, newVal = imgui.Checkbox("Play corny sound bite on loading", startMsg)
-        if changed then
-            startMsg = newVal
-            SaveCrewPack767Data()
-            print("767CrewPack: Start message logic set to " .. tostring(startMsg))
-        end
-        local changed, newVal = imgui.Checkbox("Play Localiser and Glideslop calls", locgsCalls)
-        if changed then
-            locgsCalls = newVal
-            SaveCrewPack767Data()
-            print("767CrewPack: LOC / GS Call logic set to " .. tostring(syncAlt))
-        end
-        imgui.TextUnformatted("Power Connection on shutdown: ") 
-        imgui.SameLine()
-        local changed, newVal = imgui.Checkbox("GPU", gpuConnect)
+        imgui.TextUnformatted("Auto power connections: ") 
+        local changed, newVal = imgui.Checkbox("GPU on bay", gpuConnect)
         if changed then
             gpuConnect = newVal
             SaveCrewPack767Data()
             print("767CrewPack: GPU Power on ground")
         end
         imgui.SameLine()
-        local changed, newVal = imgui.Checkbox("APU", apuConnect)
+        local changed, newVal = imgui.Checkbox("APU smart start", apuConnect)
         if changed then
             apuConnect = newVal
             SaveCrewPack767Data()
             print("767CrewPack: APU started on ground")
-        end
+        end        
+		imgui.Separator()
         local changed, newVal = imgui.SliderFloat("", (soundVol * 100), 1, 100, "Volume: %.0f")
         if changed then
             soundVol = (newVal / 100)
