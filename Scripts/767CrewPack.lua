@@ -534,7 +534,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
             vnavPlayed = true
             vnavPressed = true
             toCalloutMode = false
-            print("767CrewPack: VNAV at " .. FMS_ACCEL_HT .. " accel height")
+            print("767CrewPack: VNAV at ".. (AGL / 0.3048) .. ", " .. FMS_ACCEL_HT .. " accel height")
             print("767CrewPack: TO Mode off")
         end
     end
@@ -822,7 +822,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
             set("params/stop", 0)
             gpuDisconnect = true
         end
-        if BEACON == 1 and get("params/gpu") == 1 and calloutTimer > 2 then
+        if BEACON == 1 and get("params/gpu") == 1 and calloutTimer > 5 then
             set("params/gpu", 0)
         end
     end
