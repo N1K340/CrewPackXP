@@ -19,11 +19,31 @@ It is available freely from the .org
 
 https://forums.x-plane.org/index.php?/files/file/38445-flywithlua-ng-next-generation-edition-for-x-plane-11-win-lin-mac/
 
+
+Luna INI Parser (LIP) is included as an additional plugin module for use with FlyWithLua. This module allows for the saving and reading of settings data within LUA. It has been included in this package under the MIT Licence offered by creater Carreras Nicholas.
+https://github.com/Dynodzzo/Lua_INI_Parser
+
+! This is a common plugin, it may already exist in your modules folder causing a prompt to overwrite.
+
 Installation
 ============
 
-Copy the 767Callouts folder and the 767CrewPack.lua file into the X-Plane 11 > Resources > plugins > FlyWithLua > Scripts folder.
+Required File List:
+- Scripts
+    767CrewPack.ini
+    767CrewPack.lua
+    - 767Callouts
+        Associated sound files 
+        
+- Modules
+    LIP.lua
+
+
+Copy the Scripts and Modules folders into: X-Plane 11 > Resources > plugins > FlyWithLua folder.
 If sucesfull the First Officer should announce his entery the cockpit roughly 15 seconds after loading in.
+
+Settings can be accessed within the sim by navigating too:
+Plugins > FlyWithLua > FlyWithLua Macros > 767 Crew Pack Settings
 
 
 Disclaimer / Feedback

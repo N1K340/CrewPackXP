@@ -48,6 +48,10 @@
         "imgui",
         "float_wnd_destroy",
         "add_macro",
-        "create_command"
+        "create_command",
+        "set_sound_gain",
+        "LEFT_STARTER",
+        "RIGHT_STARTER",
+        "setGain"
     ]
 }
