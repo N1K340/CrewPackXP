@@ -528,7 +528,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
                 vnavPressed = true
             end
         end
-        if not vnavPlayed and VNAV_ENGAGED_LT > 0 then
+        if not vnavPlayed and vnavPressed and VNAV_ENGAGED_LT > 0 then
             play_sound(VNAV_snd)
             calloutTimer = 0
             vnavPlayed = true
