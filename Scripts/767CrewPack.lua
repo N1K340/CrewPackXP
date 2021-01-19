@@ -61,7 +61,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
     local flchPressed = true
     local gaVnavPressed = true
     local lnavPressed = true
-    local gpuDisconnect = false
+    local gpuDisconnect = true
     local leftStart = false
     local rightStart = false
     local rightBaro = nil
@@ -76,6 +76,10 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
     local CrewPack767Settings = {}
     local soundVol = 1.0
     local master = true
+    local gpuConnect = true
+    local apuConnect = true
+    local apuStart = true
+    local beaconSetup = false
 
     -- Sound Files
     local EightyKts_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/pnf_pf_80kts.wav")
@@ -256,6 +260,12 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         if not cockpitSetup then
             set("anim/armCapt/1", 2)
             set("anim/armFO/1", 2)
+            set("lights/ind_rhe", 1)
+            if get("sim/graphics/scenery/sun_pitch_degrees") < 0 then
+                set("anim/27/button", 1)
+                set("anim/52/button", 1)
+                set("lights/ind_rhe", 0)
+            end
             if EFIS_TYPE == 1 then -- New Type 757
                 set("1-sim/ndpanel/1/hsiModeRotary", 2)
                 set("1-sim/ndpanel/1/hsiRangeRotary", 1)
@@ -293,13 +303,12 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
                 set("params/LSU", 1)
                 set("params/stop", 1)
                 set("params/gate", 1)
-                set("anim/43/button", 1)
                 set("sim/cockpit2/controls/elevator_trim", 0.046353)
                 set("1-sim/vor1/isAuto", 1)
                 set("1-sim/vor1/isAuto", 2)
-                cockpitSetup = true
-                print("767CrewPack: Attempting basic setup")
             end
+            cockpitSetup = true
+            print("767CrewPack: Attempting basic setup")
             -- FO Preflight
             if foPreflight then
                 set("anim/1/button", 1)
@@ -324,13 +333,13 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
                 set("1-sim/engine/ignitionSelector", 0)
                 set("anim/rhotery/8", 1)
                 set("anim/rhotery/9", 1)
+                set("anim/43/button", 1)
                 set("anim/47/button", 1)
                 set("anim/48/button", 1)
                 set("anim/49/button", 1)
                 set("anim/50/button", 1)
                 set("sim/cockpit/switches/no_smoking", 1)
                 set("1-sim/press/rateLimitSelector", 0.3)
-                set("1-sim/press/landingAltitudeSelector", ((AGL / 0.3048) / 1000) - 2)
                 math.randomseed(os.time())
                 set("1-sim/press/modeSelector", (math.random(0, 1)))
                 set("1-sim/cond/fltdkTempControl", 0.5)
@@ -355,6 +364,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
                     "sim/cockpit/misc/barometer_setting2",
                     (math.floor((tonumber(get("sim/weather/barometer_sealevel_inhg"))) * 100) / 100)
                 )
+                set("1-sim/press/landingAltitudeSelector", ((math.ceil(get("sim/cockpit2/gauges/indicators/altitude_ft_pilot") / 10))/100) - 2)
             else
                 print("FO Preflight inhibited by settings")
             end
@@ -429,11 +439,23 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         end
         if not toEngRate and ENGINE_MODE == 11 then
             toEngRate = true
-            print("767CrewPack: TO-1 Mode detected")
+            print("767CrewPack: TO Mode detected")
         end
         if not toEngRate and ENGINE_MODE == 12 then
             toEngRate = true
-            print("767CrewPack: TO-2 Mode detected")
+            print("767CrewPack: TO Mode detected")
+        end
+        if not toEngRate and ENGINE_MODE == 2 then
+            toEngRate = true
+            print("767CrewPack: TO Mode detected")
+        end
+        if not toEngRate and ENGINE_MODE == 21 then
+            toEngRate = true
+            print("767CrewPack: TO Mode detected")
+        end
+        if not toEngRate and ENGINE_MODE == 22 then
+            toEngRate = true
+            print("767CrewPack: TO Mode detected")
         end
     end
 
@@ -464,6 +486,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
             -- Confirm XPDR TA/RA and Brakes RTO
             set("anim/rhotery/35", 5)
             set("1-sim/gauges/autoBrakeModeSwitcher", -1)
+            sixtyPlayed = false
             playSeq = 1
         end
 
@@ -516,25 +539,29 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         if not ready then
             return
         end
-        if toCalloutMode and (AGL / 0.3048) > FMS_ACCEL_HT + 50 and not vnavPlayed and VNAV_ENGAGED_LT == 0 then
-            if VNAV_BUTTON == 0 and not vnavPressed then
-                set("1-sim/AP/vnavButton", 1)
-                print("767CrewPack: VNAV pressed")
-                vnavPressed = true
-            end
-            if VNAV_BUTTON == 1 and not vnavPressed then
-                set("1-sim/AP/vnavButton", 0)
-                print("767CrewPack: VNAV pressed")
+        if toCalloutMode and (AGL / 0.3048) > FMS_ACCEL_HT + 50 and not vnavPressed then
+            if VNAV_ENGAGED_LT == 0 then
+                if VNAV_BUTTON == 0 and not vnavPressed then
+                    set("1-sim/AP/vnavButton", 1)
+                    print("767CrewPack: VNAV pressed")
+                    vnavPressed = true
+                end
+                if VNAV_BUTTON == 1 and not vnavPressed then
+                    set("1-sim/AP/vnavButton", 0)
+                    print("767CrewPack: VNAV pressed")
+                    vnavPressed = true
+                end
+            elseif VNAV_ENGAGED_LT > 0 then
                 vnavPressed = true
             end
         end
-        if not vnavPlayed and VNAV_ENGAGED_LT > 0 then
+        if vnavPressed and not vnavPlayed and VNAV_ENGAGED_LT > 0 then
             play_sound(VNAV_snd)
             calloutTimer = 0
             vnavPlayed = true
             vnavPressed = true
             toCalloutMode = false
-            print("767CrewPack: VNAV at ".. (AGL / 0.3048) .. ", " .. FMS_ACCEL_HT .. " accel height")
+            print("767CrewPack: VNAV at ".. math.floor(AGL / 0.3048) .. ", " .. FMS_ACCEL_HT .. " accel height")
             print("767CrewPack: TO Mode off")
         end
     end
@@ -552,6 +579,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
             gearUpPlayed = true
             gearDownPlayed = false
             flightOccoured = true
+            apuStart = false
             spdBrkNotPlayed = false
             spdBrkPlayed = false
             sixtyPlayed = false
@@ -678,11 +706,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
             end
             -- GS
             if
-               WEIGHT_ON_WHEELS == 0 and  GS_RECEIVED == 1 and GS_DEVIATION > -1.95 and GS_DEVIATION < 1 and locPlayed and not gsPlayed and
-                    calloutTimer >= 2 and
-                    not togaEvent and
-                    not toCalloutMode
-             then
+               WEIGHT_ON_WHEELS == 0 and  GS_RECEIVED == 1 and GS_DEVIATION > -1.95 and GS_DEVIATION < 1 and locPlayed and not gsPlayed and calloutTimer >= 2 and not togaEvent and not toCalloutMode then
                 play_sound(GScap_snd)
                 print("767CrewPack: GS Alive")
                 gsPlayed = true
@@ -714,6 +738,10 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
             sixtyPlayed = true
             print("767CrewPack: 60kts on landing played at " .. math.floor(IAS))
         end
+        if WEIGHT_ON_WHEELS == 1 and flightOccoured and apuConnect and not apuStart and IAS <= 30 then
+            set("1-sim/engine/APUStartSelector", 2)
+            apuStart = true
+        end    
     end
 
     do_often("Landing()")
@@ -747,7 +775,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
             gearUpPlayed = false
             gearDownPlayed = true
             toEngRate = false
-            invalidVSpeed = true
+            invalidVSpeed = false
             vnavPlayed = false
             vnavPressed = false
             gpuDisconnect = false
@@ -779,10 +807,17 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
             gseOnBeacon and ENG1_N2 < 25 and ENG2_N2 < 25 and WEIGHT_ON_WHEELS == 1 and PARK_BRAKE == 1 and
                 calloutTimer > 3 and
                 horsePlayed and
-                BEACON == 0
+                BEACON == 0 and not beaconSetup
          then
             set("params/stop", 1)
-            set("params/gpu", 1)
+            if gpuConnect then
+                set("params/gpu", 1)
+            end
+            if apuConnect then
+                set("1-sim/engine/APUStartSelector", 2)
+                print("767CrewPack: Starting APU")
+                set("anim/15/button", 1)
+            end
             if PLANE_ICAO == "B762" or PLANE_ICAO == "B763" then
                 set_array("sim/cockpit2/switches/custom_slider_on", 2, 1)
                 set_array("sim/cockpit2/switches/custom_slider_on", 3, 1)
@@ -795,6 +830,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
             set("params/LSU", 1)
             set("params/gate", 1)
             gpuDisconnect = false
+            beaconSetup = true
         end
     end
 
@@ -821,8 +857,9 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
             set("params/gate", 0)
             set("params/stop", 0)
             gpuDisconnect = true
+            beaconSetup = false
         end
-        if BEACON == 1 and get("params/gpu") == 1 and calloutTimer > 5 then
+        if BEACON == 1 and get("params/gpu") == 1 and calloutTimer > 3 then
             set("params/gpu", 0)
         end
     end
@@ -955,7 +992,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
     -- Create Settings window
     function ShowCrewPack767Settings_wnd()
         ParseCrewPack767Settings()
-        CrewPack767Settings_wnd = float_wnd_create(415, 250, 1, true)
+        CrewPack767Settings_wnd = float_wnd_create(415, 265, 1, true)
         float_wnd_set_title(CrewPack767Settings_wnd, "767 Crew Pack Settings")
         float_wnd_set_imgui_builder(CrewPack767Settings_wnd, "CrewPack767Settings_contents")
         float_wnd_set_onclose(CrewPack767Settings_wnd, "CloseCrewPack767Settings_wnd")
@@ -1014,6 +1051,21 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
             SaveCrewPack767Data()
             print("767CrewPack: LOC / GS Call logic set to " .. tostring(syncAlt))
         end
+        imgui.TextUnformatted("Power Connection on shutdown: ") 
+        imgui.SameLine()
+        local changed, newVal = imgui.Checkbox("GPU", gpuConnect)
+        if changed then
+            gpuConnect = newVal
+            SaveCrewPack767Data()
+            print("767CrewPack: GPU Power on ground")
+        end
+        imgui.SameLine()
+        local changed, newVal = imgui.Checkbox("APU", apuConnect)
+        if changed then
+            apuConnect = newVal
+            SaveCrewPack767Data()
+            print("767CrewPack: APU started on ground")
+        end
         local changed, newVal = imgui.SliderFloat("", (soundVol * 100), 1, 100, "Volume: %.0f")
         if changed then
             soundVol = (newVal / 100)
@@ -1050,6 +1102,8 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         locgsCalls = CrewPack767Settings.CrewPack767.locgsCalls
         soundVol = CrewPack767Settings.CrewPack767.soundVol
         master = CrewPack767Settings.CrewPack767.master
+        apuConnect = CrewPack767Settings.CrewPack767.apuConnect
+        gpuConnect = CrewPack767Settings.CrewPack767.gpuConnect
         print("767CrewPack: Settings Loaded")
         setGain()
     end
@@ -1068,7 +1122,9 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
                 startMsg = startMsg,
                 locgsCalls = locgsCalls,
                 soundVol = soundVol,
-                master = master
+                master = master,
+                gpuConnect = gpuConnect,
+                apuConnect = apuConnect,
             }
         }
         print("767CrewPack: Settings Saved")
