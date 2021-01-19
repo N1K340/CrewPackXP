@@ -528,10 +528,11 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
                 vnavPressed = true
             end
         end
-        if not vnavPlayed and vnavPressed and VNAV_ENGAGED_LT > 0 then
+        if not vnavPlayed and VNAV_ENGAGED_LT > 0 then
             play_sound(VNAV_snd)
             calloutTimer = 0
             vnavPlayed = true
+            vnavPressed = true
             toCalloutMode = false
             print("767CrewPack: VNAV at " .. FMS_ACCEL_HT .. " accel height")
             print("767CrewPack: TO Mode off")
@@ -648,9 +649,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         end
         -- Loc Capture Right of localiser (CDI Left) Reset by: Full scale LOC deflection
         if locgsCalls then
-            if
-                LOC_RECEIVED == 1 and LOC_DEVIATION > -1.95 and LOC_DEVIATION <= 0 and not locPlayed and not togaEvent and
-                    not toCalloutMode
+            if  WEIGHT_ON_WHEELS == 0 and LOC_RECEIVED == 1 and LOC_DEVIATION > -1.95 and LOC_DEVIATION <= 0 and not locPlayed and not togaEvent and not toCalloutMode
              then
                 play_sound(LOCcap_snd)
                 print("767CrewPack: LOC Active")
@@ -664,7 +663,8 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
                 gsPlayed = false
             end
             -- Loc Capture Left of localiser (CDI Right)
-            if LOC_RECEIVED == 1 and LOC_DEVIATION < 1.95 and LOC_DEVIATION >= 0 and not locPlayed and not togaEvent then
+            if WEIGHT_ON_WHEELS == 0 and LOC_RECEIVED == 1 and LOC_DEVIATION > -1.95 and LOC_DEVIATION <= 0 and not locPlayed and not togaEvent and not toCalloutMode
+            then
                 play_sound(LOCcap_snd)
                 print("767CrewPack: LOC Active")
                 calloutTimer = 0
@@ -678,7 +678,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
             end
             -- GS
             if
-                GS_RECEIVED == 1 and GS_DEVIATION > -1.95 and GS_DEVIATION < 1 and locPlayed and not gsPlayed and
+               WEIGHT_ON_WHEELS == 0 and  GS_RECEIVED == 1 and GS_DEVIATION > -1.95 and GS_DEVIATION < 1 and locPlayed and not gsPlayed and
                     calloutTimer >= 2 and
                     not togaEvent and
                     not toCalloutMode
