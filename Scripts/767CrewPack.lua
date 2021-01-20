@@ -25,10 +25,12 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
 
     -- dependencies
     local LIP = require("LIP")
-    
+    require "graphics"
 
     -- Local Variables
 
+    local bubbleTimer = 0
+    local msgStr = ""
     local ready = false
     local startPlayed = false
     local playSeq = 0
@@ -168,18 +170,43 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
     print("767CrewPack: Initialising version " .. version)
     print("767CrewPack: Starting at sim time " .. math.floor(SIM_TIME))
 
+    -- Bubble for messages
+    function CP767DisplayMessage()
+        bubble(20, get("sim/graphics/view/window_height") - 100, msgStr)
+    end
+
+    function CP767msg()
+        if bubbleTimer < 3 then
+            CP767DisplayMessage()
+        else
+            msgStr = ""
+        end 
+    end
+
+    function BubbleTiming()
+        if bubbleTimer < 3 then
+            bubbleTimer = bubbleTimer + 1
+        end        
+    end
+
+    do_every_draw("CP767msg()")
+    do_often("BubbleTiming()")
+
+    
     --	Delaying initialisation of datarefs till aircraft loaded
     function DelayedInit()
         -- Dealy based on time
 
         if startTime == 0 then
             startTime = (SIM_TIME + initDelay)
+            bubbleTimer = -12
             ParseCrewPack767Settings()
         end
         if (SIM_TIME < startTime) then
             print(
                 "767CrewPack: Init Delay " .. math.floor(SIM_TIME) .. " waiting for " .. math.floor(startTime) .. " --"
             )
+            msgStr = "767 Crew Pack Loading in " .. math.floor(startTime - SIM_TIME) .. " seconds"
             return
         end
         -- Delay based on 757 specific variables
@@ -213,6 +240,8 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
 
         if not ready then
             print("767CrewPack: Datarefs Initialised for " .. PLANE_ICAO .. " at time " .. math.floor(SIM_TIME))
+            msgStr = "767 Crew Pack Initialised for " .. PLANE_ICAO
+            bubbleTimer = 0
             ready = true
         end
     end -- End of DelayedInit
@@ -261,12 +290,23 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
             set("anim/armCapt/1", 2)
             set("anim/armFO/1", 2)
             set("lights/ind_rhe", 1)
+            set("lights/cabin_com", 1)
             if get("sim/graphics/scenery/sun_pitch_degrees") < 0 then
-                set("anim/27/button", 1)
+                set("lights/glareshield1_rhe", 0.1)
+                set("lights/aux_rhe", 0.05)
+                set("lights/buttomflood_rhe", 0.2)
+                set("lights/aisel_rhe", 0.5)
+                set("lights/dome/flood_rhe", 1)
                 set("anim/52/button", 1)
                 set("lights/ind_rhe", 0)
+                set("lights/cabin_com", 0.6)
+                set("lights/chart_rhe", 0.5)
+                set("lights/panel_rhe", 0.2)
+                set("lights/flood_rhe", 0.4)
+                set("1-sim/CDU/R/CDUbrtRotary", 0.5)
+                set("1-sim/CDU/L/CDUbrtRotary", 0.5)
             end
-            if EFIS_TYPE == 1 then -- New Type 757
+            if EFIS_TYPE == 0 then -- New Type 757
                 set("1-sim/ndpanel/1/hsiModeRotary", 2)
                 set("1-sim/ndpanel/1/hsiRangeRotary", 1)
                 set("1-sim/ndpanel/1/hsiRangeButton", 1)
@@ -276,7 +316,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
             --  set("1-sim/inst/HD/L", 0)
             --  set("1-sim/inst/HD/R", 0)
             end
-            if EFIS_TYPE == 0 then
+            if EFIS_TYPE == 1 then
                 set("1-sim/ndpanel/1/hsiModeRotary", 4)
                 set("1-sim/ndpanel/1/hsiRangeRotary", 1)
                 set("1-sim/ndpanel/1/hsiRangeButton", 1)
@@ -311,12 +351,18 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
             print("767CrewPack: Attempting basic setup")
             -- FO Preflight
             if foPreflight then
+                msgStr = "767 Crew Pack: FO Attempting to setup cockpit"
+                bubbleTimer = 0
                 set("anim/1/button", 1)
                 set("anim/2/button", 1)
                 if PLANE_ICAO == "B763" or PLANE_ICAO == "B762" then
                     set("anim/3/button", 1)
                     set("anim/4/button", 1)
                 end
+                set("1-sim/irs/cdu/dsplSel", 1)
+                set("1-sim/irs/1/modeSel", 2)
+                set("1-sim/irs/2/modeSel", 2)
+                set("1-sim/irs/3/modeSel", 2)
                 set("anim/8/button", 1)
                 set("anim/11/button", 1)
                 set("anim/17/button", 1)
@@ -338,12 +384,14 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
                 set("anim/48/button", 1)
                 set("anim/49/button", 1)
                 set("anim/50/button", 1)
+                set("anim/53/button", 1)
                 set("sim/cockpit/switches/no_smoking", 1)
                 set("1-sim/press/rateLimitSelector", 0.3)
                 math.randomseed(os.time())
                 set("1-sim/press/modeSelector", (math.random(0, 1)))
                 set("1-sim/cond/fltdkTempControl", 0.5)
                 set("1-sim/cond/fwdTempControl", 0.5)
+                set("1-sim/cond/midTempControl", 0.5)
                 set("1-sim/cond/aftTempControl", 0.5)
                 set("anim/54/button", 1)
                 set("anim/55/button", 1)
@@ -351,11 +399,15 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
                 set("1-sim/cond/leftPackSelector", 1)
                 set("1-sim/cond/rightPackSelector", 1)
                 set("anim/59/button", 1)
+                set("anim/87/button", 1)
+                set("anim/90/button", 1)
                 set("anim/60/button", 1)
                 set("anim/61/button", 1)
                 set("anim/62/button", 1)
                 set("1-sim/AP/fd2Switcher", 0)
                 set("1-sim/eicas/stat2but", 1)
+                set("757Avionics/CDU/init_ref", 1)
+                set("757Avionics/CDU2/prog", 1)
                 set(
                     "sim/cockpit/misc/barometer_setting",
                     (math.floor((tonumber(get("sim/weather/barometer_sealevel_inhg"))) * 100) / 100)
@@ -367,6 +419,8 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
                 set("1-sim/press/landingAltitudeSelector", ((math.ceil(get("sim/cockpit2/gauges/indicators/altitude_ft_pilot") / 10))/100) - 2)
             else
                 print("FO Preflight inhibited by settings")
+                msgStr = "767 Crew Pack: FO Preflight inhibited by settings"
+                bubbleTimer = 0
             end
         end
     end -- End of CockpitSetup
@@ -525,10 +579,14 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         if not invalidVSpeed and toCalloutMode and IAS > 100 and V1 < 100 then
             print("767CrewPack: V1 Speed invalid value " .. math.floor(V1))
             invalidVSpeed = true
+            msgStr = "767 Crew Pack: Invalid V-Speeds detected"
+            bubbleTimer = 0
         end
         if not invalidVSpeed and toCalloutMode and IAS > 100 and VR < 100 then
             print("767CrewPack: VR Speed invalid value " .. math.floor(VR))
             invalidVSpeed = true
+            msgStr = "767 Crew Pack: Invalid V-Speeds detected"
+            bubbleTimer = 0
         end
     end
 
@@ -741,6 +799,8 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         if WEIGHT_ON_WHEELS == 1 and flightOccoured and apuConnect and not apuStart and IAS <= 30 then
             set("1-sim/engine/APUStartSelector", 2)
             apuStart = true
+            msgStr = "767 Crew Pack: Starting APU"
+            bubbleTimer = 0
         end    
     end
 
@@ -810,8 +870,12 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
                 BEACON == 0 and not beaconSetup
          then
             set("params/stop", 1)
+            bubbleTimer = 0
+            msgStr = "767 Crew Pack: Ground crew attending to aircraft"
             if gpuConnect then
                 set("params/gpu", 1)
+                msgStr = "767 Crew Pack: GPU Connected"
+                bubbleTimer = 0
             end
             if apuConnect then
                 set("1-sim/engine/APUStartSelector", 2)
@@ -829,6 +893,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
             end
             set("params/LSU", 1)
             set("params/gate", 1)
+            set("params/fuel_truck", 1)
             gpuDisconnect = false
             beaconSetup = true
         end
@@ -843,6 +908,8 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
             return
         end
         if gseOnBeacon and BEACON == 1 and horsePlayed and not gpuDisconnect then
+            msgStr = "767 Crew Pack: Ground crew closing doors"
+            bubbleTimer = 0
             set("anim/16/button", 0)
             calloutTimer = 0
             set_array("sim/cockpit2/switches/custom_slider_on", 0, 0)
@@ -856,6 +923,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
             set("params/LSU", 0)
             set("params/gate", 0)
             set("params/stop", 0)
+            set("params/fuel_truck", 0)
             gpuDisconnect = true
             beaconSetup = false
         end
@@ -876,6 +944,8 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         lnavPressed = false
         gaPlayed = false
         print("767CrewPack: TOGA Event Detected at time " .. math.floor(SIM_TIME))
+        msgStr = "767 Crew Pack: GO Around Mode"
+        bubbleTimer = 0
         togaState = TOGA_BUTTON
     end
 
@@ -992,7 +1062,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
     -- Create Settings window
     function ShowCrewPack767Settings_wnd()
         ParseCrewPack767Settings()
-        CrewPack767Settings_wnd = float_wnd_create(415, 265, 1, true)
+        CrewPack767Settings_wnd = float_wnd_create(450, 350, 0, true)
         float_wnd_set_title(CrewPack767Settings_wnd, "767 Crew Pack Settings")
         float_wnd_set_imgui_builder(CrewPack767Settings_wnd, "CrewPack767Settings_contents")
         float_wnd_set_onclose(CrewPack767Settings_wnd, "CloseCrewPack767Settings_wnd")
@@ -1009,49 +1079,58 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
 
         imgui.Separator()
         imgui.TextUnformatted("")
+        imgui.SetCursorPos(20, imgui.GetCursorPosY())
         local changed, newVal = imgui.Checkbox("767 CrewPack on/off", master)
         if changed then
             master = newVal
             SaveCrewPack767Data()
             print("767CrewPack: Plugin turned on" .. tostring(master))
         end
+        imgui.SetCursorPos(20, imgui.GetCursorPosY())
         local changed, newVal = imgui.Checkbox("Play corny sound bite on loading", startMsg)
         if changed then
             startMsg = newVal
             SaveCrewPack767Data()
             print("767CrewPack: Start message logic set to " .. tostring(startMsg))
         end
+        imgui.SetCursorPos(20, imgui.GetCursorPosY())
 		local changed, newVal = imgui.Checkbox("Play Localiser and Glideslop calls", locgsCalls)
         if changed then
             locgsCalls = newVal
             SaveCrewPack767Data()
             print("767CrewPack: LOC / GS Call logic set to " .. tostring(syncAlt))
         end
+        imgui.SetCursorPos(20, imgui.GetCursorPosY())
 		local changed, newVal = imgui.Checkbox("FO Performs Preflight Scan Flow", foPreflight)
         if changed then
             foPreflight = newVal
             SaveCrewPack767Data()
             print("767CrewPack: FO PreScan logic set to " .. tostring(foPreflight))
         end
+        imgui.SetCursorPos(20, imgui.GetCursorPosY())
         local changed, newVal = imgui.Checkbox("FO automation on go around", goAroundAutomation)
         if changed then
             goAroundAutomation = newVal
             SaveCrewPack767Data()
             print("767CrewPack: Go Around automation logic set to " .. tostring(goAroundAutomation))
         end
+        imgui.SetCursorPos(20, imgui.GetCursorPosY())
         local changed, newVal = imgui.Checkbox("Chocks, Doors and belt loaders tied to Beacon on/off", gseOnBeacon)
         if changed then
             gseOnBeacon = newVal
             SaveCrewPack767Data()
             print("767CrewPack: GSE on beacon set to " .. tostring(gseOnBeacon))
         end
+        imgui.SetCursorPos(20, imgui.GetCursorPosY())
         local changed, newVal = imgui.Checkbox("Auto sync Cpt and FO Altimiters", syncAlt)
         if changed then
             syncAlt = newVal
             SaveCrewPack767Data()
             print("767CrewPack: Altimiter Sync logic set to " .. tostring(syncAlt))
         end
+        imgui.SetCursorPos(20, imgui.GetCursorPosY())
         imgui.TextUnformatted("Auto power connections: ") 
+        imgui.SetCursorPos(20, imgui.GetCursorPosY())
         local changed, newVal = imgui.Checkbox("GPU on bay", gpuConnect)
         if changed then
             gpuConnect = newVal
@@ -1064,8 +1143,9 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
             apuConnect = newVal
             SaveCrewPack767Data()
             print("767CrewPack: APU started on ground")
-        end        
-		imgui.Separator()
+        end     
+        imgui.TextUnformatted("")   
+        imgui.SetCursorPos(75, imgui.GetCursorPosY())
         local changed, newVal = imgui.SliderFloat("", (soundVol * 100), 1, 100, "Volume: %.0f")
         if changed then
             soundVol = (newVal / 100)
@@ -1073,6 +1153,12 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
             play_sound(Output_snd)
             SaveCrewPack767Data()
             print("767CrewPacks: Volume set to " .. (soundVol * 100) .. " %")
+        end
+        imgui.Separator()
+        imgui.TextUnformatted("")
+        imgui.SetCursorPos(200, imgui.GetCursorPosY())
+        if imgui.Button("CLOSE") then
+            CloseCrewPack767Settings_wnd()
         end
     end
 
@@ -1128,6 +1214,8 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
             }
         }
         print("767CrewPack: Settings Saved")
+        bubbleTimer = 0
+        msgStr = "767 Crew Pack settings saved"
         SaveCrewPack767Settings(CrewPack767Settings)
     end
 
