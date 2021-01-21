@@ -328,6 +328,8 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
                 set("1-sim/ndpanel/1/dhRotary", 0.00)
                 set("1-sim/ndpanel/2/dhRotary", 0.00)
             end
+            set("1-sim/ndpanel/1/hsiTerr", 1)
+            set("1-sim/ndpanel/2/hsiTerr", 1)
             calloutTimer = 0
             set("anim/14/button", 1)
             set("1-sim/electrical/stbyPowerSelector", 1)
@@ -581,14 +583,14 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         if not invalidVSpeed and toCalloutMode and IAS > 100 and V1 < 100 then
             print("767CrewPack: V1 Speed invalid value " .. math.floor(V1))
             invalidVSpeed = true
-            msgStr = "767 Crew Pack: Invalid V-Speeds detected"
-            bubbleTimer = 0
+            -- msgStr = "767 Crew Pack: Invalid V-Speeds detected"
+            -- bubbleTimer = 0
         end
         if not invalidVSpeed and toCalloutMode and IAS > 100 and VR < 100 then
             print("767CrewPack: VR Speed invalid value " .. math.floor(VR))
             invalidVSpeed = true
-            msgStr = "767 Crew Pack: Invalid V-Speeds detected"
-            bubbleTimer = 0
+            -- msgStr = "767 Crew Pack: Invalid V-Speeds detected"
+            -- bubbleTimer = 0
         end
     end
 
@@ -910,7 +912,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         if not ready then
             return
         end
-        if gseOnBeacon and BEACON == 1 and horsePlayed and not gpuDisconnect then
+        if gseOnBeacon and BEACON == 1 and ENG1_N2 < 25 and ENG2_N2 < 25 and horsePlayed and not gpuDisconnect then
             msgStr = "767 Crew Pack: Ground crew closing doors"
             bubbleTimer = 0
             set("anim/16/button", 0)

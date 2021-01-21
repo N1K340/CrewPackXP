@@ -52,6 +52,8 @@
         "set_sound_gain",
         "LEFT_STARTER",
         "RIGHT_STARTER",
-        "setGain"
+        "setGain",
+        "bubble",
+        "do_every_draw"
     ]
 }
