@@ -183,24 +183,24 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         end 
     end
 
-    function BubbleTiming()
+    function CP767BubbleTiming()
         if bubbleTimer < 3 then
             bubbleTimer = bubbleTimer + 1
         end        
     end
 
     do_every_draw("CP767msg()")
-    do_often("BubbleTiming()")
+    do_often("CP767BubbleTiming()")
 
     
     --	Delaying initialisation of datarefs till aircraft loaded
-    function DelayedInit()
+    function CP767DelayedInit()
         -- Dealy based on time
 
         if startTime == 0 then
             startTime = (SIM_TIME + initDelay)
             bubbleTimer = -12
-            ParseCrewPack767Settings()
+            CP767ParseCrewPack767Settings()
         end
         if (SIM_TIME < startTime) then
             print(
@@ -246,10 +246,10 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         end
     end -- End of DelayedInit
 
-    do_often("DelayedInit()")
+    do_often("CP767DelayedInit()")
 
     -- Start Up Sounds
-    function StartSound()
+    function CP767StartSound()
         if not ready then
             return
         end
@@ -267,22 +267,24 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         end
     end
 
-    do_often("StartSound()")
+    do_often("CP767StartSound()")
 
     -- Monitor for ADC1 Failure
-    function MonitorADC1()
+    function CP767MonitorADC1()
         if not ready then
             return
         end
         if ADC1 == 1 then
             print("767CrewPack: ADC1 Failure, callouts degraded")
+            msgStr = "767 Crew Pack: Aircraft data computer failure detected"
+            bubbleTimer = 0
         end
     end -- End of MonitorADC1
 
-    do_often("MonitorADC1()")
+    do_often("CP767MonitorADC1()")
 
     -- Cockpit Setup
-    function CockpitSetup()
+    function CP767CockpitSetup()
         if not ready then
             return
         end
@@ -425,11 +427,11 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         end
     end -- End of CockpitSetup
 
-    do_often("CockpitSetup()")
+    do_often("CP767CockpitSetup()")
 
     -- AutoSync Alt Settings
 
-    function SyncBaro()
+    function CP767SyncBaro()
         if not ready then
             return
         end
@@ -448,11 +450,11 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         end
     end
 
-    do_sometimes("SyncBaro()")
+    do_sometimes("CP767SyncBaro()")
 
     -- Engine Start Calls
 
-    function EngineStart()
+    function CP767EngineStart()
         if not ready then
             return
         end
@@ -474,11 +476,11 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         end
     end
 
-    do_often("EngineStart()")
+    do_often("CP767EngineStart()")
 
     -- Engine Rate Monitor - Reset by: VNAV action in TO and GA as appropriate
     --TOGA 6 | TO 1, 11, 12 |
-    function EngRateMonitor()
+    function CP767EngRateMonitor()
         if not ready then
             return
         end
@@ -513,10 +515,10 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         end
     end
 
-    do_every_frame("EngRateMonitor()")
+    do_every_frame("CP767EngRateMonitor()")
 
     -- Takeoff Calls - Reset by: Master Reset
-    function TakeoffCalls()
+    function CP767TakeoffCalls()
         if not ready then
             return
         end
@@ -569,10 +571,10 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         end
     end
 
-    do_often("TakeoffCalls()")
+    do_often("CP767TakeoffCalls()")
 
     -- TakeoffNoSpeeds - Reset by: Master Reset
-    function TakeoffNoSpeeds()
+    function CP767TakeoffNoSpeeds()
         if not ready then
             return
         end
@@ -590,10 +592,10 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         end
     end
 
-    do_often("TakeoffNoSpeeds()")
+    do_often("CP767TakeoffNoSpeeds()")
 
     -- Takeoff VNAV Call - Reset by Master Reset
-    function TakeoffVNAV()
+    function CP767TakeoffVNAV()
         if not ready then
             return
         end
@@ -624,10 +626,10 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         end
     end
 
-    do_often("TakeoffVNAV()")
+    do_often("CP767TakeoffVNAV()")
 
     -- Gear Selection
-    function GearSelection()
+    function CP767GearSelection()
         if not ready then
             return
         end
@@ -659,12 +661,12 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         end
     end
 
-    do_often("GearSelection()")
+    do_often("CP767GearSelection()")
 
     -- Flaps Selection
 
     -- Flaps Callouts in air only
-    function FlapsSelection()
+    function CP767FlapsSelection()
         if not ready then
             return
         end
@@ -705,10 +707,10 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         end
     end
 
-    do_often("FlapsSelection()")
+    do_often("CP767FlapsSelection()")
 
     --Monitor Flap Movement
-    function FlapPosCheck()
+    function CP767FlapPosCheck()
         if not ready then
             return
         end
@@ -726,10 +728,10 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         end
     end -- End FlapPosCheck
 
-    do_often("FlapPosCheck()")
+    do_often("CP767FlapPosCheck()")
 
     -- Localiser / GlideSlope
-    function LocGsAlive()
+    function CP767LocGsAlive()
         if not ready then
             return
         end
@@ -772,10 +774,10 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         end
     end
 
-    do_often("LocGsAlive()")
+    do_often("CP767LocGsAlive()")
 
     -- Landing Roll / Speedbrakes - Reset by: Gear Up
-    function Landing()
+    function CP767Landing()
         if not ready then
             return
         end
@@ -804,9 +806,9 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         end    
     end
 
-    do_often("Landing()")
+    do_often("CP767Landing()")
 
-    function OnGrndCheck()
+    function CP767OnGrndCheck()
         if not ready then
             return
         end
@@ -822,10 +824,10 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         end
     end -- End of OnGrndCheck
 
-    do_often("OnGrndCheck()")
+    do_often("CP767OnGrndCheck()")
 
     -- Reset Variables for next Flight
-    function MasterReset()
+    function CP767MasterReset()
         if not ready then
             return
         end
@@ -843,10 +845,10 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         end
     end
 
-    do_often("MasterReset()")
+    do_often("CP767MasterReset()")
 
     -- Shut Down Message Reset by: Gear Up
-    function ShutDown()
+    function CP767ShutDown()
         if not ready then
             return
         end
@@ -891,6 +893,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
                 set_array("sim/cockpit2/switches/custom_slider_on", 7, 1)
                 set_array("sim/cockpit2/switches/custom_slider_on", 0, 1)
             end
+            set("anim/cabindoor", 1)
             set("params/LSU", 1)
             set("params/gate", 1)
             set("params/fuel_truck", 1)
@@ -899,11 +902,11 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         end
     end
 
-    do_often("ShutDown()")
+    do_often("CP767ShutDown()")
 
     -- Clear GSE for departure Reset by: Beacon
 
-    function ClearGse()
+    function CP767ClearGse()
         if not ready then
             return
         end
@@ -911,6 +914,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
             msgStr = "767 Crew Pack: Ground crew closing doors"
             bubbleTimer = 0
             set("anim/16/button", 0)
+            set("anim/cabindoor", 0)
             calloutTimer = 0
             set_array("sim/cockpit2/switches/custom_slider_on", 0, 0)
             set_array("sim/cockpit2/switches/custom_slider_on", 1, 0)
@@ -932,11 +936,11 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         end
     end
 
-    do_often("ClearGse()")
+    do_often("CP767ClearGse()")
 
     -- Go Around Monitor
 
-    function TogaTrigger()
+    function CP767TogaTrigger()
         togaEvent = true
         flaps20Retracted = false
         flchPressed = false
@@ -949,19 +953,19 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         togaState = TOGA_BUTTON
     end
 
-    function TogaMonitor()
+    function TCP767ogaMonitor()
         if togaState == nil then
             togaState = TOGA_BUTTON
         elseif togaState ~= TOGA_BUTTON then
-            TogaTrigger()
+            CP767TogaTrigger()
         end
     end
 
-    do_often("TogaMonitor()")
+    do_often("CP767TogaMonitor()")
 
     -- Go Around Function - Reset by Toga Trigger, cancels on FMS Accel height
 
-    function GoAround()
+    function CP767GoAround()
         if WEIGHT_ON_WHEELS == 0 and togaEvent and ENGINE_MODE == 6 and goAroundAutomation and not flaps20Retracted then
             if flapPos > 0.8 then
                 set("sim/flightmodel/controls/flaprqst", 0.66667)
@@ -1050,7 +1054,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         end
     end
 
-    do_often("GoAround()")
+    do_often("CP767GoAround()")
 
     -- Settings
 
