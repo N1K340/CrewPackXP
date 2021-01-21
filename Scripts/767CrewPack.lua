@@ -200,7 +200,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         if startTime == 0 then
             startTime = (SIM_TIME + initDelay)
             bubbleTimer = -12
-            CP767ParseCrewPack767Settings()
+            ParseCrewPack767Settings()
         end
         if (SIM_TIME < startTime) then
             print(
@@ -953,7 +953,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         togaState = TOGA_BUTTON
     end
 
-    function TCP767ogaMonitor()
+    function CP767TogaMonitor()
         if togaState == nil then
             togaState = TOGA_BUTTON
         elseif togaState ~= TOGA_BUTTON then
