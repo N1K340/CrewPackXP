@@ -87,6 +87,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
     local faPlaySeq = 0
     local ccpatimer = 230
     local paVol = 0.3
+    local engStartType = 1
 
     -- Sound Files
     local EightyKts_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/pnf_pf_80kts.wav")
@@ -113,6 +114,8 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
     local LNAV_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/pf_LNAV.wav")
     local StartLeft_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/pf_StartLeft.wav")
     local StartRight_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/pf_StartRight.wav")
+    local StartLeft1_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/pf_Start1.wav")
+    local StartRight2_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/pf_Start2.wav")
     local Output_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/output.wav")
     local Start1 = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/start_1.wav")
     local Start2 = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/start_2.wav")
@@ -147,6 +150,8 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         set_sound_gain(LNAV_snd, soundVol)
         set_sound_gain(StartLeft_snd, soundVol)
         set_sound_gain(StartRight_snd, soundVol)
+        set_sound_gain(StartLeft1_snd, soundVol)
+        set_sound_gain(StartRight2_snd, soundVol)
         set_sound_gain(Start1, soundVol)
         set_sound_gain(Start2, soundVol)
         set_sound_gain(Start3, soundVol)
@@ -474,22 +479,30 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         if not ready then
             return
         end
-        if LEFT_STARTER == 1 and not leftStart then
-            print("767CrewPack: Start Left Engine")
-            play_sound(StartLeft_snd)
-            leftStart = true
-        end
-        if LEFT_STARTER == 0 then
-            leftStart = false
-        end
-        if RIGHT_STARTER == 1 and not rightStart then
-            print("767CrewPack: Start Right Engine")
-            play_sound(StartRight_snd)
-            rightStart = true
-        end
-        if RIGHT_STARTER == 0 then
-            rightStart = false
-        end
+            if LEFT_STARTER == 1 and not leftStart then
+                print("767CrewPack: Start Left Engine")
+                if engStartType == 1 then
+                    play_sound(StartLeft_snd)
+                else
+                    play_sound(StartLeft1_snd)
+                end
+                leftStart = true
+            end
+            if LEFT_STARTER == 0 then
+                leftStart = false
+            end
+            if RIGHT_STARTER == 1 and not rightStart then
+                print("767CrewPack: Start Right Engine")
+                if engStartType == 1 then
+                    play_sound(StartRight_snd)
+                else
+                    play_sound(StartRight2_snd)
+                end               
+                rightStart = true
+            end
+            if RIGHT_STARTER == 0 then
+                rightStart = false
+            end
     end
 
     do_often("CP767EngineStart()")
@@ -1201,6 +1214,20 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
             print("767CrewPack: GSE on beacon set to " .. tostring(gseOnBeacon))
         end
         imgui.SetCursorPos(20, imgui.GetCursorPosY())
+        if imgui.BeginCombo("Engine Start Call", "", imgui.constant.ComboFlags.NoPreview) then
+            if imgui.Selectable("Left / Right", engStartType == 1) then
+                engStartType = 1
+                SaveCrewPack767Data()
+                print("767CrewPack: Engine start call set to Left / Right")
+            end
+            if imgui.Selectable("Engine 1 / 2", engStartType == 2) then
+                engStartType = 2
+                SaveCrewPack767Data()
+                print("767CrewPack: Engine start call set to 1 / 2")
+            end
+            imgui.EndCombo()
+        end
+        imgui.SetCursorPos(20, imgui.GetCursorPosY())
         local changed, newVal = imgui.Checkbox("Auto sync Cpt and FO Altimiters", syncAlt)
         if changed then
             syncAlt = newVal
@@ -1282,6 +1309,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         gpuConnect = CrewPack767Settings.CrewPack767.gpuConnect
         defaultFA = CrewPack767Settings.CrewPack767.defaultFA
         faOnboard = CrewPack767Settings.CrewPack767.faOnboard
+        engStartType = CrewPack767Settings.CrewPack767.engStartType
         print("767CrewPack: Settings Loaded")
         setGain()
     end
@@ -1306,6 +1334,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
                 defaultFA = defaultFA,
                 faOnboard = faOnboard,
                 paVol = paVol,
+                engStartType = engStartType,
             }
         }
         print("767CrewPack: Settings Saved")
