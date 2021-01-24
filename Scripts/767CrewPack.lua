@@ -82,6 +82,11 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
     local apuConnect = false
     local apuStart = true
     local beaconSetup = false
+    local defaultFA = true
+    local faOnboard = true
+    local faPlaySeq = 0
+    local ccpatimer = 230
+    local paVol = 0.3
 
     -- Sound Files
     local EightyKts_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/pnf_pf_80kts.wav")
@@ -103,14 +108,19 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
     local GScap_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/pnf_GS.wav")
     local LOCcap_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/pnf_LOC.wav")
     local Horse_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/gnd_horse.wav")
-    local Start757_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/pnf_start_757.wav")
-    local Start767_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/pnf_start_767.wav")
     local ClbThrust_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/pf_ClbThr.wav")
     local VNAV_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/pf_VNAV.wav")
     local LNAV_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/pf_LNAV.wav")
     local StartLeft_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/pf_StartLeft.wav")
     local StartRight_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/pf_StartRight.wav")
     local Output_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/output.wav")
+    local Start1 = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/start_1.wav")
+    local Start2 = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/start_2.wav")
+    local Start3 = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/start_3.wav")
+    local Start4 = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/start_4.wav")
+    local FA_Welcome_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/fa_welcome.wav")
+    local SafetyDemo_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/safetyDemo.wav")
+    local CabinSecure_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/fa_cabinSecure.wav")
 
     function setGain()
         set_sound_gain(EightyKts_snd, soundVol)
@@ -132,13 +142,18 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         set_sound_gain(GScap_snd, soundVol)
         set_sound_gain(LOCcap_snd, soundVol)
         set_sound_gain(Horse_snd, soundVol)
-        set_sound_gain(Start757_snd, soundVol)
-        set_sound_gain(Start767_snd, soundVol)
         set_sound_gain(ClbThrust_snd, soundVol)
         set_sound_gain(VNAV_snd, soundVol)
         set_sound_gain(LNAV_snd, soundVol)
         set_sound_gain(StartLeft_snd, soundVol)
         set_sound_gain(StartRight_snd, soundVol)
+        set_sound_gain(Start1, soundVol)
+        set_sound_gain(Start2, soundVol)
+        set_sound_gain(Start3, soundVol)
+        set_sound_gain(Start4, soundVol)
+        set_sound_gain(FA_Welcome_snd, paVol)
+        set_sound_gain(SafetyDemo_snd, paVol)
+        set_sound_gain(CabinSecure_snd, soundVol)
     end
 
     -- Generic Datarefs
@@ -254,17 +269,16 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
             return
         end
         if startMsg and not startPlayed then
-            if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" then
-                play_sound(Start757_snd)
-                print("767CrewPack: Script ready at time " .. math.floor(SIM_TIME))
-                startPlayed = true
+            local soundFile = {
+                Start1,
+                Start2,
+                Start3,
+                Start4,
+            }
+            math.randomseed(os.time())
+            play_sound(soundFile[math.random(1,4)])
+                startPlayed = true        
             end
-            if PLANE_ICAO == "B762" or PLANE_ICAO == "B763" then
-                play_sound(Start767_snd)
-                print("767CrewPack: Script ready at time " .. math.floor(SIM_TIME))
-                startPlayed = true
-            end
-        end
     end
 
     do_often("CP767StartSound()")
@@ -333,7 +347,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
             calloutTimer = 0
             set("anim/14/button", 1)
             set("1-sim/electrical/stbyPowerSelector", 1)
-            if WEIGHT_ON_WHEELS == 1 and ENG1_N2 < 20 and ENG2_N2 < 20 then
+            if WEIGHT_ON_WHEELS == 1 and BEACON == 0 and ENG1_N2 < 20 and ENG2_N2 < 20 then
                 if PLANE_ICAO == "B762" or PLANE_ICAO == "B763" then
                     set_array("sim/cockpit2/switches/custom_slider_on", 2, 1)
                     set_array("sim/cockpit2/switches/custom_slider_on", 3, 1)
@@ -479,6 +493,50 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
     end
 
     do_often("CP767EngineStart()")
+
+    -- Flight Attendant Interactions
+
+    function CP767FlightAttendant()
+        if not ready then
+            return
+        end
+        if defaultFA then
+            set("params/saiftydone", 1)
+        end
+        if ccpatimer < 241 then
+            ccpatimer = ccpatimer + 1
+            print("767CrewPack: Cabin timer " .. ccpatimer)
+            print(math.floor(get("sim/flightmodel2/position/groundspeed")))
+        end
+        if faOnboard then
+            if BEACON == 1 and WEIGHT_ON_WHEELS == 1 and ENG2_N2 > 10 and faPlaySeq == 0 then
+                ccpatimer = 200
+                play_sound(FA_Welcome_snd)
+                faPlaySeq = 1
+                print("767CrewPack: Playing FA welcome PA - Engine Start")
+            end
+            if BEACON == 1 and WEIGHT_ON_WHEELS == 1 and (math.floor(get("sim/flightmodel2/position/groundspeed"))) ~= 0 and faPlaySeq == 0 then
+                ccpatimer = 200
+                play_sound(FA_Welcome_snd)
+                faPlaySeq = 1
+                print("767CrewPack: Playing FA welcome PA, GS "..(math.floor(get("sim/flightmodel2/position/groundspeed"))))
+            end
+            if BEACON == 1 and WEIGHT_ON_WHEELS == 1 and faPlaySeq == 1 and ccpatimer == 241 then
+                ccpatimer = 0
+                play_sound(SafetyDemo_snd)
+                print("767CrewPack: Playing Safety Demo")
+                
+                faPlaySeq = 2
+            end
+            if BEACON == 1 and WEIGHT_ON_WHEELS == 1 and faPlaySeq == 2 and ccpatimer == 241 then
+                play_sound(CabinSecure_snd)
+                print("767CrewPack: Played Cabin Secure")
+                faPlaySeq = 3
+            end
+        end
+    end
+
+    do_often("CP767FlightAttendant()")
 
     -- Engine Rate Monitor - Reset by: VNAV action in TO and GA as appropriate
     --TOGA 6 | TO 1, 11, 12 |
@@ -753,7 +811,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
                 gsPlayed = false
             end
             -- Loc Capture Left of localiser (CDI Right)
-            if WEIGHT_ON_WHEELS == 0 and LOC_RECEIVED == 1 and LOC_DEVIATION < 1.95 and LOC_DEVIATION <= 0 and not locPlayed and not togaEvent and not toCalloutMode
+            if WEIGHT_ON_WHEELS == 0 and LOC_RECEIVED == 1 and LOC_DEVIATION < 1.95 and LOC_DEVIATION >= 0 and not locPlayed and not togaEvent and not toCalloutMode
             then
                 play_sound(LOCcap_snd)
                 print("767CrewPack: LOC Active")
@@ -863,6 +921,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
             horsePlayed = true
             flightOccoured = false
             calloutTimer = 0
+            faPlaySeq = 0
             set("params/stop", 1)
             print("767CrewPack: You Suck")
             print("767CrewPack: " .. math.floor(ENG1_N2) .. " | " .. math.floor(ENG2_N2))
@@ -1068,7 +1127,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
     -- Create Settings window
     function ShowCrewPack767Settings_wnd()
         ParseCrewPack767Settings()
-        CrewPack767Settings_wnd = float_wnd_create(450, 350, 0, true)
+        CrewPack767Settings_wnd = float_wnd_create(450, 450, 0, true)
         float_wnd_set_title(CrewPack767Settings_wnd, "767 Crew Pack Settings")
         float_wnd_set_imgui_builder(CrewPack767Settings_wnd, "CrewPack767Settings_contents")
         float_wnd_set_onclose(CrewPack767Settings_wnd, "CloseCrewPack767Settings_wnd")
@@ -1093,6 +1152,13 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
             print("767CrewPack: Plugin turned on" .. tostring(master))
         end
         imgui.SetCursorPos(20, imgui.GetCursorPosY())
+        local changed, newVal = imgui.Checkbox("Crew Pack FA Onboard?", faOnboard)
+        if changed then
+            faOnboard = newVal
+            SaveCrewPack767Data()
+            print("767CrewPack: Start message logic set to " .. tostring(startMsg))
+        end
+        imgui.SetCursorPos(20, imgui.GetCursorPosY())
         local changed, newVal = imgui.Checkbox("Play corny sound bite on loading", startMsg)
         if changed then
             startMsg = newVal
@@ -1112,6 +1178,13 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
             foPreflight = newVal
             SaveCrewPack767Data()
             print("767CrewPack: FO PreScan logic set to " .. tostring(foPreflight))
+        end
+        imgui.SetCursorPos(20, imgui.GetCursorPosY())
+        local changed, newVal = imgui.Checkbox("Supress default flight attendant from pestering", defaultFA)
+        if changed then
+            defaultFA = newVal
+            SaveCrewPack767Data()
+            print("767CrewPack: Default FA logic set to " .. tostring(foPreflight))
         end
         imgui.SetCursorPos(20, imgui.GetCursorPosY())
         local changed, newVal = imgui.Checkbox("FO automation on go around", goAroundAutomation)
@@ -1152,13 +1225,23 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         end     
         imgui.TextUnformatted("")   
         imgui.SetCursorPos(75, imgui.GetCursorPosY())
-        local changed, newVal = imgui.SliderFloat("", (soundVol * 100), 1, 100, "Volume: %.0f")
+        local changed, newVal = imgui.SliderFloat("Crew Volume", (soundVol * 100), 1, 100, "%.0f")
         if changed then
             soundVol = (newVal / 100)
             set_sound_gain(Output_snd, soundVol)
             play_sound(Output_snd)
             SaveCrewPack767Data()
             print("767CrewPacks: Volume set to " .. (soundVol * 100) .. " %")
+        end
+        imgui.TextUnformatted("")   
+        imgui.SetCursorPos(75, imgui.GetCursorPosY())
+        local changed, newVal1 = imgui.SliderFloat("PA Volume", (paVol * 100), 1, 100, "%.0f")
+        if changed then
+            paVol = (newVal1 / 100)
+            set_sound_gain(Output_snd, paVol)
+            play_sound(Output_snd)
+            SaveCrewPack767Data()
+            print("767CrewPacks: Volume set to " .. (paVol * 100) .. " %")
         end
         imgui.Separator()
         imgui.TextUnformatted("")
@@ -1193,9 +1276,12 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         startMsg = CrewPack767Settings.CrewPack767.startMsg
         locgsCalls = CrewPack767Settings.CrewPack767.locgsCalls
         soundVol = CrewPack767Settings.CrewPack767.soundVol
+        paVol = CrewPack767Settings.CrewPack767.paVol
         master = CrewPack767Settings.CrewPack767.master
         apuConnect = CrewPack767Settings.CrewPack767.apuConnect
         gpuConnect = CrewPack767Settings.CrewPack767.gpuConnect
+        defaultFA = CrewPack767Settings.CrewPack767.defaultFA
+        faOnboard = CrewPack767Settings.CrewPack767.faOnboard
         print("767CrewPack: Settings Loaded")
         setGain()
     end
@@ -1217,6 +1303,9 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
                 master = master,
                 gpuConnect = gpuConnect,
                 apuConnect = apuConnect,
+                defaultFA = defaultFA,
+                faOnboard = faOnboard,
+                paVol = paVol,
             }
         }
         print("767CrewPack: Settings Saved")
