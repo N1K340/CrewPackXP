@@ -523,13 +523,13 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         end
         if faOnboard then
             if BEACON == 1 and WEIGHT_ON_WHEELS == 1 and ENG2_N2 > 10 and faPlaySeq == 0 then
-                ccpatimer = 200
+                ccpatimer = 150
                 play_sound(FA_Welcome_snd)
                 faPlaySeq = 1
                 print("767CrewPack: Playing FA welcome PA - Engine Start")
             end
             if BEACON == 1 and WEIGHT_ON_WHEELS == 1 and (math.floor(get("sim/flightmodel2/position/groundspeed"))) ~= 0 and faPlaySeq == 0 then
-                ccpatimer = 200
+                ccpatimer = 150
                 play_sound(FA_Welcome_snd)
                 faPlaySeq = 1
                 print("767CrewPack: Playing FA welcome PA, GS "..(math.floor(get("sim/flightmodel2/position/groundspeed"))))
