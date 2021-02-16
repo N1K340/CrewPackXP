@@ -54,6 +54,14 @@
         "RIGHT_STARTER",
         "setGain",
         "bubble",
-        "do_every_draw"
+        "do_every_draw",
+        "print",
+        "tonumber",
+        "tostring",
+        "FMS_MODE",
+        "FMS_MODE"
+    ],
+    "Lua.diagnostics.disable": [
+        "undefined-doc-name"
     ]
 }

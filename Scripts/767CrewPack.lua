@@ -5,6 +5,7 @@
 	Captn: Guy
 	FO: Ranald
     Ground Crew: en-AU-B-Male (what a name...)
+    Safety: Leslie
 	
 	Changelog:
 	V0.1 - Initial Test Beta
@@ -88,6 +89,8 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
     local ccpatimer = 230
     local paVol = 0.3
     local engStartType = 1
+    local todPaPlayed = true
+    local seatsLandingPlayed = true
 
     -- Sound Files
     local EightyKts_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/pnf_pf_80kts.wav")
@@ -108,6 +111,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
     local SixtyKts_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/pnf_60kts.wav")
     local GScap_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/pnf_GS.wav")
     local LOCcap_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/pnf_LOC.wav")
+    local LOCGScap_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/pnf_LOCandGS.wav")
     local Horse_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/gnd_horse.wav")
     local ClbThrust_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/pf_ClbThr.wav")
     local VNAV_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/pf_VNAV.wav")
@@ -122,8 +126,10 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
     local Start3 = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/start_3.wav")
     local Start4 = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/start_4.wav")
     local FA_Welcome_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/fa_welcome.wav")
-    local SafetyDemo_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/safetyDemo.wav")
+    local SafetyDemo767_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/safetyDemo767.wav")
     local CabinSecure_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/fa_cabinSecure.wav")
+    local TOD_PA_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/pnf_todPa.wav")
+    local SeatLand_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/fa_seatsLanding.wav")
 
     function setGain()
         set_sound_gain(EightyKts_snd, soundVol)
@@ -144,6 +150,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         set_sound_gain(SixtyKts_snd, soundVol)
         set_sound_gain(GScap_snd, soundVol)
         set_sound_gain(LOCcap_snd, soundVol)
+        set_sound_gain(LOCGScap_snd, soundVol)
         set_sound_gain(Horse_snd, soundVol)
         set_sound_gain(ClbThrust_snd, soundVol)
         set_sound_gain(VNAV_snd, soundVol)
@@ -157,7 +164,9 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         set_sound_gain(Start3, soundVol)
         set_sound_gain(Start4, soundVol)
         set_sound_gain(FA_Welcome_snd, paVol)
-        set_sound_gain(SafetyDemo_snd, paVol)
+        set_sound_gain(SafetyDemo767_snd, paVol)
+        set_sound_gain(TOD_PA_snd, paVol)
+        set_sound_gain(SeatLand_snd, paVol)
         set_sound_gain(CabinSecure_snd, soundVol)
     end
 
@@ -186,6 +195,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
     dataref("BEACON", "sim/cockpit2/switches/beacon_on")
     dataref("LEFT_STARTER", "sim/flightmodel2/engines/starter_is_running", "readonly", 0)
     dataref("RIGHT_STARTER", "sim/flightmodel2/engines/starter_is_running", "readonly", 1)
+    dataref("FMS_MODE", "757Avionics/fms/vnav_phase")
 
     print("767CrewPack: Initialising version " .. version)
     print("767CrewPack: Starting at sim time " .. math.floor(SIM_TIME))
@@ -536,7 +546,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
             end
             if BEACON == 1 and WEIGHT_ON_WHEELS == 1 and faPlaySeq == 1 and ccpatimer == 241 then
                 ccpatimer = 0
-                play_sound(SafetyDemo_snd)
+                play_sound(SafetyDemo767_snd)
                 print("767CrewPack: Playing Safety Demo")
                 
                 faPlaySeq = 2
@@ -545,6 +555,16 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
                 play_sound(CabinSecure_snd)
                 print("767CrewPack: Played Cabin Secure")
                 faPlaySeq = 3
+            end
+            if FMS_MODE == 4 and not todPaPlayed then
+                play_sound(TOD_PA_snd)
+                print("767CrewPack: Played FO TOD PA")
+                todPaPlayed = true
+            end
+            if gearDownPlayed and calloutTimer >=2 and not seatsLandingPlayed then
+                play_sound(SeatLand_snd)
+                print("767CrewPack: Played seats for landing")
+                seatsLandingPlayed = true
             end
         end
     end
@@ -636,7 +656,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         end
 
         -- Positive Rate
-        if toCalloutMode and AGL > 15 and VSI > 10 and playSeq == 3 and calloutTimer >= 2 then
+        if toCalloutMode and WEIGHT_ON_WHEELS == 0 and VSI > 0 and playSeq == 3 and calloutTimer >= 2 then
             play_sound(PosRate_snd)
             calloutTimer = 0
             print("767CrewPack: Positive Rate " .. math.floor(AGL) .. " AGL and " .. math.floor(VSI) .. " ft/min")
@@ -717,6 +737,8 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
             spdBrkPlayed = false
             sixtyPlayed = false
             horsePlayed = false
+            todPaPlayed = false
+            seatsLandingPlayed = false
             set("1-sim/lights/landingN/switch", 0)
             print("767CrewPack: Gear Up")
         end
@@ -810,13 +832,21 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         end
         -- Loc Capture Right of localiser (CDI Left) Reset by: Full scale LOC deflection
         if locgsCalls then
-            if  WEIGHT_ON_WHEELS == 0 and LOC_RECEIVED == 1 and LOC_DEVIATION > -1.95 and LOC_DEVIATION <= 0 and not locPlayed and not togaEvent and not toCalloutMode
-             then
-                play_sound(LOCcap_snd)
-                print("767CrewPack: LOC Active")
-                calloutTimer = 0
-                locPlayed = true
+            if  WEIGHT_ON_WHEELS == 0 and LOC_RECEIVED == 1 and LOC_DEVIATION > -1.95 and LOC_DEVIATION <= 0 and not locPlayed and not togaEvent and not toCalloutMode then
+                if GS_RECEIVED == 1 and GS_DEVIATION > -1.95 and GS_DEVIATION < 1  then
+                    play_sound(LOCGScap_snd)
+                    print("767CrewPack: LOC and GS Active")
+                    calloutTimer = 0
+                    locPlayed = true
+                    gsPlayed = true
+                else
+                    play_sound(LOCcap_snd)
+                    print("767CrewPack: LOC Active")
+                    calloutTimer = 0
+                    locPlayed = true
+                end
             end
+
             if LOC_DEVIATION <= -2.5 and locPlayed then
                 print("767CrewPack: Reset Loc Active Logic")
                 print("767CrewPack: Reset GS Alive Logic")
@@ -824,13 +854,21 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
                 gsPlayed = false
             end
             -- Loc Capture Left of localiser (CDI Right)
-            if WEIGHT_ON_WHEELS == 0 and LOC_RECEIVED == 1 and LOC_DEVIATION < 1.95 and LOC_DEVIATION >= 0 and not locPlayed and not togaEvent and not toCalloutMode
-            then
-                play_sound(LOCcap_snd)
-                print("767CrewPack: LOC Active")
-                calloutTimer = 0
-                locPlayed = true
+            if WEIGHT_ON_WHEELS == 0 and LOC_RECEIVED == 1 and LOC_DEVIATION < 1.95 and LOC_DEVIATION >= 0 and not locPlayed and not togaEvent and not toCalloutMode then
+                if GS_RECEIVED == 1 and GS_DEVIATION > -1.95 and GS_DEVIATION < 1  then
+                    play_sound(LOCGScap_snd)
+                    print("767CrewPack: LOC and GS Active")
+                    calloutTimer = 0
+                    locPlayed = true
+                    gsPlayed = true
+                else
+                    play_sound(LOCcap_snd)
+                    print("767CrewPack: LOC Active")
+                    calloutTimer = 0
+                    locPlayed = true
+                end
             end
+            
             if LOC_DEVIATION >= 2.5 and locPlayed then
                 locPlayed = false
                 gsPlayed = false
@@ -927,7 +965,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         end
 
         if
-            ENG1_N2 < 25 and ENG2_N2 < 25 and WEIGHT_ON_WHEELS == 1 and PARK_BRAKE == 1 and flightOccoured and
+            ENG1_N2 < 25 and ENG2_N2 < 25 and BEACON == 0 and WEIGHT_ON_WHEELS == 1 and PARK_BRAKE == 1 and flightOccoured and
                 not horsePlayed
          then
             play_sound(Horse_snd)
@@ -1340,6 +1378,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         print("767CrewPack: Settings Saved")
         bubbleTimer = 0
         msgStr = "767 Crew Pack settings saved"
+        setGain()
         SaveCrewPack767Settings(CrewPack767Settings)
     end
 
