@@ -195,7 +195,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
     dataref("BEACON", "sim/cockpit2/switches/beacon_on")
     dataref("LEFT_STARTER", "sim/flightmodel2/engines/starter_is_running", "readonly", 0)
     dataref("RIGHT_STARTER", "sim/flightmodel2/engines/starter_is_running", "readonly", 1)
-    dataref("FMS_MODE", "757Avionics/fms/vnav_phase")
+    
 
     print("767CrewPack: Initialising version " .. version)
     print("767CrewPack: Starting at sim time " .. math.floor(SIM_TIME))
@@ -264,6 +264,10 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         if (XPLMFindDataRef("757Avionics/options/ND/advEfisPanel") ~= nil) then
             dataref("EFIS_TYPE", "1-sim/ngpanel")
         end
+        if (XPLMFindDataRef("757Avionics/fms/vnav_phase") ~= nil) then
+            dataref("FMS_MODE", "757Avionics/fms/vnav_phase")
+        end
+
         if (XPLMFindDataRef("anim/17/button") == nil) then
             return
         end
@@ -382,6 +386,15 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
             end
             cockpitSetup = true
             print("767CrewPack: Attempting basic setup")
+            -- blinds
+            for i = 1, 90, 1 do
+                local ref = "anim/blind/L/"..i
+                set(ref, 0)
+            end
+            for i = 1, 90, 1 do
+                local ref = "anim/blind/R/"..i
+                set(ref, 0)
+            end
             -- FO Preflight
             if foPreflight then
                 msgStr = "767 Crew Pack: FO Attempting to setup cockpit"
@@ -560,6 +573,14 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
                 play_sound(TOD_PA_snd)
                 print("767CrewPack: Played FO TOD PA")
                 todPaPlayed = true
+                for i = 1, 90, 1 do
+                    local ref = "anim/blind/L/"..i
+                    set(ref, 0)
+                end
+                for i = 1, 90, 1 do
+                    local ref = "anim/blind/R/"..i
+                    set(ref, 0)
+                end
             end
             if gearDownPlayed and calloutTimer >=2 and not seatsLandingPlayed then
                 play_sound(SeatLand_snd)
