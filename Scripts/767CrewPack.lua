@@ -91,6 +91,8 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
     local engStartType = 1
     local todPaPlayed = true
     local seatsLandingPlayed = true
+    local paxSeatBeltsPlayed = true
+    local faTaxiInPaPlayed = true
 
     -- Sound Files
     local EightyKts_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/pnf_pf_80kts.wav")
@@ -130,6 +132,8 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
     local CabinSecure_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/fa_cabinSecure.wav")
     local TOD_PA_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/pnf_todPa.wav")
     local SeatLand_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/fa_seatsLanding.wav")
+    local Pax_Seatbelts_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/fa_paxseatbelt.wav")
+    local TaxiInPA_snd = load_WAV_file(SCRIPT_DIRECTORY .. "767Callouts/fa_goodbye.wav")
 
     function setGain()
         set_sound_gain(EightyKts_snd, soundVol)
@@ -167,6 +171,8 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         set_sound_gain(SafetyDemo767_snd, paVol)
         set_sound_gain(TOD_PA_snd, paVol)
         set_sound_gain(SeatLand_snd, paVol)
+        set_sound_gain(Pax_Seatbelts_snd, paVol)
+        set_sound_gain(TaxiInPA_snd, paVol)
         set_sound_gain(CabinSecure_snd, soundVol)
     end
 
@@ -195,6 +201,8 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
     dataref("BEACON", "sim/cockpit2/switches/beacon_on")
     dataref("LEFT_STARTER", "sim/flightmodel2/engines/starter_is_running", "readonly", 0)
     dataref("RIGHT_STARTER", "sim/flightmodel2/engines/starter_is_running", "readonly", 1)
+    dataref("BELTS_SIGN", "sim/cockpit2/annunciators/fasten_seatbelt")
+    
     
 
     print("767CrewPack: Initialising version " .. version)
@@ -582,10 +590,36 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
                     set(ref, 0)
                 end
             end
+            if FMS_MODE == 4 and not paxSeatBeltsPlayed and BELTS_SIGN == 2 then
+                play_sound(Pax_Seatbelts_snd)
+                print("767CrewPack: Seatbelts selected on during descent")
+                paxSeatBeltsPlayed = true
+            end
             if gearDownPlayed and calloutTimer >=2 and not seatsLandingPlayed then
                 play_sound(SeatLand_snd)
+                for i = 1, 90, 1 do
+                    local ref = "anim/blind/L/"..i
+                    set(ref, 0)
+                end
+                for i = 1, 90, 1 do
+                    local ref = "anim/blind/R/"..i
+                    set(ref, 0)
+                end
                 print("767CrewPack: Played seats for landing")
                 seatsLandingPlayed = true
+            end
+            if WEIGHT_ON_WHEELS == 1 and flightOccoured and not faTaxiInPaPlayed and IAS <= 30 then
+                play_sound(TaxiInPA_snd)
+                for i = 1, 90, 1 do
+                    local ref = "anim/blind/L/"..i
+                    set(ref, 0)
+                end
+                for i = 1, 90, 1 do
+                    local ref = "anim/blind/R/"..i
+                    set(ref, 0)
+                end
+                print("767CrewPack: After landing PA")      
+                faTaxiInPaPlayed = true       
             end
         end
     end
@@ -760,6 +794,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
             horsePlayed = false
             todPaPlayed = false
             seatsLandingPlayed = false
+            paxSeatBeltsPlayed = false
             set("1-sim/lights/landingN/switch", 0)
             print("767CrewPack: Gear Up")
         end
