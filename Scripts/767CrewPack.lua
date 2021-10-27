@@ -391,6 +391,10 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
                 set("sim/cockpit2/controls/elevator_trim", 0.046353)
                 set("1-sim/vor1/isAuto", 1)
                 set("1-sim/vor1/isAuto", 2)
+                set("sim/cockpit2/radios/actuators/audio_selection_com1", 1)
+                set("sim/cockpit2/radios/actuators/audio_selection_com2", 1)
+                set("1-sim/mic_sel/1/1/volume", 1)
+                set("1-sim/mic_sel/1/3/volume", 1)
             end
             cockpitSetup = true
             print("767CrewPack: Attempting basic setup")
@@ -747,7 +751,7 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
         if not ready then
             return
         end
-        if toCalloutMode and (AGL / 0.3048) > FMS_ACCEL_HT + 50 and not vnavPressed then
+        if toCalloutMode and (AGL / 0.3048) > FMS_ACCEL_HT + 100 and not vnavPressed then
             if VNAV_ENGAGED_LT == 0 then
                 if VNAV_BUTTON == 0 and not vnavPressed then
                     set("1-sim/AP/vnavButton", 1)
