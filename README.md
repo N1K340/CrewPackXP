@@ -1,4 +1,4 @@
-# 767CrewPack
+# XPCrewPack
 Crew Pack for the Flight Factor 757 / 767 in X-Plane 11
 
 This plugin adds basic crew calls to the FF 757 and 767 aircraft, along with some procedural PNF help.
