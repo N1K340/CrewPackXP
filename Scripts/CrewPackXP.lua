@@ -27,6 +27,7 @@ dataref("cpxp_SIM_TIME", "sim/time/total_running_time_sec")
 -- Dependencies
 local LIP = require("LIP")
 local FF767 = require("CrewPackXP/FF767_CrewPackXP")
+local FF767snd = require("CrewPackXP/FF767_SND_CrewPackXP")
 
 require "graphics"
 
@@ -66,23 +67,6 @@ do_often("cpxpBubbleTiming()")
 -- Delay Init
 local cpxp_Ready = false
 
---[[function cpxpDelayInit()
-    if cpxp_startTime == 0 then
-        cpxp_startTime = (cpxp_SIM_TIME + cpxp_initDelay)
-        cpxp_bubbleTimer = -12
-        -- cpxpParseSettings()
-    end
-    if (cpxp_SIM_TIME < cpxp_startTime) then
-        print("CrewPackXP: Waiting to start " .. math.floor(cpxp_SIM_TIME) .. " waiting for " .. math.floor(cpxp_startTime))
-        cpxp_msgStr = "CrewPackXP loading in " .. math.floor(cpxp_startTime - cpxp_SIM_TIME) .. " seconds"
-        return
-    end
-
-    if not FF767.cpxp_aircraftDelay() then
-        print("CPXP: Aircraft Module reporting not ready")
-    else
-end]]
-
 function cpxpDelayInit()
     if not cpxp_Ready then
         if cpxp_startTime == 0 then
@@ -110,5 +94,11 @@ function cpxpDelayInit()
 end
 
 do_often("cpxpDelayInit()")
-
-
+--[[
+function cpxpMainCall()
+    if PLANE_ICAO == "B752" and cpxp_Ready then
+        FF767snd.SetGain()
+        FF767snd.cpxpStartSound()
+    end
+end
+]]
