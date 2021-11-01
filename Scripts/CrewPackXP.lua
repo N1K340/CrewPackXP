@@ -98,6 +98,20 @@ do_often("cpxpDelayInit()")
 -- Settings
     -- Settings
 
+    local CrewPackXPSettings = {}
+    local cpxpGseOnBeacon = true
+    local cpxpGAAuto = true
+    local cpxpStartCall = true
+    local cpxpLocGs = true
+          cpxpSoundVol = 0.8
+          cpxpPaVol = 0.5
+    local cpxpMaster = true
+    local cpxpApuConnect = true
+    local cpxpGpuConnect = true
+    local cpxpMurderFA = true
+    local cpxpFA = true
+         cpxpEngStartType = 2
+
     if not SUPPORTS_FLOATING_WINDOWS then
         -- to make sure the script doesn't stop old FlyWithLua versions
         print("imgui not supported by your FlyWithLua version, please update to latest version")
@@ -107,7 +121,7 @@ do_often("cpxpDelayInit()")
     function ShowCrewPackXPSettings_wnd()
         ParseCrewPackXPSettings()
         CrewPackXPSettings_wnd = float_wnd_create(450, 450, 0, true)
-        float_wnd_set_title(CrewPackXPSettings_wnd, "767 Crew Pack Settings")
+        float_wnd_set_title(CrewPackXPSettings_wnd, "CrewPackXP Settings")
         float_wnd_set_imgui_builder(CrewPackXPSettings_wnd, "CrewPackXPSettings_contents")
         float_wnd_set_onclose(CrewPackXPSettings_wnd, "CloseCrewPackXPSettings_wnd")
     end
@@ -124,70 +138,63 @@ do_often("cpxpDelayInit()")
         imgui.Separator()
         imgui.TextUnformatted("")
         imgui.SetCursorPos(20, imgui.GetCursorPosY())
-        local changed, newVal = imgui.Checkbox("CrewPackXP on/off", master)
+        local changed, newVal = imgui.Checkbox("CrewPackXP on/off", cpxpMaster)
         if changed then
-            master = newVal
+            cpxpMaster = newVal
             SaveCrewPackXPData()
-            print("CrewPackXP: Plugin turned on" .. tostring(master))
+            print("CrewPackXP: Plugin turned on" .. tostring(cpxpMaster))
         end
         imgui.SetCursorPos(20, imgui.GetCursorPosY())
-        local changed, newVal = imgui.Checkbox("Crew Pack FA Onboard?", faOnboard)
+        local changed, newVal = imgui.Checkbox("Crew Pack FA Onboard?", cpxpFA)
         if changed then
-            faOnboard = newVal
+            cpxpFA = newVal
             SaveCrewPackXPData()
-            print("CrewPackXP: Start message logic set to " .. tostring(startMsg))
+            print("CrewPackXP: Start message logic set to " .. tostring(cpxpStartCall))
         end
         imgui.SetCursorPos(20, imgui.GetCursorPosY())
-        local changed, newVal = imgui.Checkbox("Play corny sound bite on loading", startMsg)
+        local changed, newVal = imgui.Checkbox("Play corny sound bite on loading", cpxpStartCall)
         if changed then
-            startMsg = newVal
+            cpxpStartCall = newVal
             SaveCrewPackXPData()
-            print("CrewPackXP: Start message logic set to " .. tostring(startMsg))
+            print("CrewPackXP: Start message logic set to " .. tostring(cpxpStartCall))
         end
         imgui.SetCursorPos(20, imgui.GetCursorPosY())
-		local changed, newVal = imgui.Checkbox("Play Localiser and Glideslop calls", locgsCalls)
+		local changed, newVal = imgui.Checkbox("Play Localiser and Glideslop calls", cpxpLocGs)
         if changed then
-            locgsCalls = newVal
+            cpxpLocGs = newVal
             SaveCrewPackXPData()
             print("CrewPackXP: LOC / GS Call logic set to " .. tostring(syncAlt))
         end
         imgui.SetCursorPos(20, imgui.GetCursorPosY())
-		local changed, newVal = imgui.Checkbox("FO Performs Preflight Scan Flow", foPreflight)
+        local changed, newVal = imgui.Checkbox("Supress default flight attendant from pestering", cpxpMurderFA)
         if changed then
-            foPreflight = newVal
+            cpxpMurderFA = newVal
             SaveCrewPackXPData()
-            print("CrewPackXP: FO PreScan logic set to " .. tostring(foPreflight))
+            print("CrewPackXP: Default FA logic set to " .. tostring(cpxpFoPreflight))
         end
         imgui.SetCursorPos(20, imgui.GetCursorPosY())
-        local changed, newVal = imgui.Checkbox("Supress default flight attendant from pestering", defaultFA)
+        local changed, newVal = imgui.Checkbox("FO automation on go around", cpxpGAAuto)
         if changed then
-            defaultFA = newVal
+            cpxpGAAuto = newVal
             SaveCrewPackXPData()
-            print("CrewPackXP: Default FA logic set to " .. tostring(foPreflight))
+            print("CrewPackXP: Go Around automation logic set to " .. tostring(cpxpGAAuto))
         end
         imgui.SetCursorPos(20, imgui.GetCursorPosY())
-        local changed, newVal = imgui.Checkbox("FO automation on go around", goAroundAutomation)
+        local changed, newVal = imgui.Checkbox("Chocks, Doors and belt loaders tied to Beacon on/off", cpxpGseOnBeacon)
         if changed then
-            goAroundAutomation = newVal
+            cpxpGseOnBeacon = newVal
             SaveCrewPackXPData()
-            print("CrewPackXP: Go Around automation logic set to " .. tostring(goAroundAutomation))
-        end
-        imgui.SetCursorPos(20, imgui.GetCursorPosY())
-        local changed, newVal = imgui.Checkbox("Chocks, Doors and belt loaders tied to Beacon on/off", gseOnBeacon)
-        if changed then
-            gseOnBeacon = newVal
-            SaveCrewPackXPData()
-            print("CrewPackXP: GSE on beacon set to " .. tostring(gseOnBeacon))
+            print("CrewPackXP: GSE on beacon set to " .. tostring(cpxpGseOnBeacon))
         end
         imgui.SetCursorPos(20, imgui.GetCursorPosY())
         if imgui.BeginCombo("Engine Start Call", "", imgui.constant.ComboFlags.NoPreview) then
-            if imgui.Selectable("Left / Right", engStartType == 1) then
-                engStartType = 1
+            if imgui.Selectable("Left / Right", cpxpEngStartType == 1) then
+                cpxpEngStartType = 1
                 SaveCrewPackXPData()
                 print("CrewPackXP: Engine start call set to Left / Right")
             end
-            if imgui.Selectable("Engine 1 / 2", engStartType == 2) then
-                engStartType = 2
+            if imgui.Selectable("Engine 1 / 2", cpxpEngStartType == 2) then
+                cpxpEngStartType = 2
                 SaveCrewPackXPData()
                 print("CrewPackXP: Engine start call set to 1 / 2")
             end
@@ -203,38 +210,36 @@ do_often("cpxpDelayInit()")
         imgui.SetCursorPos(20, imgui.GetCursorPosY())
         imgui.TextUnformatted("Auto power connections: ") 
         imgui.SetCursorPos(20, imgui.GetCursorPosY())
-        local changed, newVal = imgui.Checkbox("GPU on bay", gpuConnect)
+        local changed, newVal = imgui.Checkbox("GPU on bay", cpxpGpuConnect)
         if changed then
-            gpuConnect = newVal
+            cpxpGpuConnect = newVal
             SaveCrewPackXPData()
             print("CrewPackXP: GPU Power on ground")
         end
         imgui.SameLine()
-        local changed, newVal = imgui.Checkbox("APU smart start", apuConnect)
+        local changed, newVal = imgui.Checkbox("APU smart start", cpxpApuConnect)
         if changed then
-            apuConnect = newVal
+            cpxpApuConnect = newVal
             SaveCrewPackXPData()
             print("CrewPackXP: APU started on ground")
         end     
         imgui.TextUnformatted("")   
         imgui.SetCursorPos(75, imgui.GetCursorPosY())
-        local changed, newVal = imgui.SliderFloat("Crew Volume", (soundVol * 100), 1, 100, "%.0f")
+        local changed, newVal = imgui.SliderFloat("Crew Volume", (cpxpSoundVol * 100), 1, 100, "%.0f")
         if changed then
-            soundVol = (newVal / 100)
-            set_sound_gain(Output_snd, soundVol)
-            play_sound(Output_snd)
+            cpxpSoundVol = (newVal / 100)
+            -- play_sound(Output_snd)
             SaveCrewPackXPData()
-            print("CrewPackXPs: Volume set to " .. (soundVol * 100) .. " %")
+            print("CrewPackXPs: Volume set to " .. (cpxpSoundVol * 100) .. " %")
         end
         imgui.TextUnformatted("")   
         imgui.SetCursorPos(75, imgui.GetCursorPosY())
-        local changed, newVal1 = imgui.SliderFloat("PA Volume", (paVol * 100), 1, 100, "%.0f")
+        local changed, newVal1 = imgui.SliderFloat("PA Volume", (cpxpPaVol * 100), 1, 100, "%.0f")
         if changed then
-            paVol = (newVal1 / 100)
-            set_sound_gain(Output_snd, paVol)
-            play_sound(Output_snd)
+            cpxpPaVol = (newVal1 / 100)
+            -- play_sound(Output_snd)
             SaveCrewPackXPData()
-            print("CrewPackXPs: Volume set to " .. (paVol * 100) .. " %")
+            print("CrewPackXPs: Volume set to " .. (cpxpPaVol * 100) .. " %")
         end
         imgui.Separator()
         imgui.TextUnformatted("")
@@ -261,52 +266,54 @@ do_often("cpxpDelayInit()")
     end
 
     function ParseCrewPackXPSettings()
-        CrewPackXPSettings = LIP.load(SCRIPT_DIRECTORY .. CrewPackXPSettingsFile)
-        foPreflight = CrewPackXPSettings.CrewPackXP.foPreflight
-        gseOnBeacon = CrewPackXPSettings.CrewPackXP.gseOnBeacon
-        syncAlt = CrewPackXPSettings.CrewPackXP.syncAlt
-        goAroundAutomation = CrewPackXPSettings.CrewPackXP.goAroundAutomation
-        startMsg = CrewPackXPSettings.CrewPackXP.startMsg
-        locgsCalls = CrewPackXPSettings.CrewPackXP.locgsCalls
-        soundVol = CrewPackXPSettings.CrewPackXP.soundVol
-        paVol = CrewPackXPSettings.CrewPackXP.paVol
-        master = CrewPackXPSettings.CrewPackXP.master
-        apuConnect = CrewPackXPSettings.CrewPackXP.apuConnect
-        gpuConnect = CrewPackXPSettings.CrewPackXP.gpuConnect
-        defaultFA = CrewPackXPSettings.CrewPackXP.defaultFA
-        faOnboard = CrewPackXPSettings.CrewPackXP.faOnboard
-        engStartType = CrewPackXPSettings.CrewPackXP.engStartType
-        print("CrewPackXP: Settings Loaded")
-        setGain()
+        local f = io.open(AIRCRAFT_PATH .. "/CrewPackXPSettings.ini","r")
+        if f ~= nil then
+            io.close(f)
+            CrewPackXPSettings = LIP.load(AIRCRAFT_PATH .. "/CrewPackXPSettings.ini")
+            cpxpFoPreflight = CrewPackXPSettings.CrewPackXP.cpxpFoPreflight
+            cpxpGseOnBeacon = CrewPackXPSettings.CrewPackXP.cpxpGseOnBeacon
+            cpxpGAAuto = CrewPackXPSettings.CrewPackXP.cpxpGAAuto
+            cpxpStartCall = CrewPackXPSettings.CrewPackXP.cpxpStartCall
+            cpxpLocGs = CrewPackXPSettings.CrewPackXP.cpxpLocGs
+            cpxpSoundVol = CrewPackXPSettings.CrewPackXP.cpxpSoundVol
+            cpxpPaVol = CrewPackXPSettings.CrewPackXP.cpxpPaVol
+            cpxpMaster = CrewPackXPSettings.CrewPackXP.cpxpMaster
+            cpxpApuConnect = CrewPackXPSettings.CrewPackXP.cpxpApuConnect
+            cpxpGpuConnect = CrewPackXPSettings.CrewPackXP.cpxpGpuConnect
+            cpxpMurderFA = CrewPackXPSettings.CrewPackXP.cpxpMurderFA
+            cpxpFA = CrewPackXPSettings.CrewPackXP.cpxpFA
+            cpxpEngStartType = CrewPackXPSettings.CrewPackXP.cpxpEngStartType
+            print("CrewPackXP: Settings Loaded")
+            FF767.cpxpSetGain()
+        end
     end
 
     function SaveCrewPackXPSettings(CrewPackXPSettings)
-        LIP.save(SCRIPT_DIRECTORY .. CrewPackXPSettingsFile, CrewPackXPSettings)
+        LIP.save(AIRCRAFT_PATH .. "/CrewPackXPSettings.ini", CrewPackXPSettings)
     end
 
     function SaveCrewPackXPData()
         CrewPackXPSettings = {
             CrewPackXP = {
-                foPreflight = foPreflight,
-                gseOnBeacon = gseOnBeacon,
-                syncAlt = syncAlt,
-                goAroundAutomation = goAroundAutomation,
-                startMsg = startMsg,
-                locgsCalls = locgsCalls,
-                soundVol = soundVol,
-                master = master,
-                gpuConnect = gpuConnect,
-                apuConnect = apuConnect,
-                defaultFA = defaultFA,
-                faOnboard = faOnboard,
-                paVol = paVol,
-                engStartType = engStartType,
+                cpxpFoPreflight = cpxpFoPreflight,
+                cpxpGseOnBeacon = cpxpGseOnBeacon,
+                cpxpGAAuto = cpxpGAAuto,
+                cpxpStartCall = cpxpStartCall,
+                cpxpLocGs = cpxpLocGs,
+                cpxpSoundVol = cpxpSoundVol,
+                cpxpMaster = cpxpMaster,
+                cpxpGpuConnect = cpxpGpuConnect,
+                cpxpApuConnect = cpxpApuConnect,
+                cpxpMurderFA = cpxpMurderFA,
+                cpxpFA = cpxpFA,
+                cpxpPaVol = cpxpPaVol,
+                cpxpEngStartType = cpxpEngStartType,
             }
         }
         print("CrewPackXP: Settings Saved")
         bubbleTimer = 0
-        msgStr = "767 Crew Pack settings saved"
-        setGain()
+        msgStr = "CrewPackXP settings saved"
+        FF767.cpxpSetGain()
         SaveCrewPackXPSettings(CrewPackXPSettings)
     end
 
@@ -324,9 +331,9 @@ do_often("cpxpDelayInit()")
 function cpxpMainCall()
     if PLANE_ICAO == "B752" and cpxp_Ready then
         FF767.cpxpAircraftDatRef()
-        FF767.cpxpSetGain()
         FF767.cpxpStartSound()
         FF767.cpxpMonitorADC1()
+        FF767.cpxpEngineStart()
     end
 end
 

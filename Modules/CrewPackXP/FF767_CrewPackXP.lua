@@ -5,11 +5,10 @@ CrewPackXP FF767 Sound Config File
 module(..., package.seeall)
 
 local FF767init = require("CrewPackXP/FF767init_CrewPackXP")
+local LIP = require("LIP")
+local cpxpSoundSettings = {}
 
-local cpxpSoundVol = 1.0
-local cpxpPaVol = 0.3
 local cpxpStartPlayed = false
-
 
 -- Sounds
 local EightyKts_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pnf_pf_80kts.wav")
@@ -53,44 +52,44 @@ local Pax_Seatbelts_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/F
 local TaxiInPA_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/fa_goodbye.wav")
 
 function cpxpSetGain()
-    set_sound_gain(EightyKts_snd, cpxpSoundVol)
-    set_sound_gain(V1_snd, cpxpSoundVol)
-    set_sound_gain(VR_snd, cpxpSoundVol)
-    set_sound_gain(PosRate_snd, cpxpSoundVol)
-    set_sound_gain(GearUp_snd, cpxpSoundVol)
-    set_sound_gain(GearDwn_snd, cpxpSoundVol)
-    set_sound_gain(Flap0_snd, cpxpSoundVol)
-    set_sound_gain(Flap1_snd, cpxpSoundVol)
-    set_sound_gain(Flap5_snd, cpxpSoundVol)
-    set_sound_gain(Flap15_snd, cpxpSoundVol)
-    set_sound_gain(Flap20_snd, cpxpSoundVol)
-    set_sound_gain(Flap25_snd, cpxpSoundVol)
-    set_sound_gain(Flap30_snd, cpxpSoundVol)
-    set_sound_gain(SpdBrkUp_snd, cpxpSoundVol)
-    set_sound_gain(SpdBrkNot_snd, cpxpSoundVol)
-    set_sound_gain(SixtyKts_snd, cpxpSoundVol)
-    set_sound_gain(GScap_snd, cpxpSoundVol)
-    set_sound_gain(LOCcap_snd, cpxpSoundVol)
-    set_sound_gain(LOCGScap_snd, cpxpSoundVol)
-    set_sound_gain(Horse_snd, cpxpSoundVol)
-    set_sound_gain(ClbThrust_snd, cpxpSoundVol)
-    set_sound_gain(VNAV_snd, cpxpSoundVol)
-    set_sound_gain(LNAV_snd, cpxpSoundVol)
-    set_sound_gain(StartLeft_snd, cpxpSoundVol)
-    set_sound_gain(StartRight_snd, cpxpSoundVol)
-    set_sound_gain(StartLeft1_snd, cpxpSoundVol)
-    set_sound_gain(StartRight2_snd, cpxpSoundVol)
-    set_sound_gain(Start1, cpxpSoundVol)
-    set_sound_gain(Start2, cpxpSoundVol)
-    set_sound_gain(Start3, cpxpSoundVol)
-    set_sound_gain(Start4, cpxpSoundVol)
-    set_sound_gain(FA_Welcome_snd, cpxpPaVol)
-    set_sound_gain(SafetyDemo767_snd, cpxpPaVol)
-    set_sound_gain(TOD_PA_snd, cpxpPaVol)
-    set_sound_gain(SeatLand_snd, cpxpPaVol)
-    set_sound_gain(Pax_Seatbelts_snd, cpxpPaVol)
-    set_sound_gain(TaxiInPA_snd, cpxpPaVol)
-    set_sound_gain(CabinSecure_snd, cpxpSoundVol)
+    set_sound_gain(EightyKts_snd, _G.cpxpSoundVol)
+    set_sound_gain(V1_snd, _G.cpxpSoundVol)
+    set_sound_gain(VR_snd, _G.cpxpSoundVol)
+    set_sound_gain(PosRate_snd, _G.cpxpSoundVol)
+    set_sound_gain(GearUp_snd, _G.cpxpSoundVol)
+    set_sound_gain(GearDwn_snd, _G.cpxpSoundVol)
+    set_sound_gain(Flap0_snd, _G.cpxpSoundVol)
+    set_sound_gain(Flap1_snd, _G.cpxpSoundVol)
+    set_sound_gain(Flap5_snd, _G.cpxpSoundVol)
+    set_sound_gain(Flap15_snd, _G.cpxpSoundVol)
+    set_sound_gain(Flap20_snd, _G.cpxpSoundVol)
+    set_sound_gain(Flap25_snd, _G.cpxpSoundVol)
+    set_sound_gain(Flap30_snd, _G.cpxpSoundVol)
+    set_sound_gain(SpdBrkUp_snd, _G.cpxpSoundVol)
+    set_sound_gain(SpdBrkNot_snd, _G.cpxpSoundVol)
+    set_sound_gain(SixtyKts_snd, _G.cpxpSoundVol)
+    set_sound_gain(GScap_snd, _G.cpxpSoundVol)
+    set_sound_gain(LOCcap_snd, _G.cpxpSoundVol)
+    set_sound_gain(LOCGScap_snd, _G.cpxpSoundVol)
+    set_sound_gain(Horse_snd, _G.cpxpSoundVol)
+    set_sound_gain(ClbThrust_snd, _G.cpxpSoundVol)
+    set_sound_gain(VNAV_snd, _G.cpxpSoundVol)
+    set_sound_gain(LNAV_snd, _G.cpxpSoundVol)
+    set_sound_gain(StartLeft_snd, _G.cpxpSoundVol)
+    set_sound_gain(StartRight_snd, _G.cpxpSoundVol)
+    set_sound_gain(StartLeft1_snd, _G.cpxpSoundVol)
+    set_sound_gain(StartRight2_snd, _G.cpxpSoundVol)
+    set_sound_gain(Start1, _G.cpxpSoundVol)
+    set_sound_gain(Start2, _G.cpxpSoundVol)
+    set_sound_gain(Start3, _G.cpxpSoundVol)
+    set_sound_gain(Start4, _G.cpxpSoundVol)
+    set_sound_gain(FA_Welcome_snd, _G.cpxpPaVol)
+    set_sound_gain(SafetyDemo767_snd, _G.cpxpPaVol)
+    set_sound_gain(TOD_PA_snd, _G.cpxpPaVol)
+    set_sound_gain(SeatLand_snd, _G.cpxpPaVol)
+    set_sound_gain(Pax_Seatbelts_snd, _G.cpxpPaVol)
+    set_sound_gain(TaxiInPA_snd, _G.cpxpPaVol)
+    set_sound_gain(CabinSecure_snd, _G.cpxpSoundVol)
 end
 
 -- Start Up Sounds
@@ -178,30 +177,114 @@ end -- End of MonitorADC1
 -- Engine Start Calls
 
 local cpxpLeftStart = false
+local cpxpRightStart = false
 
-function CP767EngineStart()
-        if cpxpLEFT_STARTER == 1 and not cpxpleftStart then
-            print("767CrewPack: Start Left Engine")
-            if engStartType == 1 then
-                play_sound(StartLeft_snd)
-            else
-                play_sound(StartLeft1_snd)
-            end
-            leftStart = true
+function cpxpEngineStart()
+    if cpxp_LEFT_STARTER == 1 and not cpxpLeftStart then
+        print("CrewPackXP: Start Left Engine")
+        if _G.cpxpEngStartType == 1 then
+            play_sound(StartLeft_snd)
+        else
+            play_sound(StartLeft1_snd)
         end
-        if LEFT_STARTER == 0 then
-            leftStart = false
-        end
-        if RIGHT_STARTER == 1 and not rightStart then
-            print("767CrewPack: Start Right Engine")
-            if engStartType == 1 then
-                play_sound(StartRight_snd)
-            else
-                play_sound(StartRight2_snd)
-            end               
-            rightStart = true
-        end
-        if RIGHT_STARTER == 0 then
-            rightStart = false
-        end
+        cpxpLeftStart = true
+    end
+    if cpxp_LEFT_STARTER == 0 then
+        cpxpLeftStart = false
+    end
+    if cpxp_RIGHT_STARTER == 1 and not cpxpRightStart then
+        print("CrewPackXP: Start Right Engine")
+        if _G.cpxpEngStartType == 1 then
+            play_sound(StartRight_snd)
+        else
+            play_sound(StartRight2_snd)
+        end               
+        cpxpRightStart = true
+    end
+    if cpxp_RIGHT_STARTER == 0 then
+        cpxpRightStart = false
+    end
 end
+
+--[[ Flight Attendant
+
+function cpxpFlightAttendant()
+    if defaultFA then
+        set("params/saiftydone", 1)
+    end
+    if ccpatimer < 241 then
+        ccpatimer = ccpatimer + 1
+        print("767CrewPack: Cabin timer " .. ccpatimer)
+        print(math.floor(get("sim/flightmodel2/position/groundspeed")))
+    end
+    if faOnboard then
+        if BEACON == 1 and WEIGHT_ON_WHEELS == 1 and ENG2_N2 > 10 and faPlaySeq == 0 then
+            ccpatimer = 150
+            play_sound(FA_Welcome_snd)
+            faPlaySeq = 1
+            print("767CrewPack: Playing FA welcome PA - Engine Start")
+        end
+        if BEACON == 1 and WEIGHT_ON_WHEELS == 1 and (math.floor(get("sim/flightmodel2/position/groundspeed"))) ~= 0 and faPlaySeq == 0 then
+            ccpatimer = 150
+            play_sound(FA_Welcome_snd)
+            faPlaySeq = 1
+            print("767CrewPack: Playing FA welcome PA, GS "..(math.floor(get("sim/flightmodel2/position/groundspeed"))))
+        end
+        if BEACON == 1 and WEIGHT_ON_WHEELS == 1 and faPlaySeq == 1 and ccpatimer == 241 then
+            ccpatimer = 0
+            play_sound(SafetyDemo767_snd)
+            print("767CrewPack: Playing Safety Demo")
+            
+            faPlaySeq = 2
+        end
+        if BEACON == 1 and WEIGHT_ON_WHEELS == 1 and faPlaySeq == 2 and ccpatimer == 241 then
+            play_sound(CabinSecure_snd)
+            print("767CrewPack: Played Cabin Secure")
+            faPlaySeq = 3
+        end
+        if FMS_MODE == 4 and not todPaPlayed then
+            play_sound(TOD_PA_snd)
+            print("767CrewPack: Played FO TOD PA")
+            todPaPlayed = true
+            for i = 1, 90, 1 do
+                local ref = "anim/blind/L/"..i
+                set(ref, 0)
+            end
+            for i = 1, 90, 1 do
+                local ref = "anim/blind/R/"..i
+                set(ref, 0)
+            end
+        end
+        if FMS_MODE == 4 and not paxSeatBeltsPlayed and BELTS_SIGN == 2 then
+            play_sound(Pax_Seatbelts_snd)
+            print("767CrewPack: Seatbelts selected on during descent")
+            paxSeatBeltsPlayed = true
+        end
+        if gearDownPlayed and calloutTimer >=2 and not seatsLandingPlayed then
+            play_sound(SeatLand_snd)
+            for i = 1, 90, 1 do
+                local ref = "anim/blind/L/"..i
+                set(ref, 0)
+            end
+            for i = 1, 90, 1 do
+                local ref = "anim/blind/R/"..i
+                set(ref, 0)
+            end
+            print("767CrewPack: Played seats for landing")
+            seatsLandingPlayed = true
+        end
+        if WEIGHT_ON_WHEELS == 1 and flightOccoured and not faTaxiInPaPlayed and IAS <= 30 then
+            play_sound(TaxiInPA_snd)
+            for i = 1, 90, 1 do
+                local ref = "anim/blind/L/"..i
+                set(ref, 0)
+            end
+            for i = 1, 90, 1 do
+                local ref = "anim/blind/R/"..i
+                set(ref, 0)
+            end
+            print("767CrewPack: After landing PA")      
+            faTaxiInPaPlayed = true       
+        end
+    end
+end ]]
