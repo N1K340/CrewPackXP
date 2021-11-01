@@ -20,7 +20,7 @@
 
 -- Initial Variables
 local cpxp_version = "0.7-beta"
-local cpxp_initDelay = 15
+local cpxp_initDelay = 5
 local cpxp_startTime = 0
 dataref("cpxp_SIM_TIME", "sim/time/total_running_time_sec")
 
@@ -31,31 +31,7 @@ local FF767 = require("CrewPackXP/FF767_CrewPackXP")
 require "graphics"
 
 -- Generic Datarefs
-dataref("cpxp_AGL", "sim/flightmodel/position/y_agl")
-dataref("cpxp_FLAP_LEVER", "sim/flightmodel/controls/flaprqst", "writeable")
-dataref("cpxp_GEAR_HANDLE", "1-sim/cockpit/switches/gear_handle")
-dataref("cpxp_SPEED_BRAKE", "sim/cockpit2/controls/speedbrake_ratio")
-dataref("cpxp_WEIGHT_ON_WHEELS", "sim/cockpit2/tcas/targets/position/weight_on_wheels", "readonly", 0)
-dataref("cpxp_PARK_BRAKE", "sim/cockpit2/controls/parking_brake_ratio")
-dataref("cpxp_ENG1_N2", "sim/flightmodel2/engines/N2_percent", "readonly", 0)
-dataref("cpxp_ENG2_N2", "sim/flightmodel2/engines/N2_percent", "readonly", 1)
-dataref("cpxp_LOC_DEVIATION", "sim/cockpit/radios/nav2_hdef_dot")
-dataref("cpxp_LOC_RECEIVED", "1-sim/radios/isReceivingIlsLoc1")
-dataref("cpxp_GS_DEVIATION", "sim/cockpit/radios/nav2_vdef_dot")
-dataref("cpxp_GS_RECEIVED", "1-sim/radios/isReceivingIlsGs1")
-dataref("cpxp_STROBE_SWITCH", "sim/cockpit2/switches/strobe_lights_on")
-dataref("cpxp_ENGINE_MODE", "1-sim/eng/thrustRefMode") --TOGA 6 -- TO 1 / 11 / 12
-dataref("cpxp_MCP_SPEED", "sim/cockpit/autopilot/airspeed", "writeable")
-dataref("cpxp_FLCH_BUTTON", "1-sim/AP/flchButton", "writeable")
-dataref("cpxp_VNAV_ENGAGED_LT", "1-sim/AP/lamp/4")
-dataref("cpxp_VNAV_BUTTON", "1-sim/AP/vnavButton", "writeable")
-dataref("cpxp_LNAV_BUTTON", "1-sim/AP/lnavButton", "writeable")
-dataref("cpxp_AUTO_BRAKE", "1-sim/gauges/autoBrakeModeSwitcher", "writeable")
-dataref("cpxp_TOGA_BUTTON", "1-sim/AP/togaButton")
-dataref("cpxp_BEACON", "sim/cockpit2/switches/beacon_on")
-dataref("cpxp_LEFT_STARTER", "sim/flightmodel2/engines/starter_is_running", "readonly", 0)
-dataref("cpxp_RIGHT_STARTER", "sim/flightmodel2/engines/starter_is_running", "readonly", 1)
-dataref("cpxp_BELTS_SIGN", "sim/cockpit2/annunciators/fasten_seatbelt")
+
 
 print("CrewPackXP: Initialising version " .. cpxp_version)
 print("CrewPackXP: Starting at sim time " .. math.floor(cpxp_SIM_TIME))
@@ -88,9 +64,9 @@ do_every_draw("cpxpMsg()")
 do_often("cpxpBubbleTiming()")
 
 -- Delay Init
-local cpxp_timeReady = false
+local cpxp_Ready = false
 
-function cpxpDelayInit()
+--[[function cpxpDelayInit()
     if cpxp_startTime == 0 then
         cpxp_startTime = (cpxp_SIM_TIME + cpxp_initDelay)
         cpxp_bubbleTimer = -12
@@ -102,20 +78,34 @@ function cpxpDelayInit()
         return
     end
 
-    if not FF767.cpxp_aircraftReady then
-        if PLANE_ICAO == "B752" then
-        print("CrewPackXP: Waiting for aircraft module to report ready")
-        FF767.cpxpAircraftDelay()
-        print("Main: " .. FF767.cpxp_aircraftReady)
+    if not FF767.cpxp_aircraftDelay() then
+        print("CPXP: Aircraft Module reporting not ready")
+    else
+end]]
+
+function cpxpDelayInit()
+    if not cpxp_Ready then
+        if cpxp_startTime == 0 then
+            cpxp_startTime = (cpxp_SIM_TIME + cpxp_initDelay)
+            cpxp_bubbleTimer = -12
+            -- cpxpParseSettings()
         end
-    end
-
-
-    if not cpxp_timeReady then
-        print("CrewPackXP: Plugin Initialised for " .. PLANE_ICAO .. " at time " .. math.floor(cpxp_SIM_TIME))
-        cpxp_msgStr = "CrewPackXP Initialised for " .. PLANE_ICAO
-        cpxp_bubbleTimer = 0
-        cpxp_timeReady = true
+        if (cpxp_SIM_TIME < cpxp_startTime) then
+            print("CrewPackXP: Waiting to start " .. math.floor(cpxp_SIM_TIME) .. " waiting for " .. math.floor(cpxp_startTime))
+            cpxp_msgStr = "CrewPackXP loading in " .. math.floor(cpxp_startTime - cpxp_SIM_TIME) .. " seconds"
+            return
+        end
+        if PLANE_ICAO == "B752" then
+            if not FF767.cpxpAircraftDelay() then
+                print("CPXP: Aircraft Module reporting not ready")
+            else
+                print("CPXP: Aircraft Module reports it has worked")
+                cpxp_Ready = true
+            end
+        else 
+            cpxp_Ready = true
+            print("Aircraft Not Recognised")
+        end
     end
 end
 
