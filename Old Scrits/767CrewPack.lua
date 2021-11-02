@@ -1454,3 +1454,4 @@ else
     print("767CrewPack: Unsupported Aircraft Type " .. PLANE_ICAO)
 end -- Master End
 ]]
+ccpatimer
