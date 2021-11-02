@@ -37,6 +37,8 @@ cpxpEngStartType = 2
 
 -- Local Var
 
+local cpxpShowSettingsWindow = false
+
 print("CrewPackXP: Loading module " .. cpxpModuleVersion)
 
 -- Create Settings window
@@ -171,12 +173,12 @@ function CloseCrewPackXPSettings_wnd()
 end
 
 function ToggleCrewPackXPSettings()
-    if not showSettingsWindow then
+    if not CPXPshowSettingsWindow then
         ShowCrewPackXPSettings_wnd()
-        showSettingsWindow = true
-    elseif showSettingsWindow then
+        CPXPshowSettingsWindow = true
+    else
         CloseCrewPackXPSettings_wnd()
-        showSettingsWindow = false
+        CPXPshowSettingsWindow = false
     end
 end
 
@@ -232,7 +234,7 @@ function SaveCrewPackXPData()
     SaveCrewPackXPSettings(CrewPackXPSettings)
 end
 
-add_macro("767 Crew Pack Settings", "ShowCrewPackXPSettings_wnd()", "CloseCrewPackXPSettings_wnd()", "deactivate")
+--[[add_macro("767 Crew Pack Settings", "ShowCrewPackXPSettings_wnd()", "CloseCrewPackXPSettings_wnd()", "deactivate")
 create_command(
     "FlyWithLua/CrewPackXP/toggle_settings",
     "toggle CrewPackXP Settings",
@@ -240,3 +242,4 @@ create_command(
     "",
     ""
 )
+]]

@@ -5,6 +5,8 @@ changelog:
 v0.1 - Initial Release
 ]]
 
+module(..., package.seeall)
+
 --Initial Variables
 local cpxpModuleVersion = "FF767 - v0.1"
 
@@ -78,11 +80,13 @@ print("CrewPackXP: Loading module " .. cpxpModuleVersion)
 
 -- Initialisation Check
 function cpxpAircraftDelay()
-    if (XPLMFindDataRef("anim/17/button") == nil) then
-        return
-    else 
-        _G.cpxpReady = true
-        print("CrewPackXP: Initialising FF767 datarefs")
+    if not  _G.cpxpReady then
+        if (XPLMFindDataRef("anim/17/button") == nil) then
+            return
+        else 
+            _G.cpxpReady = true
+            print("CrewPackXP: Initialising FF767 datarefs")
+        end
     end
 end 
 
@@ -176,7 +180,7 @@ function cpxpFlightAttendant()
             print("767CrewPack: Seatbelts selected on during descent")
             cpxpPaxSeatBeltsPlayed = true
         end
-        --[[if gearDownPlayed and calloutTimer >=2 and not cpxpSeatsLandingPlayed then
+        --[[if gearDownPlayed and cpxpPaTimer >=2 and not cpxpSeatsLandingPlayed then
             
             for i = 1, 90, 1 do
                 local ref = "anim/blind/L/"..i

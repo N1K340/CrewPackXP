@@ -25,13 +25,10 @@ dataref("cpxp_SIM_TIME", "sim/time/total_running_time_sec")
 
 -- Dependencies
 
-
-if PLANE_ICAO == 'B752' then
-    local FF767 = require("CrewPackXP/FF767_CrewPackXP")
-    local FF767snd = require("CrewPackXP/FF767_SND_CrewPackXP")
-    local FF767cfg = require("CrewPackXP/FF767_CFG_CrewPackXP")
-    FF767cfg.ParseCrewPackXPSettings()
-end
+local FF767 = require("CrewPackXP/FF767_CrewPackXP")
+local FF767snd = require("CrewPackXP/FF767_SND_CrewPackXP")
+local FF767cfg = require("CrewPackXP/FF767_CFG_CrewPackXP")
+FF767cfg.ParseCrewPackXPSettings()
 
 require "graphics"
 
@@ -40,9 +37,10 @@ require "graphics"
 cpxpMsgStr = nil
 cpxpBubbleTimer = 0
 cpxpReady = false
-cpxpInitDelay = 5
+cpxpInitDelay = 10
 
 -- Local Var
+local cpxpLoadedAircraft = AIRCRAFT_FILENAME
 local cpxpScriptReady = false
 
 -- Generic Datarefs
@@ -76,6 +74,7 @@ do_often("cpxpBubbleTiming()")
 
 function cpxpDelayInit()
     if not cpxpScriptReady then
+        FF767.cpxpAircraftDelay()
        if cpxpStartTime == 0 then
           cpxpStartTime = (cpxp_SIM_TIME + _G.cpxpInitDelay)
           _G.cpxpBubbleTimer = 0 - _G.cpxpInitDelay
@@ -83,14 +82,12 @@ function cpxpDelayInit()
        if (cpxp_SIM_TIME < cpxpStartTime) then
           print("CrewPackXP: Waiting to start " .. math.floor(cpxp_SIM_TIME) .. " waiting for " .. math.floor(cpxpStartTime))
           _G.cpxpMsgStr = "CrewPackXP loading in " .. math.floor(cpxpStartTime - cpxp_SIM_TIME) .. " seconds"
-          return
        end
-       if PLANE_ICAO == "B752" and not _G.cpxpReady then
+       if cpxpLoadedAircraft == '757-200_xp11.acf' and not _G.cpxpReady then
           print("CPXP: Aircraft Module reporting not ready")
+       elseif cpxpLoadedAircraft == '757-200_xp11.acf' and _G.cxpxReady then
+          cpxpScriptReady = true
        end
-    else
-       _G.cpxpReady = true
-       print("Aircraft Not Recognised")
     end
  end
 
@@ -99,10 +96,10 @@ do_often("cpxpDelayInit()")
 -- Main Call
 
 function cpxpMainCall()
-    if PLANE_ICAO == "B752" and _G.cpxpReady then
+    if cpxpLoadedAircraft == '757-200_xp11.acf' and cpxpScriptReady then
         FF767snd.cpxpStartSound()
         FF767.cpxpMonitorADC1()
-        FF767.EngineStart()
+        FF767.cpxpEngineStart()
     end
 end
 
