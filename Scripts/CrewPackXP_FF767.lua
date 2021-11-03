@@ -95,85 +95,85 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
     local cpxpFaTaxiInPaPlayed = true
 
     -- Sound Files
-    local EightyKts_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pnf_pf_80kts.wav")
-    local V1_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pnf_V1.wav")
-    local VR_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pnf_VR.wav")
-    local PosRate_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pnf_PosRate.wav")
-    local GearUp_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_GearUp.wav")
-    local GearDwn_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_GearDn.wav")
-    local Flap0_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_Flap0.wav")
-    local Flap1_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_Flap1.wav")
-    local Flap5_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_Flap5.wav")
-    local Flap15_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_Flap15.wav")
-    local Flap20_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_Flap20.wav")
-    local Flap25_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_Flap25.wav")
-    local Flap30_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_Flap30.wav")
-    local SpdBrkUp_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pnf_SpdBrkUp.wav")
-    local SpdBrkNot_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pnf_SpdBrkNot.wav")
-    local SixtyKts_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pnf_60kts.wav")
-    local GScap_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pnf_GS.wav")
-    local LOCcap_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pnf_LOC.wav")
-    local LOCGScap_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pnf_LOCandGS.wav")
-    local Horse_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/gnd_horse.wav")
-    local ClbThrust_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_ClbThr.wav")
-    local VNAV_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_VNAV.wav")
-    local LNAV_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_LNAV.wav")
-    local StartLeft_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_StartLeft.wav")
-    local StartRight_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_StartRight.wav")
-    local StartLeft1_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_Start1.wav")
-    local StartRight2_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_Start2.wav")
+    local cpxpEightyKts_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pnf_pf_80kts.wav")
+    local cpxpV1_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pnf_V1.wav")
+    local cpxpVR_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pnf_VR.wav")
+    local cpxpPosRate_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pnf_PosRate.wav")
+    local cpxpGearUp_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_GearUp.wav")
+    local cpxpGearDwn_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_GearDn.wav")
+    local cpxpFlap0_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_Flap0.wav")
+    local cpxpFlap1_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_Flap1.wav")
+    local cpxpFlap5_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_Flap5.wav")
+    local cpxpFlap15_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_Flap15.wav")
+    local cpxpFlap20_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_Flap20.wav")
+    local cpxpFlap25_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_Flap25.wav")
+    local cpxpFlap30_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_Flap30.wav")
+    local cpxpSpdBrkUp_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pnf_SpdBrkUp.wav")
+    local cpxpSpdBrkNot_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pnf_SpdBrkNot.wav")
+    local cpxpSixtyKts_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pnf_60kts.wav")
+    local cpxpGScap_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pnf_GS.wav")
+    local cpxpLOCcap_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pnf_LOC.wav")
+    local cpxpLOCGScap_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pnf_LOCandGS.wav")
+    local cpxpHorse_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/gnd_horse.wav")
+    local cpxpClbThrust_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_ClbThr.wav")
+    local cpxpVNAV_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_VNAV.wav")
+    local cpxpLNAV_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_LNAV.wav")
+    local cpxpStartLeft_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_StartLeft.wav")
+    local cpxpStartRight_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_StartRight.wav")
+    local cpxpStartLeft1_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_Start1.wav")
+    local cpxpStartRight2_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_Start2.wav")
     local Output_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/output.wav")
-    local Start1 = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/start_1.wav")
-    local Start2 = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/start_2.wav")
-    local Start3 = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/start_3.wav")
-    local Start4 = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/start_4.wav")
-    local FA_Welcome_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/fa_welcome.wav")
-    local SafetyDemo767_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/safetyDemo767.wav")
-    local CabinSecure_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/fa_cabinSecure.wav")
-    local TOD_PA_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pnf_todPa.wav")
-    local SeatLand_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/fa_seatsLanding.wav")
-    local Pax_Seatbelts_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/fa_paxseatbelt.wav")
-    local TaxiInPA_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/fa_goodbye.wav")
+    local cpxpStart1 = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/start_1.wav")
+    local cpxpStart2 = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/start_2.wav")
+    local cpxpStart3 = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/start_3.wav")
+    local cpxpStart4 = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/start_4.wav")
+    local cpxpFA_Welcome_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/fa_welcome.wav")
+    local cpxpSafetyDemo767_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/safetyDemo767.wav")
+    local cpxpCabinSecure_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/fa_cabinSecure.wav")
+    local cpxpTOD_PA_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pnf_todPa.wav")
+    local cpxpSeatLand_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/fa_seatsLanding.wav")
+    local cpxpPax_Seatbelts_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/fa_paxseatbelt.wav")
+    local cpxpTaxiInPA_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/fa_goodbye.wav")
 
     function cpxpSetGain()
-        set_sound_gain(EightyKts_snd, cpxpSoundVol)
-        set_sound_gain(V1_snd, cpxpSoundVol)
-        set_sound_gain(VR_snd, cpxpSoundVol)
-        set_sound_gain(PosRate_snd, cpxpSoundVol)
-        set_sound_gain(GearUp_snd, cpxpSoundVol)
-        set_sound_gain(GearDwn_snd, cpxpSoundVol)
-        set_sound_gain(Flap0_snd, cpxpSoundVol)
-        set_sound_gain(Flap1_snd, cpxpSoundVol)
-        set_sound_gain(Flap5_snd, cpxpSoundVol)
-        set_sound_gain(Flap15_snd, cpxpSoundVol)
-        set_sound_gain(Flap20_snd, cpxpSoundVol)
-        set_sound_gain(Flap25_snd, cpxpSoundVol)
-        set_sound_gain(Flap30_snd, cpxpSoundVol)
-        set_sound_gain(SpdBrkUp_snd, cpxpSoundVol)
-        set_sound_gain(SpdBrkNot_snd, cpxpSoundVol)
-        set_sound_gain(SixtyKts_snd, cpxpSoundVol)
-        set_sound_gain(GScap_snd, cpxpSoundVol)
-        set_sound_gain(LOCcap_snd, cpxpSoundVol)
-        set_sound_gain(LOCGScap_snd, cpxpSoundVol)
-        set_sound_gain(Horse_snd, cpxpSoundVol)
-        set_sound_gain(ClbThrust_snd, cpxpSoundVol)
-        set_sound_gain(VNAV_snd, cpxpSoundVol)
-        set_sound_gain(LNAV_snd, cpxpSoundVol)
-        set_sound_gain(StartLeft_snd, cpxpSoundVol)
-        set_sound_gain(StartRight_snd, cpxpSoundVol)
-        set_sound_gain(StartLeft1_snd, cpxpSoundVol)
-        set_sound_gain(StartRight2_snd, cpxpSoundVol)
-        set_sound_gain(Start1, cpxpSoundVol)
-        set_sound_gain(Start2, cpxpSoundVol)
-        set_sound_gain(Start3, cpxpSoundVol)
-        set_sound_gain(Start4, cpxpSoundVol)
-        set_sound_gain(FA_Welcome_snd, cpxpPaVol)
-        set_sound_gain(SafetyDemo767_snd, cpxpPaVol)
-        set_sound_gain(TOD_PA_snd, cpxpPaVol)
-        set_sound_gain(SeatLand_snd, cpxpPaVol)
-        set_sound_gain(Pax_Seatbelts_snd, cpxpPaVol)
-        set_sound_gain(TaxiInPA_snd, cpxpPaVol)
-        set_sound_gain(CabinSecure_snd, cpxpSoundVol)
+        set_sound_gain(cpxpEightyKts_snd, cpxpSoundVol)
+        set_sound_gain(cpxpV1_snd, cpxpSoundVol)
+        set_sound_gain(cpxpVR_snd, cpxpSoundVol)
+        set_sound_gain(cpxpPosRate_snd, cpxpSoundVol)
+        set_sound_gain(cpxpGearUp_snd, cpxpSoundVol)
+        set_sound_gain(cpxpGearDwn_snd, cpxpSoundVol)
+        set_sound_gain(cpxpFlap0_snd, cpxpSoundVol)
+        set_sound_gain(cpxpFlap1_snd, cpxpSoundVol)
+        set_sound_gain(cpxpFlap5_snd, cpxpSoundVol)
+        set_sound_gain(cpxpFlap15_snd, cpxpSoundVol)
+        set_sound_gain(cpxpFlap20_snd, cpxpSoundVol)
+        set_sound_gain(cpxpFlap25_snd, cpxpSoundVol)
+        set_sound_gain(cpxpFlap30_snd, cpxpSoundVol)
+        set_sound_gain(cpxpSpdBrkUp_snd, cpxpSoundVol)
+        set_sound_gain(cpxpSpdBrkNot_snd, cpxpSoundVol)
+        set_sound_gain(cpxpSixtyKts_snd, cpxpSoundVol)
+        set_sound_gain(cpxpGScap_snd, cpxpSoundVol)
+        set_sound_gain(cpxpLOCcap_snd, cpxpSoundVol)
+        set_sound_gain(cpxpLOCGScap_snd, cpxpSoundVol)
+        set_sound_gain(cpxpHorse_snd, cpxpSoundVol)
+        set_sound_gain(cpxpClbThrust_snd, cpxpSoundVol)
+        set_sound_gain(cpxpVNAV_snd, cpxpSoundVol)
+        set_sound_gain(cpxpLNAV_snd, cpxpSoundVol)
+        set_sound_gain(cpxpStartLeft_snd, cpxpSoundVol)
+        set_sound_gain(cpxpStartRight_snd, cpxpSoundVol)
+        set_sound_gain(cpxpStartLeft1_snd, cpxpSoundVol)
+        set_sound_gain(cpxpStartRight2_snd, cpxpSoundVol)
+        set_sound_gain(cpxpStart1, cpxpSoundVol)
+        set_sound_gain(cpxpStart2, cpxpSoundVol)
+        set_sound_gain(cpxpStart3, cpxpSoundVol)
+        set_sound_gain(cpxpStart4, cpxpSoundVol)
+        set_sound_gain(cpxpFA_Welcome_snd, cpxpPaVol)
+        set_sound_gain(cpxpSafetyDemo767_snd, cpxpPaVol)
+        set_sound_gain(cpxpTOD_PA_snd, cpxpPaVol)
+        set_sound_gain(cpxpSeatLand_snd, cpxpPaVol)
+        set_sound_gain(cpxpPax_Seatbelts_snd, cpxpPaVol)
+        set_sound_gain(cpxpTaxiInPA_snd, cpxpPaVol)
+        set_sound_gain(cpxpCabinSecure_snd, cpxpSoundVol)
     end
 
     -- Generic Datarefs
@@ -209,36 +209,36 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
     print("CrewPackXP: Starting at sim time " .. math.floor(cpxp_SIM_TIME))
 
     -- Bubble for messages
-    function CP767DisplayMessage()
+    function CPXPDisplayMessage()
         bubble(20, get("sim/graphics/view/window_height") - 100, cpxpMsgStr)
     end
 
-    function CP767msg()
+    function CPXPmsg()
         if cpxpBubbleTimer < 3 then
-            CP767DisplayMessage()
+            CPXPDisplayMessage()
         else
             cpxpMsgStr = ""
         end 
     end
 
-    function CP767BubbleTiming()
+    function CPXPBubbleTiming()
         if cpxpBubbleTimer < 3 then
             cpxpBubbleTimer = cpxpBubbleTimer + 1
         end        
     end
 
-    do_every_draw("CP767msg()")
-    do_often("CP767BubbleTiming()")
+    do_every_draw("CPXPmsg()")
+    do_often("CPXPBubbleTiming()")
 
     
     --	Delaying initialisation of datarefs till aircraft loaded
-    function CP767DelayedInit()
+    function CPXPDelayedInit()
         -- Dealy based on time
 
         if startTime == 0 then
             startTime = (cpxp_SIM_TIME + initDelay)
             cpxpBubbleTimer = -12
-            ParseCrewPack767Settings()
+            ParseCrewPackXPSettings()
         end
         if (cpxp_SIM_TIME < startTime) then
             print(
@@ -288,19 +288,19 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
         end
     end -- End of DelayedInit
 
-    do_often("CP767DelayedInit()")
+    do_often("CPXPDelayedInit()")
 
     -- Start Up Sounds
-    function CP767StartSound()
+    function CPXPStartSound()
         if not cpxpReady then
             return
         end
         if cpxpStartMsg and not cpxpStartPlayed then
             local soundFile = {
-                Start1,
-                Start2,
-                Start3,
-                Start4,
+                cpxpStart1,
+                cpxpStart2,
+                cpxpStart3,
+                cpxpStart4,
             }
             math.randomseed(os.time())
             play_sound(soundFile[math.random(1,4)])
@@ -308,10 +308,10 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
             end
     end
 
-    do_often("CP767StartSound()")
+    do_often("CPXPStartSound()")
 
     -- Monitor for ADC1 Failure
-    function CP767MonitorADC1()
+    function CPXPMonitorADC1()
         if not cpxpReady then
             return
         end
@@ -322,10 +322,10 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
         end
     end -- End of MonitorADC1
 
-    do_often("CP767MonitorADC1()")
+    do_often("CPXPMonitorADC1()")
 
     -- Cockpit Setup
-    function CP767CockpitSetup()
+    function CPXPCockpitSetup()
         if not cpxpReady then
             return
         end
@@ -483,11 +483,11 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
         end
     end -- End of cpxpCockpitSetup
 
-    do_often("CP767CockpitSetup()")
+    do_often("CPXPCockpitSetup()")
 
     -- AutoSync Alt Settings
 
-    function CP767SyncBaro()
+    function CPXPSyncBaro()
         if not cpxpReady then
             return
         end
@@ -506,20 +506,20 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
         end
     end
 
-    do_sometimes("CP767SyncBaro()")
+    do_sometimes("CPXPSyncBaro()")
 
     -- Engine Start Calls
 
-    function CP767EngineStart()
+    function CPXPEngineStart()
         if not cpxpReady then
             return
         end
             if cpxpLEFT_STARTER == 1 and not cpxpLeftStart then
                 print("CrewPackXP: Start Left Engine")
                 if cpxpEngStartType == 1 then
-                    play_sound(StartLeft_snd)
+                    play_sound(cpxpStartLeft_snd)
                 else
-                    play_sound(StartLeft1_snd)
+                    play_sound(cpxpStartLeft1_snd)
                 end
                 cpxpLeftStart = true
             end
@@ -529,9 +529,9 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
             if cpxpRIGHT_STARTER == 1 and not cpxpRightStart then
                 print("CrewPackXP: Start Right Engine")
                 if cpxpEngStartType == 1 then
-                    play_sound(StartRight_snd)
+                    play_sound(cpxpStartRight_snd)
                 else
-                    play_sound(StartRight2_snd)
+                    play_sound(cpxpStartRight2_snd)
                 end               
                 cpxpRightStart = true
             end
@@ -540,11 +540,11 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
             end
     end
 
-    do_often("CP767EngineStart()")
+    do_often("CPXPEngineStart()")
 
     -- Flight Attendant Interactions
 
-    function CP767FlightAttendant()
+    function CPXPFlightAttendant()
         if not cpxpReady then
             return
         end
@@ -559,30 +559,30 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
         if cpxpFaOnboard then
             if cpxpBEACON == 1 and cpxpWEIGHT_ON_WHEELS == 1 and cpxpENG2_N2 > 10 and cpxpFaPlaySeq == 0 then
                 cpxpPaTimer = 150
-                play_sound(FA_Welcome_snd)
+                play_sound(cpxpFA_Welcome_snd)
                 cpxpFaPlaySeq = 1
                 print("CrewPackXP: Playing FA welcome PA - Engine Start")
             end
             if cpxpBEACON == 1 and cpxpWEIGHT_ON_WHEELS == 1 and (math.floor(get("sim/flightmodel2/position/groundspeed"))) ~= 0 and cpxpFaPlaySeq == 0 then
                 cpxpPaTimer = 150
-                play_sound(FA_Welcome_snd)
+                play_sound(cpxpFA_Welcome_snd)
                 cpxpFaPlaySeq = 1
                 print("CrewPackXP: Playing FA welcome PA, GS "..(math.floor(get("sim/flightmodel2/position/groundspeed"))))
             end
             if cpxpBEACON == 1 and cpxpWEIGHT_ON_WHEELS == 1 and cpxpFaPlaySeq == 1 and cpxpPaTimer == 241 then
                 cpxpPaTimer = 0
-                play_sound(SafetyDemo767_snd)
+                play_sound(cpxpSafetyDemo767_snd)
                 print("CrewPackXP: Playing Safety Demo")
                 
                 cpxpFaPlaySeq = 2
             end
             if cpxpBEACON == 1 and cpxpWEIGHT_ON_WHEELS == 1 and cpxpFaPlaySeq == 2 and cpxpPaTimer == 241 then
-                play_sound(CabinSecure_snd)
+                play_sound(cpxpCabinSecure_snd)
                 print("CrewPackXP: Played Cabin Secure")
                 cpxpFaPlaySeq = 3
             end
             if FMS_MODE == 4 and not cpxpTodPaPlayed then
-                play_sound(TOD_PA_snd)
+                play_sound(cpxpTOD_PA_snd)
                 print("CrewPackXP: Played FO TOD PA")
                 cpxpTodPaPlayed = true
                 for i = 1, 90, 1 do
@@ -595,12 +595,12 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
                 end
             end
             if FMS_MODE == 4 and not cpxpPaxSeatBeltsPlayed and cpxpBELTS_SIGN == 2 then
-                play_sound(Pax_Seatbelts_snd)
+                play_sound(cpxpPax_Seatbelts_snd)
                 print("CrewPackXP: Seatbelts selected on during descent")
                 cpxpPaxSeatBeltsPlayed = true
             end
             if cpxpGearDownPlayed and cpxpCalloutTimer >=2 and not cpxpSeatsLandingPlayed then
-                play_sound(SeatLand_snd)
+                play_sound(cpxpSeatLand_snd)
                 for i = 1, 90, 1 do
                     local ref = "anim/blind/L/"..i
                     set(ref, 0)
@@ -613,7 +613,7 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
                 cpxpSeatsLandingPlayed = true
             end
             if cpxpWEIGHT_ON_WHEELS == 1 and cpxpFlightOccoured and not cpxpFaTaxiInPaPlayed and IAS <= 30 then
-                play_sound(TaxiInPA_snd)
+                play_sound(cpxpTaxiInPA_snd)
                 for i = 1, 90, 1 do
                     local ref = "anim/blind/L/"..i
                     set(ref, 0)
@@ -628,11 +628,11 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
         end
     end
 
-    do_often("CP767FlightAttendant()")
+    do_often("CPXPFlightAttendant()")
 
     -- Engine Rate Monitor - Reset by: VNAV action in TO and GA as appropriate
     --TOGA 6 | TO 1, 11, 12 |
-    function CP767EngRateMonitor()
+    function CPXPEngRateMonitor()
         if not cpxpReady then
             return
         end
@@ -667,10 +667,10 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
         end
     end
 
-    do_every_frame("CP767EngRateMonitor()")
+    do_every_frame("CPXPEngRateMonitor()")
 
     -- Takeoff Calls - Reset by: Master Reset
-    function CP767TakeoffCalls()
+    function CPXPTakeoffCalls()
         if not cpxpReady then
             return
         end
@@ -688,7 +688,7 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
 
         -- 80 Kts
         if cpxpToCalloutMode and IAS > 78 and cpxpPlaySeq == 0 then
-            play_sound(EightyKts_snd)
+            play_sound(cpxpEightyKts_snd)
             cpxpCalloutTimer = 0
             print("CrewPackXP: 80 Kts Played at " .. math.floor(IAS) .. " kts")
             -- Confirm XPDR TA/RA and Brakes RTO
@@ -700,7 +700,7 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
 
         -- V1
         if cpxpToCalloutMode and IAS > V1 - 3 and cpxpPlaySeq == 1 and cpxpCalloutTimer >= 2 then
-            play_sound(V1_snd)
+            play_sound(cpxpV1_snd)
             cpxpCalloutTimer = 0
             print("CrewPackXP: V1 of " .. math.floor(V1) .. " Played at " .. math.floor(IAS) .. " kts")
             cpxpPlaySeq = 2
@@ -708,7 +708,7 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
 
         -- VR
         if cpxpToCalloutMode and IAS > VR - 3 and cpxpPlaySeq == 2 and cpxpCalloutTimer >= 2 then
-            play_sound(VR_snd)
+            play_sound(cpxpVR_snd)
             cpxpCalloutTimer = 0
             print("CrewPackXP: VR of " .. math.floor(VR) .. " Played at " .. math.floor(IAS) .. " kts")
             cpxpPlaySeq = 3
@@ -716,17 +716,17 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
 
         -- Positive Rate
         if cpxpToCalloutMode and cpxpWEIGHT_ON_WHEELS == 0 and VSI > 0 and cpxpPlaySeq == 3 and cpxpCalloutTimer >= 2 then
-            play_sound(PosRate_snd)
+            play_sound(cpxpPosRate_snd)
             cpxpCalloutTimer = 0
             print("CrewPackXP: Positive Rate " .. math.floor(cpxpAGL) .. " AGL and " .. math.floor(VSI) .. " ft/min")
             cpxpPlaySeq = 4
         end
     end
 
-    do_often("CP767TakeoffCalls()")
+    do_often("CPXPTakeoffCalls()")
 
     -- TakeoffNoSpeeds - Reset by: Master Reset
-    function CP767TakeoffNoSpeeds()
+    function CPXPTakeoffNoSpeeds()
         if not cpxpReady then
             return
         end
@@ -744,10 +744,10 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
         end
     end
 
-    do_often("CP767TakeoffNoSpeeds()")
+    do_often("CPXPTakeoffNoSpeeds()")
 
     -- Takeoff VNAV Call - Reset by Master Reset
-    function CP767TakeoffVNAV()
+    function CPXPTakeoffVNAV()
         if not cpxpReady then
             return
         end
@@ -768,7 +768,7 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
             end
         end
         if cpxpVnavPressed and not cpxpVnavPlayed and cpxpVNAV_ENGAGED_LT > 0 then
-            play_sound(VNAV_snd)
+            play_sound(cpxpVNAV_snd)
             cpxpCalloutTimer = 0
             cpxpVnavPlayed = true
             cpxpVnavPressed = true
@@ -778,15 +778,15 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
         end
     end
 
-    do_often("CP767TakeoffVNAV()")
+    do_often("CPXPTakeoffVNAV()")
 
     -- Gear Selection
-    function CP767GearSelection()
+    function CPXPGearSelection()
         if not cpxpReady then
             return
         end
         if cpxpAGL > 15 and cpxpGEAR_HANDLE == 0 and cpxpCalloutTimer >= 2 and not cpxpGearUpPlayed then
-            play_sound(GearUp_snd)
+            play_sound(cpxpGearUp_snd)
             cpxpCalloutTimer = 0
             cpxpGearUpPlayed = true
             cpxpGearDownPlayed = false
@@ -804,7 +804,7 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
         end
         -- Gear Down
         if cpxpAGL > 15 and cpxpGEAR_HANDLE == 1 and cpxpCalloutTimer >= 2 and not cpxpGearDownPlayed then
-            play_sound(GearDwn_snd)
+            play_sound(cpxpGearDwn_snd)
             cpxpCalloutTimer = 0
             cpxpGearUpPlayed = false
             cpxpGearDownPlayed = true
@@ -816,56 +816,56 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
         end
     end
 
-    do_often("CP767GearSelection()")
+    do_often("CPXPGearSelection()")
 
     -- Flaps Selection
 
     -- Flaps Callouts in air only
-    function CP767FlapsSelection()
+    function CPXPFlapsSelection()
         if not cpxpReady then
             return
         end
         if cpxpFlapPos == 0 and cpxpFlapTime == 1 and cpxpWEIGHT_ON_WHEELS == 0 then
-            play_sound(Flap0_snd)
+            play_sound(cpxpFlap0_snd)
             cpxpCalloutTimer = 0
             print("CrewPackXP: Flaps 0 position for 1 Seconds -- ")
         end
         if cpxpFlapPos > 0 and cpxpFlapPos < 0.2 and cpxpFlapTime == 1 then
-            play_sound(Flap1_snd)
+            play_sound(cpxpFlap1_snd)
             cpxpCalloutTimer = 0
             print("CrewPackXP: Flaps 1 position for 1 Seconds -- ")
         end
         if cpxpFlapPos > 0.3 and cpxpFlapPos < 0.4 and cpxpFlapTime == 1 then
-            play_sound(Flap5_snd)
+            play_sound(cpxpFlap5_snd)
             cpxpCalloutTimer = 0
             print("CrewPackXP: Flaps 5 position for 1 Seconds -- ")
         end
         if cpxpFlapPos == 0.5 and cpxpFlapTime == 1 then
-            play_sound(Flap15_snd)
+            play_sound(cpxpFlap15_snd)
             cpxpCalloutTimer = 0
             print("CrewPackXP: 15 position for 1 Seconds -- ")
         end
         if cpxpFlapPos > 0.6 and cpxpFlapPos < 0.7 and cpxpFlapTime == 1 then
-            play_sound(Flap20_snd)
+            play_sound(cpxpFlap20_snd)
             cpxpCalloutTimer = 0
             print("CrewPackXP: Flaps 20 position for 1 Seconds -- ")
         end
         if cpxpFlapPos > 0.8 and cpxpFlapPos < 0.9 and cpxpFlapTime == 1 then
-            play_sound(Flap25_snd)
+            play_sound(cpxpFlap25_snd)
             cpxpCalloutTimer = 0
             print("CrewPackXP: Flaps 25 position for 1 Seconds -- ")
         end
         if cpxpFlapPos == 1 and cpxpFlapTime == 1 then
-            play_sound(Flap30_snd)
+            play_sound(cpxpFlap30_snd)
             cpxpCalloutTimer = 0
             print("CrewPackXP: Flaps 30 position for 1 Seconds -- ")
         end
     end
 
-    do_often("CP767FlapsSelection()")
+    do_often("CPXPFlapsSelection()")
 
     --Monitor Flap Movement
-    function CP767FlapPosCheck()
+    function CPXPFlapPosCheck()
         if not cpxpReady then
             return
         end
@@ -883,10 +883,10 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
         end
     end -- End FlapPosCheck
 
-    do_often("CP767FlapPosCheck()")
+    do_often("CPXPFlapPosCheck()")
 
     -- Localiser / GlideSlope
-    function CP767LocGsAlive()
+    function CPXPLocGsAlive()
         if not cpxpReady then
             return
         end
@@ -894,13 +894,13 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
         if cpxpLocgsCalls then
             if  cpxpWEIGHT_ON_WHEELS == 0 and cpxpLOC_RECEIVED == 1 and cpxpLOC_DEVIATION > -1.95 and cpxpLOC_DEVIATION <= 0 and not cpxpLocPlayed and not cpxpTogaEvent and not cpxpToCalloutMode then
                 if cpxpGS_RECEIVED == 1 and cpxpGS_DEVIATION > -1.95 and cpxpGS_DEVIATION < 1  then
-                    play_sound(LOCGScap_snd)
+                    play_sound(cpxpLOCGScap_snd)
                     print("CrewPackXP: LOC and GS Active")
                     cpxpCalloutTimer = 0
                     cpxpLocPlayed = true
                     cpxpGsPlayed = true
                 else
-                    play_sound(LOCcap_snd)
+                    play_sound(cpxpLOCcap_snd)
                     print("CrewPackXP: LOC Active")
                     cpxpCalloutTimer = 0
                     cpxpLocPlayed = true
@@ -916,13 +916,13 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
             -- Loc Capture Left of localiser (CDI Right)
             if cpxpWEIGHT_ON_WHEELS == 0 and cpxpLOC_RECEIVED == 1 and cpxpLOC_DEVIATION < 1.95 and cpxpLOC_DEVIATION >= 0 and not cpxpLocPlayed and not cpxpTogaEvent and not cpxpToCalloutMode then
                 if cpxpGS_RECEIVED == 1 and cpxpGS_DEVIATION > -1.95 and cpxpGS_DEVIATION < 1  then
-                    play_sound(LOCGScap_snd)
+                    play_sound(cpxpLOCGScap_snd)
                     print("CrewPackXP: LOC and GS Active")
                     cpxpCalloutTimer = 0
                     cpxpLocPlayed = true
                     cpxpGsPlayed = true
                 else
-                    play_sound(LOCcap_snd)
+                    play_sound(cpxpLOCcap_snd)
                     print("CrewPackXP: LOC Active")
                     cpxpCalloutTimer = 0
                     cpxpLocPlayed = true
@@ -938,34 +938,34 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
             -- GS
             if
                cpxpWEIGHT_ON_WHEELS == 0 and  cpxpGS_RECEIVED == 1 and cpxpGS_DEVIATION > -1.95 and cpxpGS_DEVIATION < 1 and cpxpLocPlayed and not cpxpGsPlayed and cpxpCalloutTimer >= 2 and not cpxpTogaEvent and not cpxpToCalloutMode then
-                play_sound(GScap_snd)
+                play_sound(cpxpGScap_snd)
                 print("CrewPackXP: GS Alive")
                 cpxpGsPlayed = true
             end
         end
     end
 
-    do_often("CP767LocGsAlive()")
+    do_often("CPXPLocGsAlive()")
 
     -- Landing Roll / Speedbrakes - Reset by: Gear Up
-    function CP767Landing()
+    function CPXPLanding()
         if not cpxpReady then
             return
         end
         if cpxpWEIGHT_ON_WHEELS == 1 and cpxpFlightOccoured then
             if cpxpSPEED_BRAKE == 1 and not cpxpSpdBrkPlayed then
-                play_sound(SpdBrkUp_snd)
+                play_sound(cpxpSpdBrkUp_snd)
                 cpxpSpdBrkPlayed = true
                 print("CrewPackXP: Speed Brake On Landing")
             end
             if cpxpSPEED_BRAKE ~= 1 and cpxpGndTime == 5 and not cpxpSpdBrkPlayed and not cpxpSpdBrkNotPlayed then
-                play_sound(SpdBrkNot_snd)
+                play_sound(cpxpSpdBrkNot_snd)
                 cpxpSpdBrkNotPlayed = true
                 print("CrewPackXP: Speed Brake Not Up On Landing")
             end
         end
         if cpxpWEIGHT_ON_WHEELS == 1 and cpxpFlightOccoured and not cpxpSixtyPlayed and IAS <= 62 then
-            play_sound(SixtyKts_snd)
+            play_sound(cpxpSixtyKts_snd)
             cpxpSixtyPlayed = true
             print("CrewPackXP: 60kts on landing played at " .. math.floor(IAS))
         end
@@ -977,9 +977,9 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
         end    
     end
 
-    do_often("CP767Landing()")
+    do_often("CPXPLanding()")
 
-    function CP767OnGrndCheck()
+    function CPXPOnGrndCheck()
         if not cpxpReady then
             return
         end
@@ -995,10 +995,10 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
         end
     end -- End of OnGrndCheck
 
-    do_often("CP767OnGrndCheck()")
+    do_often("CPXPOnGrndCheck()")
 
     -- Reset Variables for next Flight
-    function CP767MasterReset()
+    function CPXPMasterReset()
         if not cpxpReady then
             return
         end
@@ -1016,10 +1016,10 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
         end
     end
 
-    do_often("CP767MasterReset()")
+    do_often("CPXPMasterReset()")
 
     -- Shut Down Message Reset by: Gear Up
-    function CP767ShutDown()
+    function CPXPShutDown()
         if not cpxpReady then
             return
         end
@@ -1028,7 +1028,7 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
             cpxpENG1_N2 < 25 and cpxpENG2_N2 < 25 and cpxpBEACON == 0 and cpxpWEIGHT_ON_WHEELS == 1 and cpxpPARK_BRAKE == 1 and cpxpFlightOccoured and
                 not cpxpHorsePlayed
          then
-            play_sound(Horse_snd)
+            play_sound(cpxpHorse_snd)
             cpxpHorsePlayed = true
             cpxpFlightOccoured = false
             cpxpCalloutTimer = 0
@@ -1074,11 +1074,11 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
         end
     end
 
-    do_often("CP767ShutDown()")
+    do_often("CPXPShutDown()")
 
     -- Clear GSE for departure Reset by: Beacon
 
-    function CP767ClearGse()
+    function CPXPClearGse()
         if not cpxpReady then
             return
         end
@@ -1108,11 +1108,11 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
         end
     end
 
-    do_often("CP767ClearGse()")
+    do_often("CPXPClearGse()")
 
     -- Go Around Monitor
 
-    function CP767TogaTrigger()
+    function CPXPTogaTrigger()
         cpxpTogaEvent = true
         cpxpFlaps20Retracted = false
         cpxpFlchPressed = false
@@ -1125,19 +1125,19 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
         cpxpTogaState = cpxpTOGA_BUTTON
     end
 
-    function CP767TogaMonitor()
+    function CPXPTogaMonitor()
         if cpxpTogaState == nil then
             cpxpTogaState = cpxpTOGA_BUTTON
         elseif cpxpTogaState ~= cpxpTOGA_BUTTON then
-            CP767TogaTrigger()
+            CPXPTogaTrigger()
         end
     end
 
-    do_often("CP767TogaMonitor()")
+    do_often("CPXPTogaMonitor()")
 
     -- Go Around Function - Reset by Toga Trigger, cancels on FMS Accel height
 
-    function CP767GoAround()
+    function CPXPGoAround()
         if cpxpWEIGHT_ON_WHEELS == 0 and cpxpTogaEvent and cpxpENGINE_MODE == 6 and cpxpGaAutomation and not cpxpFlaps20Retracted then
             if cpxpFlapPos > 0.8 then
                 set("sim/flightmodel/controls/flaprqst", 0.66667)
@@ -1146,7 +1146,7 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
             end
         end
         if cpxpTogaEvent and not cpxpPosRatePlayed and VSI > 10 then
-            play_sound(PosRate_snd)
+            play_sound(cpxpPosRate_snd)
             set("1-sim/cockpit/switches/gear_handle", 0)
             print(
                 "CrewPackXP: Go Around Positive Rate " ..
@@ -1175,7 +1175,7 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
         end
         if cpxpTogaEvent and (cpxpAGL / 0.3048) > FMS_ACCEL_HT and not cpxpClbThrustPlayed then
             set("1-sim/eng/thrustRefMode", 32)
-            play_sound(ClbThrust_snd)
+            play_sound(cpxpClbThrust_snd)
             cpxpClbThrustPlayed = true
             print("CrewPackXP: Go Around Climb Thrust " .. FMS_ACCEL_HT)
         end
@@ -1226,7 +1226,7 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
         end
     end
 
-    do_often("CP767GoAround()")
+    do_often("CPXPGoAround()")
 
     -- Settings
 
@@ -1236,15 +1236,15 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
     end
 
     -- Create Settings window
-    function ShowCrewPack767Settings_wnd()
-        ParseCrewPack767Settings()
-        CrewPack767Settings_wnd = float_wnd_create(450, 450, 0, true)
-        float_wnd_set_title(CrewPack767Settings_wnd, "767 Crew Pack Settings")
-        float_wnd_set_imgui_builder(CrewPack767Settings_wnd, "CrewPack767Settings_contents")
-        float_wnd_set_onclose(CrewPack767Settings_wnd, "CloseCrewPack767Settings_wnd")
+    function ShowCrewPackXPSettings_wnd()
+        ParseCrewPackXPSettings()
+        CrewPackXPSettings_wnd = float_wnd_create(450, 450, 0, true)
+        float_wnd_set_title(CrewPackXPSettings_wnd, "767 Crew Pack Settings")
+        float_wnd_set_imgui_builder(CrewPackXPSettings_wnd, "CrewPackXPSettings_contents")
+        float_wnd_set_onclose(CrewPackXPSettings_wnd, "CloseCrewPackXPSettings_wnd")
     end
 
-    function CrewPack767Settings_contents(CrewPack767Settings_wnd, x, y)
+    function CrewPackXPSettings_contents(CrewPackXPSettings_wnd, x, y)
         local winWidth = imgui.GetWindowWidth()
         local winHeight = imgui.GetWindowHeight()
         local titleText = "767 Crew Pack Settings"
@@ -1256,71 +1256,71 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
         imgui.Separator()
         imgui.TextUnformatted("")
         imgui.SetCursorPos(20, imgui.GetCursorPosY())
-        local changed, newVal = imgui.Checkbox("767 CrewPack on/off", cpxpMaster)
+        local changed, newVal = imgui.Checkbox("CrewPackXP on/off", cpxpMaster)
         if changed then
             cpxpMaster = newVal
-            SaveCrewPack767Data()
+            SaveCrewPackXPData()
             print("CrewPackXP: Plugin turned on" .. tostring(cpxpMaster))
         end
         imgui.SetCursorPos(20, imgui.GetCursorPosY())
         local changed, newVal = imgui.Checkbox("Crew Pack FA Onboard?", cpxpFaOnboard)
         if changed then
             cpxpFaOnboard = newVal
-            SaveCrewPack767Data()
+            SaveCrewPackXPData()
             print("CrewPackXP: Start message logic set to " .. tostring(cpxpStartMsg))
         end
         imgui.SetCursorPos(20, imgui.GetCursorPosY())
         local changed, newVal = imgui.Checkbox("Play corny sound bite on loading", cpxpStartMsg)
         if changed then
             cpxpStartMsg = newVal
-            SaveCrewPack767Data()
+            SaveCrewPackXPData()
             print("CrewPackXP: Start message logic set to " .. tostring(cpxpStartMsg))
         end
         imgui.SetCursorPos(20, imgui.GetCursorPosY())
 		local changed, newVal = imgui.Checkbox("Play Localiser and Glideslop calls", cpxpLocgsCalls)
         if changed then
             cpxpLocgsCalls = newVal
-            SaveCrewPack767Data()
+            SaveCrewPackXPData()
             print("CrewPackXP: LOC / GS Call logic set to " .. tostring(syncAlt))
         end
         imgui.SetCursorPos(20, imgui.GetCursorPosY())
 		local changed, newVal = imgui.Checkbox("FO Performs Preflight Scan Flow", cpxpFoPreflight)
         if changed then
             cpxpFoPreflight = newVal
-            SaveCrewPack767Data()
+            SaveCrewPackXPData()
             print("CrewPackXP: FO PreScan logic set to " .. tostring(cpxpFoPreflight))
         end
         imgui.SetCursorPos(20, imgui.GetCursorPosY())
         local changed, newVal = imgui.Checkbox("Supress default flight attendant from pestering", cpxpDefaultFA)
         if changed then
             cpxpDefaultFA = newVal
-            SaveCrewPack767Data()
+            SaveCrewPackXPData()
             print("CrewPackXP: Default FA logic set to " .. tostring(cpxpFoPreflight))
         end
         imgui.SetCursorPos(20, imgui.GetCursorPosY())
         local changed, newVal = imgui.Checkbox("FO automation on go around", cpxpGaAutomation)
         if changed then
             cpxpGaAutomation = newVal
-            SaveCrewPack767Data()
+            SaveCrewPackXPData()
             print("CrewPackXP: Go Around automation logic set to " .. tostring(cpxpGaAutomation))
         end
         imgui.SetCursorPos(20, imgui.GetCursorPosY())
         local changed, newVal = imgui.Checkbox("Chocks, Doors and belt loaders tied to Beacon on/off", cpxpGseOnBeacon)
         if changed then
             cpxpGseOnBeacon = newVal
-            SaveCrewPack767Data()
+            SaveCrewPackXPData()
             print("CrewPackXP: GSE on beacon set to " .. tostring(cpxpGseOnBeacon))
         end
         imgui.SetCursorPos(20, imgui.GetCursorPosY())
         if imgui.BeginCombo("Engine Start Call", "", imgui.constant.ComboFlags.NoPreview) then
             if imgui.Selectable("Left / Right", cpxpEngStartType == 1) then
                 cpxpEngStartType = 1
-                SaveCrewPack767Data()
+                SaveCrewPackXPData()
                 print("CrewPackXP: Engine start call set to Left / Right")
             end
             if imgui.Selectable("Engine 1 / 2", cpxpEngStartType == 2) then
                 cpxpEngStartType = 2
-                SaveCrewPack767Data()
+                SaveCrewPackXPData()
                 print("CrewPackXP: Engine start call set to 1 / 2")
             end
             imgui.EndCombo()
@@ -1329,7 +1329,7 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
         local changed, newVal = imgui.Checkbox("Auto sync Cpt and FO Altimiters", syncAlt)
         if changed then
             syncAlt = newVal
-            SaveCrewPack767Data()
+            SaveCrewPackXPData()
             print("CrewPackXP: Altimiter Sync logic set to " .. tostring(syncAlt))
         end
         imgui.SetCursorPos(20, imgui.GetCursorPosY())
@@ -1338,14 +1338,14 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
         local changed, newVal = imgui.Checkbox("GPU on bay", cpxpGpuConnect)
         if changed then
             cpxpGpuConnect = newVal
-            SaveCrewPack767Data()
+            SaveCrewPackXPData()
             print("CrewPackXP: GPU Power on ground")
         end
         imgui.SameLine()
         local changed, newVal = imgui.Checkbox("APU smart start", cpxpApuConnect)
         if changed then
             cpxpApuConnect = newVal
-            SaveCrewPack767Data()
+            SaveCrewPackXPData()
             print("CrewPackXP: APU started on ground")
         end     
         imgui.TextUnformatted("")   
@@ -1355,7 +1355,7 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
             cpxpSoundVol = (newVal / 100)
             set_sound_gain(Output_snd, cpxpSoundVol)
             play_sound(Output_snd)
-            SaveCrewPack767Data()
+            SaveCrewPackXPData()
             print("767CrewPacks: Volume set to " .. (cpxpSoundVol * 100) .. " %")
         end
         imgui.TextUnformatted("")   
@@ -1365,34 +1365,34 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
             cpxpPaVol = (newVal1 / 100)
             set_sound_gain(Output_snd, cpxpPaVol)
             play_sound(Output_snd)
-            SaveCrewPack767Data()
+            SaveCrewPackXPData()
             print("767CrewPacks: Volume set to " .. (cpxpPaVol * 100) .. " %")
         end
         imgui.Separator()
         imgui.TextUnformatted("")
         imgui.SetCursorPos(200, imgui.GetCursorPosY())
         if imgui.Button("CLOSE") then
-            CloseCrewPack767Settings_wnd()
+            CloseCrewPackXPSettings_wnd()
         end
     end
 
-    function CloseCrewPack767Settings_wnd()
-        if CrewPack767Settings_wnd then
-            float_wnd_destroy(CrewPack767Settings_wnd)
+    function CloseCrewPackXPSettings_wnd()
+        if CrewPackXPSettings_wnd then
+            float_wnd_destroy(CrewPackXPSettings_wnd)
         end
     end
 
-    function ToggleCrewPack767Settings()
+    function ToggleCrewPackXPSettings()
         if not cpxpShowSettingsWindow then
-            ShowCrewPack767Settings_wnd()
+            ShowCrewPackXPSettings_wnd()
             cpxpShowSettingsWindow = true
         elseif cpxpShowSettingsWindow then
-            CloseCrewPack767Settings_wnd()
+            CloseCrewPackXPSettings_wnd()
             cpxpShowSettingsWindow = false
         end
     end
 
-    function ParseCrewPack767Settings()
+    function ParseCrewPackXPSettings()
         local f = io.open(AIRCRAFT_PATH .. "/CrewPackXPSettings.ini","r")
         if f ~= nil then
             io.close(f)
@@ -1422,7 +1422,7 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
         LIP.save(AIRCRAFT_PATH .. "/CrewPackXPSettings.ini", cpxpCrewPackXPSettings)
     end
 
-    function SaveCrewPack767Data()
+    function SaveCrewPackXPData()
         cpxpCrewPackXPSettings = {
             CrewPack767 = {
                 cpxpFoPreflight = cpxpFoPreflight,
@@ -1448,14 +1448,14 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
         SaveCrewPack767Settings(cpxpCrewPackXPSettings)
     end
 
-    add_macro("CrewPackXP Settings", "ShowCrewPack767Settings_wnd()", "CloseCrewPack767Settings_wnd()", "deactivate")
+    add_macro("CrewPackXP Settings", "ShowCrewPackXPSettings_wnd()", "CloseCrewPackXPSettings_wnd()", "deactivate")
     create_command(
         "FlyWithLua/CrewPackXP/toggle_settings",
-        "toggle 767 Crew Pack Settings",
-        "ToggleCrewPack767Settings()",
+        "Toggle CrewPackXP Settings",
+        "ToggleCrewPackXPSettings()",
         "",
         ""
     )
 else
-    print("CrewPackXP: Unsupported Aircraft Type " .. PLANE_ICAO)
+    print("CrewPackXP: FF767 Unsupported Aircraft Type " .. AIRCRAFT_FILENAME)
 end -- Master End
