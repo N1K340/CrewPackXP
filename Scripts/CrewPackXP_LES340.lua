@@ -26,6 +26,13 @@ if AIRCRAFT_FILENAME == "LES_Saab_340A_Cargo.acf" then
     local LIP = require("LIP")
     require "graphics"
 
+    -- Saved Vars
+    local cpxpMaster = true
+    local cpxpStartMsg = true
+    local cpxpEngStartType = 1
+    local cpxpPaVol = 0.3
+    local cpxpSoundVol = 0.7
+
     -- Sound Files
     local cpxpStart1 = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/start_1.wav")
     local cpxpStart2 = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/start_2.wav")
@@ -36,6 +43,8 @@ if AIRCRAFT_FILENAME == "LES_Saab_340A_Cargo.acf" then
     local cpxpStartRight_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_StartRight.wav")
     local cpxpStartLeft1_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_Start1.wav")
     local cpxpStartRight2_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_Start2.wav")
+    local cpxpOutput_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/output.wav")
+    local cpxpOutputPA_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/output.wav")
 
     function cpxpSetGain()
         set_sound_gain(cpxpStart1, cpxpSoundVol)
@@ -47,6 +56,8 @@ if AIRCRAFT_FILENAME == "LES_Saab_340A_Cargo.acf" then
         set_sound_gain(cpxpStartRight_snd, cpxpSoundVol)
         set_sound_gain(cpxpStartLeft1_snd, cpxpSoundVol)
         set_sound_gain(cpxpStartRight2_snd, cpxpSoundVol)
+        set_sound_gain(cpxpOutput_snd, cpxpSoundVol)
+        set_sound_gain(cpxpOutputPA_snd, cpxpSoundVol)
     end
 
     -- Generic Dataref
@@ -108,7 +119,7 @@ if AIRCRAFT_FILENAME == "LES_Saab_340A_Cargo.acf" then
          end
     end
 
-    do_often(CPXPDelayedInit()
+    do_often("CPXPDelayedInit()")
 
     -- Start Up Sounds
     local cpxpStartPlayed = false
@@ -127,6 +138,7 @@ if AIRCRAFT_FILENAME == "LES_Saab_340A_Cargo.acf" then
        math.randomseed(os.time())
        play_sound(soundFile[math.random(1,4)])
        cpxpStartPlayed = true
+       print("Playing Startup")
         end
     end
 
@@ -170,9 +182,6 @@ if AIRCRAFT_FILENAME == "LES_Saab_340A_Cargo.acf" then
     do_often("CPXPEngineStart()")
 
     -- Settings
-    local cpxpMaster = true
-    local cpxpStartMsg = true
-    local cpxpEngStartType = 1
 
     if not SUPPORTS_FLOATING_WINDOWS then
         -- to make sure the script doesn't stop old FlyWithLua versions
@@ -299,8 +308,8 @@ if AIRCRAFT_FILENAME == "LES_Saab_340A_Cargo.acf" then
         local changed, newVal = imgui.SliderFloat("Crew Volume", (cpxpSoundVol * 100), 1, 100, "%.0f")
         if changed then
            cpxpSoundVol = (newVal / 100)
-           set_sound_gain(Output_snd, cpxpSoundVol)
-           play_sound(Output_snd)
+           set_sound_gain(cpxpOutput_snd, cpxpSoundVol)
+           play_sound(cpxpOutput_snd)
            SaveCrewPackXPData()
            print("CrewPackXP: Volume set to " .. (cpxpSoundVol * 100) .. " %")
         end
@@ -309,8 +318,8 @@ if AIRCRAFT_FILENAME == "LES_Saab_340A_Cargo.acf" then
         local changed, newVal1 = imgui.SliderFloat("PA Volume", (cpxpPaVol * 100), 1, 100, "%.0f")
         if changed then
            cpxpPaVol = (newVal1 / 100)
-           set_sound_gain(Output_snd, cpxpPaVol)
-           play_sound(Output_snd)
+           set_sound_gain(cpxpOutputPA_snd, cpxpPaVol)
+           play_sound(cpxpOutputPA_snd)
            SaveCrewPackXPData()
            print("CrewPackXP: Volume set to " .. (cpxpPaVol * 100) .. " %")
         end
@@ -384,3 +393,4 @@ if AIRCRAFT_FILENAME == "LES_Saab_340A_Cargo.acf" then
      "",
      ""
      )
+end

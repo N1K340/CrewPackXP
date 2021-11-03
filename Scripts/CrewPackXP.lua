@@ -10,7 +10,7 @@ Safety: Leslie
 Changelog:
 V0.1 - Initial Test Beta
 --]]
-if AIRCRAFT_FILENAME ~= "757-200_xp11.acf" or "LES_Saab_340A_Cargo.acf" then
+if AIRCRAFT_FILENAME ~= "757-200_xp11.acf" and AIRCRAFT_FILENAME ~= "LES_Saab_340A_Cargo.acf" then
    --------
    -- Initialisation Variables
    local version = "CPXP_UKN: 0.1-beta"
