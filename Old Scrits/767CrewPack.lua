@@ -15,7 +15,7 @@
     v0.5 - Added GPU connection logic to cockpit setup and shutdown. Cargo doors and L1 open on eng off setup with belt loaders. N.B. Ext Pwr will fail if disconnected whilst on bus.
     v0.5.1 - Finally found chocks dataref. Adjust doors logic per frame. Added beacon on to remove all GSE. Cockpit Setup expanded to FO preflight and Baro sync.
     v0.6 - Added settings widnow, require LIP module to save and load settigns. Options added for ammount of automation.
---
+--]]
 if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE_ICAO == "B763" then
     --------
     -- Initialisation Variables
@@ -1453,5 +1453,3 @@ if PLANE_ICAO == "B752" or PLANE_ICAO == "B753" or PLANE_ICAO == "B762" or PLANE
 else
     print("767CrewPack: Unsupported Aircraft Type " .. PLANE_ICAO)
 end -- Master End
-]]
-ccpatimer

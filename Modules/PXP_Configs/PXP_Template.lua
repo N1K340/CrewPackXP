@@ -1,0 +1,42 @@
+--[[
+PersistenceXP data file for Flight Factor 757
+]]
+
+module(..., package.seeall)
+
+--Modules
+local LIP = require("LIP")
+
+local pxpSwitchData = {}
+
+
+function pxpCompile()
+   if (XPLMFindDataRef("anim/armCapt/1") ~= nil) then
+      LARM = get("anim/armCapt/1")
+   end
+
+   pxpSwitchData = {
+      PersistenceData = {
+         LARM = LARM;
+      }
+   }
+
+   LIP.save(AIRCRAFT_PATH .. "/pxpPersistence757.ini", pxpSwitchData)
+   print("PersistenceXP 757 Panel State Saved")
+end
+
+function pxpRead()
+   local f = io.open(AIRCRAFT_PATH .. "/pxpPersistence757.ini","r")
+   if f ~= nil then
+      io.close(f)
+      pxpSwitchData = LIP.load(AIRCRAFT_PATH .. "/pxpPersistence757.ini")
+
+      if (XPLMFindDataRef("anim/armCapt/1") ~= nil) then
+         if pxpSwitchData.PersistenceData.LARM ~= nil then
+            set("anim/armCapt/1", pxpSwitchData.PersistenceData.LARM)
+         end
+      end
+      print("PersistenceXP 757 Panel State Loaded")
+   end
+end
+

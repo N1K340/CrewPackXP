@@ -23,15 +23,6 @@ local cpxpVersion = "0.7-beta"
 local cpxpStartTime = 0
 dataref("cpxp_SIM_TIME", "sim/time/total_running_time_sec")
 
--- Dependencies
-
-local FF767 = require("CrewPackXP/FF767_CrewPackXP")
-local FF767snd = require("CrewPackXP/FF767_SND_CrewPackXP")
-local FF767cfg = require("CrewPackXP/FF767_CFG_CrewPackXP")
-FF767cfg.ParseCrewPackXPSettings()
-
-require "graphics"
-
 -- Global Var
 
 cpxpMsgStr = nil
@@ -42,6 +33,15 @@ cpxpInitDelay = 10
 -- Local Var
 local cpxpLoadedAircraft = AIRCRAFT_FILENAME
 local cpxpScriptReady = false
+
+-- Dependencies
+local FF767 = require("CrewPackXP/FF767_CrewPackXP")
+local FF767snd = require("CrewPackXP/FF767_SND_CrewPackXP")
+local FF767cfg = require("CrewPackXP/FF767_CFG_CrewPackXP")
+
+require "graphics"
+
+
 
 -- Generic Datarefs
 print("CrewPackXP: Initialising main plugin version " .. cpxpVersion)
@@ -74,7 +74,6 @@ do_often("cpxpBubbleTiming()")
 
 function cpxpDelayInit()
     if not cpxpScriptReady then
-        FF767.cpxpAircraftDelay()
        if cpxpStartTime == 0 then
           cpxpStartTime = (cpxp_SIM_TIME + _G.cpxpInitDelay)
           _G.cpxpBubbleTimer = 0 - _G.cpxpInitDelay
@@ -82,11 +81,20 @@ function cpxpDelayInit()
        if (cpxp_SIM_TIME < cpxpStartTime) then
           print("CrewPackXP: Waiting to start " .. math.floor(cpxp_SIM_TIME) .. " waiting for " .. math.floor(cpxpStartTime))
           _G.cpxpMsgStr = "CrewPackXP loading in " .. math.floor(cpxpStartTime - cpxp_SIM_TIME) .. " seconds"
+          print(tostring(_G.cpxpReady) .. ' 1')
        end
-       if cpxpLoadedAircraft == '757-200_xp11.acf' and not _G.cpxpReady then
-          print("CPXP: Aircraft Module reporting not ready")
-       elseif cpxpLoadedAircraft == '757-200_xp11.acf' and _G.cxpxReady then
-          cpxpScriptReady = true
+       if (cpxp_SIM_TIME > cpxpStartTime) then
+           if cpxpLoadedAircraft == '757-200_xp11.acf' then
+             FF767.cpxpAircraftDelay()
+             if not cpxpReady then
+                print(tostring(cpxpReady) .. ' 2')
+             elseif cpxpReady then
+                print(tostring(cpxpReady) .. ' 3')
+                cpxpScriptReady = true
+             end
+            else
+                print("CPXP: Aircraft not recognised, terminating script")
+            end
        end
     end
  end
@@ -104,3 +112,6 @@ function cpxpMainCall()
 end
 
 do_often("cpxpMainCall()")
+
+
+
