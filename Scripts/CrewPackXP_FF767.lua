@@ -20,9 +20,9 @@ v0.7 - Rewriting with newer ways of doing things
 if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
    --------
    -- Initialisation Variables
-   local version = "FF767: 0.7-beta"
-   local initDelay = 15
-   local startTime = 0
+   local cpxpVersion = "FF767: 0.7-beta"
+   local cpxpInitDelay = 15
+   local cpxpStartTime = 0
    dataref("cpxp_SIM_TIME", "sim/time/total_running_time_sec")
 
    -- dependencies
@@ -205,7 +205,7 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
 
 
 
-   print("CrewPackXP: Initialising version " .. version)
+   print("CrewPackXP: Initialising cpxpVersion " .. cpxpVersion)
    print("CrewPackXP: Starting at sim time " .. math.floor(cpxp_SIM_TIME))
 
    -- Bubble for messages
@@ -235,16 +235,16 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
    function CPXPDelayedInit()
       -- Dealy based on time
 
-      if startTime == 0 then
-         startTime = (cpxp_SIM_TIME + initDelay)
-         cpxpBubbleTimer = -12
+      if cpxpStartTime == 0 then
+         cpxpStartTime = (cpxp_SIM_TIME + cpxpInitDelay)
+         cpxpBubbleTimer = 0 - cpxpInitDelay
          ParseCrewPackXPSettings()
       end
-      if (cpxp_SIM_TIME < startTime) then
+      if (cpxp_SIM_TIME < cpxpStartTime) then
          print(
-         "CrewPackXP: Init Delay " .. math.floor(cpxp_SIM_TIME) .. " waiting for " .. math.floor(startTime) .. " --"
+         "CrewPackXP: Init Delay " .. math.floor(cpxp_SIM_TIME) .. " waiting for " .. math.floor(cpxpStartTime) .. " --"
          )
-         cpxpMsgStr = "767 Crew Pack Loading in " .. math.floor(startTime - cpxp_SIM_TIME) .. " seconds"
+         cpxpMsgStr = "CrewPackXP Loading in " .. math.floor(cpxpStartTime - cpxp_SIM_TIME) .. " seconds"
          return
       end
       -- Delay based on 757 specific variables
@@ -282,7 +282,7 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
 
       if not cpxpReady then
          print("CrewPackXP: Datarefs Initialised for " .. PLANE_ICAO .. " at time " .. math.floor(cpxp_SIM_TIME))
-         cpxpMsgStr = "767 Crew Pack Initialised for " .. PLANE_ICAO
+         cpxpMsgStr = "CrewPackXP Initialised for " .. PLANE_ICAO
          cpxpBubbleTimer = 0
          cpxpReady = true
       end
@@ -317,7 +317,7 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
       end
       if ADC1 == 1 then
          print("CrewPackXP: ADC1 Failure, callouts degraded")
-         cpxpMsgStr = "767 Crew Pack: Aircraft data computer failure detected"
+         cpxpMsgStr = "CrewPackXP: Aircraft data computer failure detected"
          cpxpBubbleTimer = 0
       end
    end -- End of MonitorADC1
@@ -409,7 +409,7 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
          end
          -- FO Preflight
          if cpxpFoPreflight then
-            cpxpMsgStr = "767 Crew Pack: FO Attempting to setup cockpit"
+            cpxpMsgStr = "CrewPackXP: FO Attempting to setup cockpit"
             cpxpBubbleTimer = 0
             set("anim/1/button", 1)
             set("anim/2/button", 1)
@@ -477,7 +477,7 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
             set("1-sim/press/landingAltitudeSelector", ((math.ceil(get("sim/cockpit2/gauges/indicators/altitude_ft_pilot") / 10))/100) - 2)
          else
             print("FO Preflight inhibited by settings")
-            cpxpMsgStr = "767 Crew Pack: FO Preflight inhibited by settings"
+            cpxpMsgStr = "CrewPackXP: FO Preflight inhibited by settings"
             cpxpBubbleTimer = 0
          end
       end
@@ -733,13 +733,13 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
       if not cpxpInvalidVSpeed and cpxpToCalloutMode and IAS > 100 and V1 < 100 then
          print("CrewPackXP: V1 Speed invalid value " .. math.floor(V1))
          cpxpInvalidVSpeed = true
-         -- cpxpMsgStr = "767 Crew Pack: Invalid V-Speeds detected"
+         -- cpxpMsgStr = "CrewPackXP: Invalid V-Speeds detected"
          -- cpxpBubbleTimer = 0
       end
       if not cpxpInvalidVSpeed and cpxpToCalloutMode and IAS > 100 and VR < 100 then
          print("CrewPackXP: VR Speed invalid value " .. math.floor(VR))
          cpxpInvalidVSpeed = true
-         -- cpxpMsgStr = "767 Crew Pack: Invalid V-Speeds detected"
+         -- cpxpMsgStr = "CrewPackXP: Invalid V-Speeds detected"
          -- cpxpBubbleTimer = 0
       end
    end
@@ -972,7 +972,7 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
       if cpxpWEIGHT_ON_WHEELS == 1 and cpxpFlightOccoured and cpxpApuConnect and not cpxpApuStart and IAS <= 30 then
          set("1-sim/engine/APUStartSelector", 2)
          cpxpApuStart = true
-         cpxpMsgStr = "767 Crew Pack: Starting APU"
+         cpxpMsgStr = "CrewPackXP: Starting APU"
          cpxpBubbleTimer = 0
       end
    end
@@ -1045,10 +1045,10 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
       then
          set("params/stop", 1)
          cpxpBubbleTimer = 0
-         cpxpMsgStr = "767 Crew Pack: Ground crew attending to aircraft"
+         cpxpMsgStr = "CrewPackXP: Ground crew attending to aircraft"
          if cpxpGpuConnect then
             set("params/gpu", 1)
-            cpxpMsgStr = "767 Crew Pack: GPU Connected"
+            cpxpMsgStr = "CrewPackXP: GPU Connected"
             cpxpBubbleTimer = 0
          end
          if cpxpApuConnect then
@@ -1083,7 +1083,7 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
          return
       end
       if cpxpGseOnBeacon and cpxpBEACON == 1 and cpxpENG1_N2 < 25 and cpxpENG2_N2 < 25 and cpxpHorsePlayed and not cpxpGpuDisconnect then
-         cpxpMsgStr = "767 Crew Pack: Ground crew closing doors"
+         cpxpMsgStr = "CrewPackXP: Ground crew closing doors"
          cpxpBubbleTimer = 0
          set("anim/16/button", 0)
          set("anim/cabindoor", 0)
@@ -1120,7 +1120,7 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
       cpxpLnavPressed = false
       cpxpGaPlayed = false
       print("CrewPackXP: TOGA Event Detected at time " .. math.floor(cpxp_SIM_TIME))
-      cpxpMsgStr = "767 Crew Pack: GO Around Mode"
+      cpxpMsgStr = "CrewPackXP: GO Around Mode"
       cpxpBubbleTimer = 0
       cpxpTogaState = cpxpTOGA_BUTTON
    end
@@ -1232,14 +1232,14 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
 
    if not SUPPORTS_FLOATING_WINDOWS then
       -- to make sure the script doesn't stop old FlyWithLua versions
-      print("imgui not supported by your FlyWithLua version, please update to latest version")
+      print("imgui not supported by your FlyWithLua cpxpVersion, please update to latest cpxpVersion")
    end
 
    -- Create Settings window
    function ShowCrewPackXPSettings_wnd()
       ParseCrewPackXPSettings()
       CrewPackXPSettings_wnd = float_wnd_create(450, 450, 0, true)
-      float_wnd_set_title(CrewPackXPSettings_wnd, "767 Crew Pack Settings")
+      float_wnd_set_title(CrewPackXPSettings_wnd, "CrewPackXP Settings")
       float_wnd_set_imgui_builder(CrewPackXPSettings_wnd, "CrewPackXPSettings_contents")
       float_wnd_set_onclose(CrewPackXPSettings_wnd, "CloseCrewPackXPSettings_wnd")
    end
@@ -1247,7 +1247,7 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
    function CrewPackXPSettings_contents(CrewPackXPSettings_wnd, x, y)
       local winWidth = imgui.GetWindowWidth()
       local winHeight = imgui.GetWindowHeight()
-      local titleText = "767 Crew Pack Settings"
+      local titleText = "CrewPackXP Settings"
       local titleTextWidth, titileTextHeight = imgui.CalcTextSize(titleText)
 
       imgui.SetCursorPos(winWidth / 2 - titleTextWidth / 2, imgui.GetCursorPosY())
@@ -1443,7 +1443,7 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
       }
       print("CrewPackXP: Settings Saved")
       cpxpBubbleTimer = 0
-      cpxpMsgStr = "767 Crew Pack settings saved"
+      cpxpMsgStr = "CrewPackXP settings saved"
       cpxpSetGain()
       SaveCrewPack767Settings(cpxpCrewPackXPSettings)
    end
