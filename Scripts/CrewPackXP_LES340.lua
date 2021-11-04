@@ -14,7 +14,7 @@ Changelog:
 V0.1 - Initial release
 --]]
 
-if AIRCRAFT_FILENAME == "LES_Saab_340A_Cargo.acf" then
+if AIRCRAFT_FILENAME == "LES_Saab_340A_Cargo.acf" or AIRCRAFT_FILENAME == "LES_Saab_340A.acf" then
 
     -- Initialisation Variables
     local version = "LES340: 0.1"
@@ -39,10 +39,11 @@ if AIRCRAFT_FILENAME == "LES_Saab_340A_Cargo.acf" then
     local cpxpStart3 = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/start_3.wav")
     local cpxpStart4 = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/start_4.wav")
     local cpxpEightyKts_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pnf_pf_80kts.wav")
-    local cpxpStartLeft_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_StartLeft.wav")
-    local cpxpStartRight_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_StartRight.wav")
-    local cpxpStartLeft1_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_Start1.wav")
-    local cpxpStartRight2_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_Start2.wav")
+    local cpxpStartLeft_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/LES340/pf_StartLft.wav")
+    local cpxpStartRight_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/LES340/pf_StartRt.wav")
+    local cpxpStartLeft1_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/LES340/pf_Start1.wav")
+    local cpxpStartRight2_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/LES340/pf_Start2.wav")
+    local cpxpStartCutOut_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/LES340/StartCutOut.wav")
     local cpxpOutput_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/output.wav")
     local cpxpOutputPA_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/output.wav")
 
@@ -56,6 +57,7 @@ if AIRCRAFT_FILENAME == "LES_Saab_340A_Cargo.acf" then
         set_sound_gain(cpxpStartRight_snd, cpxpSoundVol)
         set_sound_gain(cpxpStartLeft1_snd, cpxpSoundVol)
         set_sound_gain(cpxpStartRight2_snd, cpxpSoundVol)
+        set_sound_gain(cpxpStartCutOut_snd, cpxpSoundVol)
         set_sound_gain(cpxpOutput_snd, cpxpSoundVol)
         set_sound_gain(cpxpOutputPA_snd, cpxpSoundVol)
     end
@@ -121,6 +123,80 @@ if AIRCRAFT_FILENAME == "LES_Saab_340A_Cargo.acf" then
 
     do_often("CPXPDelayedInit()")
 
+    -- Test Commands
+    local cpxpCargoDoor = false
+    local cpxpMainDoor = false
+    local cpxpMainHandle = false
+    local cpxpFASeat = false
+    local cpxpStairSlide = false
+    local cpxpStairFold = false
+
+
+    function CPXPDoors()
+
+      if cpxpReady then
+         if get("LES/saab/GS/wheel_chock_nose") == 0 then
+            set("LES/saab/GS/wheel_chock_nose" , 1)
+         end
+      end
+  
+      --cargo door  
+      if cpxpReady and not cpxpCargoDoor then
+          if get("les/sf34a/acft/emrg/anm/cargo_door_handle") == 1 then
+              command_once("les/sf34a/acft/emrg/mnp/cargo_door_handle")
+          end
+          if get("les/sf34a/acft/emrg/anm/cargo_door_handle") == 0 then
+            command_once("les/sf34a/acft/emrg/mnp/cargo_door")
+            cpxpCargoDoor = true
+          end
+      end
+  
+      -- Main Door
+      if cpxpReady then
+          if not cpxpMainHandle then
+               if get("les/sf34a/acft/emrg/anm/main_door_handle") == 1 then
+                  command_once("les/sf34a/acft/emrg/mnp/main_door_handle")
+               elseif get("les/sf34a/acft/emrg/anm/main_door_handle") == 0 then
+                  cpxpMainHandle = true
+               end
+          end
+          if not cpxpMainDoor and cpxpMainHandle then
+              if get("les/sf34a/acft/emrg/anm/main_door") == 1 then
+                  command_once("les/sf34a/acft/emrg/mnp/main_door")
+              elseif get("les/sf34a/acft/emrg/anm/main_door") == 0 then
+              cpxpMainDoor = true
+              end
+          end
+          if not cpxpFASeat and not cpxpStairSlide then
+               if get("les/sf34a/acft/gnrl/anm/cabin_attendant_seat") == 0 then
+                  command_once("les/sf34a/acft/gnrl/mnp/cabin_attendant_seat")
+               elseif get("les/sf34a/acft/gnrl/anm/cabin_attendant_seat") == 1 then
+                  cpxpFASeat = true
+               end
+          end
+          if cpxpFASeat and not cpxpStairSlide then
+            if get("les/sf34a/acft/emrg/anm/cabin_stair_slide") == 0 then
+               command_once("les/sf34a/acft/emrg/mnp/cabin_stair_slide_button")
+            elseif get("les/sf34a/acft/emrg/anm/cabin_stair_slide") == 1 then
+               cpxpStairSlide = true
+            end
+          end
+          if cpxpFASeat and cpxpStairSlide then
+            if get("les/sf34a/acft/emrg/anm/cabin_stair_fold") == 0 then
+              command_once("les/sf34a/acft/emrg/mnp/cabin_stair_fold_button")
+            elseif get("les/sf34a/acft/emrg/anm/cabin_stair_fold") == 1 then
+              cpxpStairFold = true
+            end
+          end
+          if cpxpStairFold and cpxpFASeat then
+              command_once("les/sf34a/acft/gnrl/mnp/cabin_attendant_seat")
+              cpxpFASeat = false
+          end
+      end
+   end
+
+  do_often("CPXPDoors()")
+
     -- Start Up Sounds
     local cpxpStartPlayed = false
 
@@ -162,7 +238,8 @@ if AIRCRAFT_FILENAME == "LES_Saab_340A_Cargo.acf" then
             end
             cpxpLeftStart = true
         end
-        if cpxpLEFT_STARTER == 0 then
+        if cpxpLEFT_STARTER == 0 and cpxpLeftStart then
+            play_sound(cpxpStartCutOut_snd)
             cpxpLeftStart = false
         end
         if cpxpRIGHT_STARTER == 1 and not cpxpRightStart then
@@ -174,7 +251,8 @@ if AIRCRAFT_FILENAME == "LES_Saab_340A_Cargo.acf" then
             end
             cpxpRightStart = true
         end
-        if cpxpRIGHT_STARTER == 0 then
+        if cpxpRIGHT_STARTER == 0  and cpxpRightStart then
+            play_sound(cpxpStartCutOut_snd)
             cpxpRightStart = false
         end
     end
