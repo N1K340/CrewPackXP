@@ -3,7 +3,7 @@ Crew Pack Script for Leading Edge Sim Saab 340A
 
 Voices by https://www.naturalreaders.com/
 Captn: Guy
-FO: Ranald
+FO: Matthew
 Ground Crew: en-AU-B-Male (what a name...)
 Safety: Leslie
 Fun fact for those that read comments:
@@ -32,6 +32,37 @@ if AIRCRAFT_FILENAME == "LES_Saab_340A_Cargo.acf" or AIRCRAFT_FILENAME == "LES_S
     local cpxpEngStartType = 1
     local cpxpPaVol = 0.3
     local cpxpSoundVol = 0.7
+    local cpxpFaOnboard = true
+
+    -- Local Vars
+      -- Bubble for messages
+      local cpxpMsgStr = nil
+      local cpxpBubbleTimer = 0
+      -- Delaying Initialisation till aircraft loads
+      local cpxpStartTime = 0
+      local cpxpInitDelay = 10
+      local cpxpReady = false
+      -- Engine Start Calls
+      local cpxpLeftStart = false
+      local cpxpRightStart = false
+      -- Flight Attendant
+      local cpxpPaTimer = 230
+      local cpxpFaPlaySeq = 0
+      local cpxpBeltsOffPlay = false
+      local cpxpBeltsOnPlay = false
+      local cpxpSeatsLandingPlayed = true
+      local cpxpFlightOccoured = false
+      local cpxpFaTaxiInPaPlayed = false
+      -- Crew Calls
+      local cpxpCalloutTimer = 4
+      local cpxpGearUpPlayed = false
+      local cpxpGearDownPlayed = true
+      local cpxpAutoCoarsenPlayed = true
+      local cpxpYawDamperPlayed = false
+
+      -- Not Yet assigned
+
+
 
     -- Sound Files
     local cpxpStart1 = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/start_1.wav")
@@ -46,6 +77,19 @@ if AIRCRAFT_FILENAME == "LES_Saab_340A_Cargo.acf" or AIRCRAFT_FILENAME == "LES_S
     local cpxpStartCutOut_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/LES340/StartCutOut.wav")
     local cpxpOutput_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/output.wav")
     local cpxpOutputPA_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/output.wav")
+    local cpxpFA_Welcome_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/LES340/Welcome_SF34.wav")
+    local cpxpSafetyDemo767_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/LES340/Safety_SF34.wav")
+    local cpxpCabinSecure_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/fa_cabinSecure.wav")
+    local cpxpTOD_PA_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pnf_todPa.wav")
+    local cpxpSeatLand_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/fa_seatsLanding.wav")
+    local cpxpPax_Seatbelts_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/fa_paxseatbelt.wav")
+    local cpxpTaxiInPA_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/fa_goodbye.wav")
+    local cpxpGearUp_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/LES340/pf_GearUp.wav")
+    local cpxpGearDwn_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/LES340/pf_GearDn.wav")
+    local cpxpAutoCoarsenOn_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/LES340/AutoCoarsenOn.wav")
+    local cpxpYDOn_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/LES340/YawDamperOn.wav")
+
+    
 
     function cpxpSetGain()
         set_sound_gain(cpxpStart1, cpxpSoundVol)
@@ -60,20 +104,36 @@ if AIRCRAFT_FILENAME == "LES_Saab_340A_Cargo.acf" or AIRCRAFT_FILENAME == "LES_S
         set_sound_gain(cpxpStartCutOut_snd, cpxpSoundVol)
         set_sound_gain(cpxpOutput_snd, cpxpSoundVol)
         set_sound_gain(cpxpOutputPA_snd, cpxpSoundVol)
+        set_sound_gain(cpxpFA_Welcome_snd, cpxpPaVol)
+        set_sound_gain(cpxpSafetyDemo767_snd, cpxpPaVol)
+        set_sound_gain(cpxpTOD_PA_snd, cpxpPaVol)
+        set_sound_gain(cpxpSeatLand_snd, cpxpPaVol)
+        set_sound_gain(cpxpPax_Seatbelts_snd, cpxpPaVol)
+        set_sound_gain(cpxpTaxiInPA_snd, cpxpPaVol)
+        set_sound_gain(cpxpCabinSecure_snd, cpxpSoundVol)
+        set_sound_gain(cpxpGearUp_snd, cpxpSoundVol)
+        set_sound_gain(cpxpGearDwn_snd, cpxpSoundVol)
+        set_sound_gain(cpxpAutoCoarsenOn_snd, cpxpSoundVol)
+        set_sound_gain(cpxpYDOn_snd, cpxpSoundVol)
     end
 
     -- Generic Dataref
     dataref("cpxpLEFT_STARTER", "sim/flightmodel2/engines/starter_is_running", "readonly", 0)
     dataref("cpxpRIGHT_STARTER", "sim/flightmodel2/engines/starter_is_running", "readonly", 1)
+    dataref("cpxpBEACON", "sim/cockpit2/switches/beacon_on")
+    dataref("cpxpWEIGHT_ON_WHEELS", "sim/cockpit2/tcas/targets/position/weight_on_wheels", "readonly", 0)
+    dataref("cpxpENG2_N2", "sim/flightmodel2/engines/N2_percent", "readonly", 1)
+    dataref("cpxpIAS", "sim/flightmodel/position/indicated_airspeed")
+    dataref("cpxpAGL", "sim/flightmodel/position/y_agl")
+    dataref("cpxpGEAR_HANDLE", "sim/cockpit/switches/gear_handle_status")
+
+
 
     -- Message Functions
     print("CrewPackXP: Initialising version " .. version)
     print("CrewPackXP: Starting at sim time " .. math.floor(cpxp_SIM_TIME))
 
-    -- Bubble for messages
-    local cpxpMsgStr = nil
-    local cpxpBubbleTimer = 0
-
+    -- Bubble for messages and timers
     function CPXPDisplayMessage()
         bubble(20, get("sim/graphics/view/window_height") - 100, cpxpMsgStr)
     end
@@ -90,15 +150,15 @@ if AIRCRAFT_FILENAME == "LES_Saab_340A_Cargo.acf" or AIRCRAFT_FILENAME == "LES_S
         if cpxpBubbleTimer < 3 then
         cpxpBubbleTimer = cpxpBubbleTimer + 1
         end
+        if cpxpCalloutTimer < 4 then
+         cpxpCalloutTimer = (cpxpCalloutTimer + 1)
+      end
     end
 
     do_every_draw("CPXPmsg()")
     do_often("CPXPBubbleTiming()")
 
     -- Delaying Initialisation till aircraft loads
-    local cpxpStartTime = 0
-    local cpxpInitDelay = 10
-    local cpxpReady = false
 
     function CPXPDelayedInit()
         if cpxpStartTime == 0 then
@@ -119,11 +179,14 @@ if AIRCRAFT_FILENAME == "LES_Saab_340A_Cargo.acf" or AIRCRAFT_FILENAME == "LES_S
             cpxpBubbleTimer = 0
             cpxpReady = true
          end
+         if (XPLMFindDataRef("les/sf34a/acft/comm/anm/seat_belt_sign_switch") ~= nil) then
+            dataref("cpxpBELTS_SIGN", "les/sf34a/acft/comm/anm/seat_belt_sign_switch")
+         end
     end
 
     do_often("CPXPDelayedInit()")
 
-    -- Test Commands
+    --[[ Test Commands
     local cpxpCargoDoor = false
     local cpxpMainDoor = false
     local cpxpMainHandle = false
@@ -195,7 +258,7 @@ if AIRCRAFT_FILENAME == "LES_Saab_340A_Cargo.acf" or AIRCRAFT_FILENAME == "LES_S
       end
    end
 
-  do_often("CPXPDoors()")
+  do_often("CPXPDoors()") ]]
 
     -- Start Up Sounds
     local cpxpStartPlayed = false
@@ -222,8 +285,6 @@ if AIRCRAFT_FILENAME == "LES_Saab_340A_Cargo.acf" or AIRCRAFT_FILENAME == "LES_S
 
 
     -- Engine Start Calls
-    local cpxpLeftStart = false
-    local cpxpRightStart = false
 
     function CPXPEngineStart()
         if not cpxpReady then
@@ -258,6 +319,144 @@ if AIRCRAFT_FILENAME == "LES_Saab_340A_Cargo.acf" or AIRCRAFT_FILENAME == "LES_S
     end
 
     do_often("CPXPEngineStart()")
+
+    -- Flight Attendant
+
+    local cpxpPaTimer = 230
+    local cpxpFaPlaySeq = 0
+    local cpxpBeltsOffPlay = false
+    local cpxpBeltsOnPlay = false
+
+    function CPXPFlightAttendant()
+      
+      if not cpxpReady then
+         return
+      end
+
+      if cpxpFaOnboard then
+         if cpxpPaTimer <241 then
+            cpxpPaTimer = cpxpPaTimer +1
+         end
+
+         if cpxpBEACON == 1 and cpxpWEIGHT_ON_WHEELS == 1 and cpxpENG2_N2 > 10 and cpxpFaPlaySeq == 0 then
+            cpxpPaTimer = 150
+            play_sound(cpxpFA_Welcome_snd)
+            cpxpFaPlaySeq = 1
+            print("CrewPackXP: Playing FA welcome PA - Engine Start")
+         end
+         if cpxpBEACON == 1 and cpxpWEIGHT_ON_WHEELS == 1 and (math.floor(get("sim/flightmodel2/position/groundspeed"))) ~= 0 and cpxpFaPlaySeq == 0 then
+            cpxpPaTimer = 150
+            play_sound(cpxpFA_Welcome_snd)
+            cpxpFaPlaySeq = 1
+            print("CrewPackXP: Playing FA welcome PA, GS "..(math.floor(get("sim/flightmodel2/position/groundspeed"))))
+         end
+         if cpxpBEACON == 1 and cpxpWEIGHT_ON_WHEELS == 1 and cpxpFaPlaySeq == 1 and cpxpPaTimer == 241 then
+            cpxpPaTimer = 0
+            play_sound(cpxpSafetyDemo767_snd)
+            print("CrewPackXP: Playing Safety Demo")
+
+            cpxpFaPlaySeq = 2
+         end
+         if cpxpBEACON == 1 and cpxpWEIGHT_ON_WHEELS == 1 and cpxpFaPlaySeq == 2 and cpxpPaTimer == 241 then
+            play_sound(cpxpCabinSecure_snd)
+            print("CrewPackXP: Played Cabin Secure")
+            cpxpFaPlaySeq = 3
+         end
+         if cpxpBEACON == 1 and cpxpWEIGHT_ON_WHEELS == 0 and cpxpFaPlaySeq == 3 and cpxpPaTimer == 241 and cpxpBELTS_SIGN == 0  and not cpxpBeltsOffPlay then
+            cpxpBeltsOffPlay = true
+            cpxpFaPlaySeq = 4
+
+         end
+         if cpxpBEACON == 1 and cpxpWEIGHT_ON_WHEELS == 0 and cpxpFaPlaySeq == 4 and cpxpPaTimer == 241 and cpxpBELTS_SIGN == 1  then
+            play_sound(cpxp_TOD_PA_snd)
+            for i = 1, 9, 1 do
+               local ref = "les/sf34a/acft/gnrl/anm/cabin_window_shade0"..i
+               set(ref, 1)
+            end
+            for i = 10, 24, 1 do
+               local ref = "anim/blind/R/"..i
+               set(ref, 1)
+            end
+            cpxpBeltsOnPlay = true
+            cpxpFaPlaySeq = 5
+         end
+         if cpxpGearDownPlayed and cpxpCalloutTimer >=2 and not cpxpSeatsLandingPlayed then
+            play_sound(cpxpSeatLand_snd)
+            print("CrewPackXP: Played seats for landing")
+            cpxpSeatsLandingPlayed = true
+            cpxpFaPlaySeq = 6
+         end
+         if cpxpWEIGHT_ON_WHEELS == 1 and cpxpFlightOccoured and not cpxpFaTaxiInPaPlayed and cpxpIAS <= 30 then
+            play_sound(cpxpTaxiInPA_snd)
+            print("CrewPackXP: After landing PA")
+            cpxpFaTaxiInPaPlayed = true
+         end
+      end
+   end
+
+   do_often("CPXPFlightAttendant()")
+
+    -- Gear Selection
+    function CPXPGearSelection()
+      if not cpxpReady then
+         return
+      end
+      if cpxpAGL > 15 and cpxpGEAR_HANDLE == 0 and cpxpCalloutTimer >= 2 and not cpxpGearUpPlayed then
+         play_sound(cpxpGearUp_snd)
+         cpxpCalloutTimer = 0
+         cpxpGearUpPlayed = true
+         cpxpGearDownPlayed = false
+         cpxpFlightOccoured = true
+         cpxpSeatsLandingPlayed = false
+         cpxpAutoCoarsenPlayed = false
+
+         --cpxpApuStart = false
+         --cpxpSpdBrkNotPlayed = false
+         --cpxpSpdBrkPlayed = false
+         --cpxpSixtyPlayed = false
+         --cpxpHorsePlayed = false
+         --cpxpTodPaPlayed = false
+         --cpxpPaxSeatBeltsPlayed = false
+         print("CrewPackXP: Gear Up")
+      end
+      -- Gear Down
+      if cpxpAGL > 15 and cpxpGEAR_HANDLE == 1 and cpxpCalloutTimer >= 2 and not cpxpGearDownPlayed then
+         play_sound(cpxpGearDwn_snd)
+         cpxpCalloutTimer = 0
+         cpxpGearUpPlayed = false
+         cpxpGearDownPlayed = true
+         cpxpYawDamperPlayed = false
+         --cpxpPosRatePlayed = false
+         --cpxpTogaEvent = false
+         --cpxpTogaMsg = false
+         if get("les/sf34a/acft/ltng/anm/taxi_lights_switch") == 0 then
+            command_once("les/sf34a/acft/ltng/mnp/taxi_lights_switch")
+         end
+         if get("les/sf34a/acft/engn/anm/autocoarsen_switch") == 0 then
+            command_once("les/sf34a/acft/engn/mnp/autocoarsen_switch")
+         end
+         print("CrewPackXP: Gear Down")
+      end
+      if cpxpAGL > 15 and cpxpGEAR_HANDLE == 1 and cpxpCalloutTimer >= 2 and cpxpGearDownPlayed and not cpxpAutoCoarsenPlayed then
+         if get("les/sf34a/acft/engn/anm/autocoarsen_switch") == 1 then
+            play_sound(cpxpAutoCoarsenOn_snd)
+            cpxpCalloutTimer = 0
+            cpxpAutoCoarsenPlayed = true
+         end
+      end
+      if cpxpAGL > 15 and get("LES/saab/annun/ldg_gear_transit_light") == 0 and cpxpCalloutTimer >= 2 and cpxpGearUpPlayed then
+         if get("les/sf34a/acft/aplt/anm/yaw_damper_engage_switch") == 0 then
+            command_once("les/sf34a/acft/aplt/mnp/yaw_damper_engage_switch")
+         end 
+         if get("les/sf34a/acft/aplt/anm/yaw_damper_engage_switch") == 1 and not cpxpYawDamperPlayed then
+            play_sound(cpxpYDOn_snd)   
+            cpxpCalloutTimer = 0
+            cpxpYawDamperPlayed = true
+         end
+      end
+   end
+
+   do_often("CPXPGearSelection()")
 
     -- Settings
 
@@ -313,6 +512,12 @@ if AIRCRAFT_FILENAME == "LES_Saab_340A_Cargo.acf" or AIRCRAFT_FILENAME == "LES_S
               print("CrewPackXP: Engine start call set to 1 / 2")
            end
            imgui.EndCombo()
+           local changed, newVal = imgui.Checkbox("Crew Pack FA Onboard?", cpxpFaOnboard)
+           if changed then
+              cpxpFaOnboard = newVal
+              SaveCrewPackXPData()
+              print("CrewPackXP: Start message logic set to " .. tostring(cpxpStartMsg))
+           end
         end
         --[[imgui.SetCursorPos(20, imgui.GetCursorPosY())
         local changed, newVal = imgui.Checkbox("Crew Pack FA Onboard?", cpxpFaOnboard)
@@ -435,6 +640,7 @@ if AIRCRAFT_FILENAME == "LES_Saab_340A_Cargo.acf" or AIRCRAFT_FILENAME == "LES_S
            cpxpPaVol = cpxpCrewPackXPSettings.CrewPackLES340.cpxpPaVol
            cpxpSoundVol = cpxpCrewPackXPSettings.CrewPackLES340.cpxpSoundVol
            cpxpEngStartType = cpxpCrewPackXPSettings.CrewPackLES340.cpxpEngStartType
+           cpxpFaOnboard = cpxpCrewPackXPSettings.CrewPackLES340.cpxpFaOnboard
            print("CrewPackXP: Settings Loaded")
            cpxpSetGain()
         else
@@ -450,6 +656,7 @@ if AIRCRAFT_FILENAME == "LES_Saab_340A_Cargo.acf" or AIRCRAFT_FILENAME == "LES_S
               cpxpPaVol = cpxpPaVol,
               cpxpSoundVol = cpxpSoundVol,
               cpxpEngStartType = cpxpEngStartType,
+              cpxpFaOnboard = cpxpFaOnboard,
            }
         }
         print("CrewPackXP: Settings Saved")
