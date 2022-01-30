@@ -59,7 +59,11 @@
         "tonumber",
         "tostring",
         "FMS_MODE",
-        "FMS_MODE"
+        "FMS_MODE",
+        "AIRCRAFT_PATH",
+        "cpxp_SIM_TIME",
+        "AIRCRAFT_FILENAME",
+        "cpxpLEFT_STARTER"
     ],
     "Lua.diagnostics.disable": [
         "undefined-doc-name"
