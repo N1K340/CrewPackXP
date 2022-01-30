@@ -243,13 +243,13 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
          end
         if cpxpFaOnboard then
             if cpxpBEACON == 1 and cpxpWEIGHT_ON_WHEELS == 1 and cpxpENG2_N2 > 30 and cpxpFaPlaySeq == 0 then
-                cpxpPaTimer = 150
+                cpxpPaTimer = 210
                 play_sound(cpxpFA_Welcome_snd)
                 cpxpFaPlaySeq = 2
                 print("CrewPackXP: Playing FA welcome PA - Engine Start")
              end
              if cpxpBEACON == 1 and cpxpWEIGHT_ON_WHEELS == 1 and (math.floor(get("sim/flightmodel2/position/groundspeed"))) ~= 0 and cpxpFaPlaySeq == 0 then
-                cpxpPaTimer = 150
+                cpxpPaTimer = 210
                 play_sound(cpxpFA_Welcome_snd)
                 cpxpFaPlaySeq = 2
                 print("CrewPackXP: Playing FA welcome PA, GS "..(math.floor(get("sim/flightmodel2/position/groundspeed"))))
@@ -313,7 +313,7 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
                 cpxpTON1 = string.sub(cpxpTORaw, 1, 4)
                 cpxpTOACT = string.sub(cpxpTORaw, 7, 9)
                 cpxpCLBN1 = string.sub(cpxpCLBRaw, 1, 4)
-                cpxpCLBACT = string.sub(cpxpCLBACT, 7, 9)
+                cpxpCLBACT = string.sub(cpxpCLBRaw, 7, 9)
             else
                 print("Mode is wrong " .. cpxpCDU3Mode)
                 set("CL650/CDU/3/perf_value" ,1)
@@ -391,35 +391,35 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
         end 
 
         -- V1
-        if cpxpToCalloutMode and cpxpIAS > cpxpV1 - 3 and cpxpPlaySeq == 6 and cpxpCalloutTimer >= 2 then
+        if cpxpToCalloutMode and cpxpIAS > (cpxpV1 - 3) and cpxpPlaySeq == 3 and cpxpCalloutTimer >= 1 then
             play_sound(cpxpV1_snd)
             cpxpCalloutTimer = 0
             print("CrewPackXP: V1 of " .. math.floor(cpxpV1) .. " Played at " .. math.floor(cpxpIAS) .. " kts")
-            cpxpPlaySeq = 3
+            cpxpPlaySeq = 4
          end
 
          -- VR
-        if cpxpToCalloutMode and cpxpIAS > cpxpVR - 3 and cpxpPlaySeq == 3 and cpxpCalloutTimer >= 2 then
+        if cpxpToCalloutMode and cpxpIAS > (cpxpVR - 3) and cpxpPlaySeq == 4 and cpxpCalloutTimer >= 1 then
             play_sound(cpxpVR_snd)
             cpxpCalloutTimer = 0
             print("CrewPackXP: VR of " .. math.floor(cpxpVR) .. " Played at " .. math.floor(cpxpIAS) .. " kts")
-            cpxpPlaySeq = 4
+            cpxpPlaySeq = 5
         end
 
      -- V2
-        if cpxpToCalloutMode and cpxpIAS > cpxpV2 - 3 and cpxpPlaySeq == 4 and cpxpCalloutTimer >= 2 then
+        if cpxpToCalloutMode and cpxpIAS > (cpxpV2 - 3) and cpxpPlaySeq == 5 and cpxpCalloutTimer >= 1 then
             play_sound(cpxpV2_snd)
             cpxpCalloutTimer = 0
             print("CrewPackXP: V2 of " .. math.floor(cpxpVR) .. " Played at " .. math.floor(cpxpIAS) .. " kts")
-            cpxpPlaySeq = 5
+            cpxpPlaySeq = 6
         end
     
         -- Pos Rate
-        if cpxpToCalloutMode and cpxpWEIGHT_ON_WHEELS == 0 and cpxpVSI > 50 and cpxpPlaySeq == 5 and cpxpCalloutTimer >= 2 then
+        if cpxpToCalloutMode and cpxpWEIGHT_ON_WHEELS == 0 and cpxpVSI > 50 and cpxpPlaySeq == 6 and cpxpCalloutTimer >= 2 then
             play_sound(cpxpPosRate_snd)
             cpxpCalloutTimer = 0
             print("CrewPackXP: Positive Rate " .. math.floor(cpxpAGL) .. " AGL and " .. math.floor(cpxpVSI) .. " ft/min")
-            cpxpPlaySeq = 6
+            cpxpPlaySeq = 7
          end
 
     end
@@ -456,7 +456,7 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
         end
 
         CPXPThrustRef()
-        if cpxpToCalloutMode and cpxpPlaySeq == 6 and (cpxpAGL / 0.3048) > 1100 and not cpxpClimbThrustPressed then
+        if cpxpToCalloutMode and cpxpPlaySeq == 7 and (cpxpAGL / 0.3048) > 1100 and not cpxpClimbThrustPressed then
             if cpxpFLAP_IND == 0 and cpxpGEAR_UPIND == 1 and cpxpCalloutTimer >= 2 then
                 if tostring(get("CL650/CDU/3/screen/text_line0")) == "      THRUST LIMIT      " and cpxpCLBACT ~= "ACT" then
                     set("CL650/CDU/3/lsk_l2_value", 1)
