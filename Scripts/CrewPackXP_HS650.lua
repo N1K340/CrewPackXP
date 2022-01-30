@@ -56,6 +56,10 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
    local cpxpV2_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/HS650/pnf_V2.wav")
    local cpxpPosRate_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pnf_PosRate.wav")
    local cpxpClimbThrust_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/HS650/pf_pnf_ClimbThrust.wav")
+   local cpxpGearUp_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_GearUp.wav")
+   local cpxpGearIsUp_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/HS650/pnf_GearUp.wav")
+   local cpxpGearDn_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_GearDn.wav")
+   local cpxpGearIsDn_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/HS650/pnf_GearDn.wav")
    
 
     function cpxpSetGain()
@@ -77,6 +81,10 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
         set_sound_gain(cpxpV2_snd, cpxpSoundVol)
         set_sound_gain(cpxpPosRate_snd, cpxpSoundVol)
         set_sound_gain(cpxpClimbThrust_snd, cpxpSoundVol)
+        set_sound_gain(cpxpGearUp_snd, cpxpSoundVol)
+        set_sound_gain(cpxpGearIsUp_snd, cpxpSoundVol)
+        set_sound_gain(cpxpGearDn_snd, cpxpSoundVol)
+        set_sound_gain(cpxpGearIsDn_snd, cpxpSoundVol)
 
     end
 
@@ -141,12 +149,18 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
         -- Delay based on CL650 specific variables
         if (XPLMFindDataRef("CL650/xp_sys_bridge/efis/v1") ~= nil) then
             dataref("cpxpV1", "CL650/xp_sys_bridge/efis/v1")
+        else
+            cpxpV1 = 0
         end
         if (XPLMFindDataRef("CL650/xp_sys_bridge/efis/vr") ~= nil) then
             dataref("cpxpVR", "CL650/xp_sys_bridge/efis/vr")
+        else
+            cpxpVR = 0
         end
         if (XPLMFindDataRef("CL650/xp_sys_bridge/efis/v2") ~= nil) then
             dataref("cpxpV2", "CL650/xp_sys_bridge/efis/v2")
+        else
+            cpxpV2 = 0
         end
         if (XPLMFindDataRef("CL650/pedestal/flaps") ~= nil) then
             dataref("cpxpFLAP_LEVER", "CL650/pedestal/flaps")
@@ -310,14 +324,25 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
                 cpxpTORaw = tostring(get("CL650/CDU/3/screen/text_line2"))
                 cpxpCLBRaw = tostring(get("CL650/CDU/3/screen/text_line4"))
                 -- Convert to useable
-                cpxpTON1 = string.sub(cpxpTORaw, 1, 4)
-                cpxpTOACT = string.sub(cpxpTORaw, 7, 9)
-                cpxpCLBN1 = string.sub(cpxpCLBRaw, 1, 4)
-                cpxpCLBACT = string.sub(cpxpCLBRaw, 7, 9)
+                if cpxpTORaw ~= nil then
+                    cpxpTON1 = string.sub(cpxpTORaw, 1, 4)
+                    cpxpTOACT = string.sub(cpxpTORaw, 7, 9)
+                else
+                    cpxpTON1 = 85
+                    print("CrewPackXP: TO N1 not found, using 85")
+                end
+                if cpxpCLBRaw ~= nil then
+                    cpxpCLBN1 = string.sub(cpxpCLBRaw, 1, 4)
+                    cpxpCLBACT = string.sub(cpxpCLBRaw, 7, 9)
+                else
+                    cpxpCLBN1 = 85
+                    print("CrewPackXP: CLB N1 not found, using 85")    
+                end
+                
             else
-                print("Mode is wrong " .. cpxpCDU3Mode)
+                print("CrewPackXP: CDU3 Mode is wrong " .. cpxpCDU3Mode)
                 set("CL650/CDU/3/perf_value" ,1)
-                print("Attempting to change mode")
+                print("CrewPackXP: Attempting to change mode")
             end
         end
     end
@@ -338,22 +363,27 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
 
     do_often("CPXPEngRateMonitor()")
 
-    -- Takeoff Calls - Reset by master
+    -- Takeoff Calls
 
     local cpxpToCalloutMode = false
     local cpxpCalloutTimer = 5
     local cpxpPlaySeq = 0
     local cpxpSixtyPlayed = true
+    local cpxpClimbThrustPressed = false
+
+    function CPXPTakeoffTrigger()
+    -- TO Callout mode - Reset by climb thurst set call
+        if cpxpToEngRate and cpxpWEIGHT_ON_WHEELS == 1 then
+            cpxpToCalloutMode = true
+            print("CrewPackXP: TO Callouts Armed")
+        end
+    end
+
+    do_often("CPXPTakeoffTrigger()")
 
     function CPXPTakeoffCalls()
         if not cpxpReady then
             return
-        end
-
-        -- TO Callout mode - Reset by climb thurst set call
-        if cpxpToEngRate and cpxpWEIGHT_ON_WHEELS == 1 then
-            cpxpToCalloutMode = true
-            print("CrewPackXP: TO Callouts Armed")
         end
 
         -- TO Call Timer
@@ -379,6 +409,9 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
                 print("CrewPackXP: TO Thrust Set")       
                 cpxpPlaySeq = 2             
                 end
+            elseif cpxpTON1 == nil then
+                cpxpPlaySeq = 2
+                Print("CrewPackXP: TO Thrust Skiped")
             end
         end
         
@@ -391,27 +424,36 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
         end 
 
         -- V1
-        if cpxpToCalloutMode and cpxpIAS > (cpxpV1 - 3) and cpxpPlaySeq == 3 and cpxpCalloutTimer >= 1 then
+        if cpxpToCalloutMode and cpxpV1 ~= 0 and cpxpIAS > (cpxpV1 - 3) and cpxpPlaySeq == 3 and cpxpCalloutTimer >= 1 then
             play_sound(cpxpV1_snd)
             cpxpCalloutTimer = 0
             print("CrewPackXP: V1 of " .. math.floor(cpxpV1) .. " Played at " .. math.floor(cpxpIAS) .. " kts")
             cpxpPlaySeq = 4
-         end
+        elseif cpxpToCalloutMode and cpxpV1 == 0 and cpxpPlaySeq == 3 then
+            cpxpPlaySeq = 4
+            print("CrewPackXP: V1 Speed not valid")
+        end
 
          -- VR
-        if cpxpToCalloutMode and cpxpIAS > (cpxpVR - 3) and cpxpPlaySeq == 4 and cpxpCalloutTimer >= 1 then
+        if cpxpToCalloutMode and cpxpVR ~= 0 and cpxpIAS > (cpxpVR - 3) and cpxpPlaySeq == 4 and cpxpCalloutTimer >= 1 then
             play_sound(cpxpVR_snd)
             cpxpCalloutTimer = 0
             print("CrewPackXP: VR of " .. math.floor(cpxpVR) .. " Played at " .. math.floor(cpxpIAS) .. " kts")
             cpxpPlaySeq = 5
+        elseif cpxpToCalloutMode and cpxpVR == 0 and cpxpPlaySeq == 4 then
+            cpxpPlaySeq = 5
+            print("CrewPackXP: VR Speed not valid")
         end
 
      -- V2
-        if cpxpToCalloutMode and cpxpIAS > (cpxpV2 - 3) and cpxpPlaySeq == 5 and cpxpCalloutTimer >= 1 then
+        if cpxpToCalloutMode and cpxpV2 ~= 0 and cpxpIAS > (cpxpV2 - 3) and cpxpPlaySeq == 5 and cpxpCalloutTimer >= 1 then
             play_sound(cpxpV2_snd)
             cpxpCalloutTimer = 0
             print("CrewPackXP: V2 of " .. math.floor(cpxpVR) .. " Played at " .. math.floor(cpxpIAS) .. " kts")
             cpxpPlaySeq = 6
+        elseif cpxpToCalloutMode and cpxpV2 == 0 and cpxpPlaySeq == 5 then
+            cpxpPlaySeq = 6
+            print("CrewPackXP: V2 Speed not valid")
         end
     
         -- Pos Rate
@@ -422,45 +464,13 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
             cpxpPlaySeq = 7
          end
 
-    end
-
-    do_often("CPXPTakeoffCalls()")
-
-    local cpxpInvalidVSpeed = false
-
-    function CPXPTakeoffNoSpeeds()
-        if not cpxpReady then
-           return
-        end
-        if not cpxpInvalidVSpeed and cpxpToCalloutMode and cpxpIAS > 100 and cpxpV1 < 100 then
-           print("CrewPackXP: V1 Speed invalid value " .. math.floor(cpxpV1))
-           cpxpInvalidVSpeed = true
-        end
-        if not cpxpInvalidVSpeed and cpxpToCalloutMode and cpxpIAS > 100 and cpxpVR < 100 then
-           print("CrewPackXP: VR Speed invalid value " .. math.floor(cpxpVR))
-           cpxpInvalidVSpeed = true
-        end
-        if not cpxpInvalidVSpeed and cpxpToCalloutMode and cpxpIAS > 100 and cpxpV2 < 100 then
-            print("CrewPackXP: V2 Speed invalid value " .. math.floor(cpxpVR))
-            cpxpInvalidVSpeed = true
-         end
-     end
-  
-     do_often("CPXPTakeoffNoSpeeds()")
-
-     local cpxpClimbThrustPressed = false
-     -- Takeoff Climb Thrust - Reset by Master
-     function CPXPClimbThrust()
-        if not cpxpReady then
-            return
-        end
-
-        CPXPThrustRef()
-        if cpxpToCalloutMode and cpxpPlaySeq == 7 and (cpxpAGL / 0.3048) > 1100 and not cpxpClimbThrustPressed then
+         -- Climb Thrust Workaround
+         if cpxpToCalloutMode and cpxpPlaySeq == 7 and (cpxpAGL / 0.3048) > 1100 and not cpxpClimbThrustPressed then
             if cpxpFLAP_IND == 0 and cpxpGEAR_UPIND == 1 and cpxpCalloutTimer >= 2 then
                 if tostring(get("CL650/CDU/3/screen/text_line0")) == "      THRUST LIMIT      " and cpxpCLBACT ~= "ACT" then
                     set("CL650/CDU/3/lsk_l2_value", 1)
                     print("CrewPackXP Attempting to set climb thrust")
+                    CPXPThrustRef()
                 elseif cpxpCLBACT == "ACT" then
                     play_sound(cpxpClimbThrust_snd)
                     cpxpCalloutTimer = 0
@@ -473,8 +483,67 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
         end
     end
 
-    do_often("CPXPClimbThrust()")
 
+    do_often("CPXPTakeoffCalls()")
+    
+
+    -- Gear Selection
+    local cpxpGearUpSelectedPlay = false
+    local cpxpGearUpIndPlay = true
+    local cpxpGearDnSelectedPlay = true
+    local cpxpGearDnIndPlay = true
+
+    function CPXPGearSelection()
+        if not cpxpReady then
+            return
+        end
+        if cpxpAGL > 15 and cpxpGEAR_LEVER == 1 and cpxpCalloutTimer >= 2 and not cpxpGearUpSelectedPlay then
+            play_sound(cpxpGearUp_snd)
+            cpxpCalloutTimer = 0
+            cpxpGearUpSelectedPlay = true
+            cpxpGearUpIndPlay = false
+            cpxpGearDnSelectedPlay = false
+          --  cpxpFlightOccoured = true
+          --  cpxpApuStart = false
+          --  cpxpSpdBrkNotPlayed = false
+          -- cpxpSpdBrkPlayed = false
+          --  cpxpSixtyPlayed = false
+          --  cpxpHorsePlayed = false
+          --  cpxpTodPaPlayed = false
+          --  cpxpSeatsLandingPlayed = false
+          --  cpxpPaxSeatBeltsPlayed = false
+          --  set("1-sim/lights/landingN/switch", 0)
+            print("CrewPackXP: Gear Up Selected")
+        end
+        if cpxpAGL > 15 and cpxpGEAR_LEVER == 1 and cpxpGEAR_UPIND == 1 and cpxpCalloutTimer >= 2 and not cpxpGearUpIndPlay then
+            play_sound(cpxpGearIsUp_snd)
+            cpxpCalloutTimer = 0
+            cpxpGearUpIndPlay = true
+            print("CrewPackXP: Gear Up Indicated")
+        end
+
+        -- Gear Down
+        if cpxpAGL > 15 and cpxpGEAR_LEVER == 0 and cpxpCalloutTimer >= 2 and not cpxpGearDnSelectedPlay then
+            play_sound(cpxpGearDn_snd)
+            cpxpCalloutTimer = 0
+            cpxpGearUpSelectedPlay = false
+            cpxpGearDnSelectedPlay = true
+            cpxpGearDnIndPlay = false
+           -- cpxpPosRatePlayed = false
+           -- cpxpTogaEvent = false
+           -- cpxpTogaMsg = false
+           -- set("1-sim/lights/landingN/switch", 1)
+            print("CrewPackXP: Gear Down")
+        end
+        if cpxpAGL > 15 and cpxpGEAR_LEVER == 0 and cpxpGEAR_DNIND == 1 and cpxpCalloutTimer >= 2 and not cpxpGearDnIndPlay then
+            play_sound(cpxpGearIsDn_snd)
+            cpxpCalloutTimer = 0
+            cpxpGearDnIndPlay = true
+            print("CrewPackXP: Gear Down Indicated")
+        end
+    end
+
+    do_often("CPXPGearSelection()")
 
 
     -- Settings
