@@ -47,6 +47,16 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
    local cpxpStartLeft1_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_Start1.wav")
    local cpxpStartRight2_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_Start2.wav")
    local cpxpFA_Welcome_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/fa_welcome.wav")
+   local cpxpCabinSecure_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/fa_cabinSecure.wav")
+   local cpxpSetThrust_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/HS650/pf_SetThrust.wav")
+   local cpxpThrustSet_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/HS650/pnf_ThrustSet.wav")
+   local cpxpEightyKts_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pnf_pf_80kts.wav")
+   local cpxpV1_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pnf_V1.wav")
+   local cpxpVR_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pnf_VR.wav")
+   local cpxpV2_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/HS650/pnf_V2.wav")
+   local cpxpPosRate_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pnf_PosRate.wav")
+   local cpxpClimbThrust_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/HS650/pf_pnf_ClimbThrust.wav")
+   
 
     function cpxpSetGain()
         set_sound_gain(cpxpStart1, cpxpSoundVol)
@@ -58,6 +68,16 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
         set_sound_gain(cpxpStartLeft1_snd, cpxpSoundVol)
         set_sound_gain(cpxpStartRight2_snd, cpxpSoundVol)
         set_sound_gain(cpxpFA_Welcome_snd, cpxpPaVol)
+        set_sound_gain(cpxpCabinSecure_snd, cpxpSoundVol)
+        set_sound_gain(cpxpSetThrust_snd, cpxpSoundVol)
+        set_sound_gain(cpxpThrustSet_snd, cpxpSoundVol)
+        set_sound_gain(cpxpEightyKts_snd, cpxpSoundVol)
+        set_sound_gain(cpxpV1_snd, cpxpSoundVol)
+        set_sound_gain(cpxpVR_snd, cpxpSoundVol)
+        set_sound_gain(cpxpV2_snd, cpxpSoundVol)
+        set_sound_gain(cpxpPosRate_snd, cpxpSoundVol)
+        set_sound_gain(cpxpClimbThrust_snd, cpxpSoundVol)
+
     end
 
     -- Generic Datarefs
@@ -66,7 +86,14 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
     dataref("cpxpRIGHT_STARTER", "CL650/overhead/eng_start/start_R")
     dataref("cpxpBEACON", "sim/cockpit2/switches/beacon_on")
     dataref("cpxpWEIGHT_ON_WHEELS", "sim/cockpit2/tcas/targets/position/weight_on_wheels", "readonly", 0)
+    dataref("cpxpENG1_N2", "sim/flightmodel2/engines/N2_percent", "readonly", 0)
     dataref("cpxpENG2_N2", "sim/flightmodel2/engines/N2_percent", "readonly", 1)
+    dataref("cpxpENG1_N1", "sim/flightmodel2/engines/N1_percent", "readonly", 0)
+    dataref("cpxpENG2_N1", "sim/flightmodel2/engines/N1_percent", "readonly", 1)
+    dataref("cpxpIAS", "sim/flightmodel/position/indicated_airspeed")
+    dataref("cpxpVSI", "sim/cockpit2/gauges/indicators/vvi_fpm_pilot")
+    dataref("cpxpAGL", "sim/flightmodel/position/y_agl")
+    
 
     print("CrewPackXP: Initialising cpxpVersion " .. cpxpVersion)
     print("CrewPackXP: Starting at sim time " .. math.floor(cpxp_SIM_TIME))
@@ -111,7 +138,7 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
             cpxpMsgStr = "CrewPackXP Loading in " .. math.floor(cpxpStartTime - cpxp_SIM_TIME) .. " seconds"
             return
         end
-        -- Delay based on 757 specific variables
+        -- Delay based on CL650 specific variables
         if (XPLMFindDataRef("CL650/xp_sys_bridge/efis/v1") ~= nil) then
             dataref("cpxpV1", "CL650/xp_sys_bridge/efis/v1")
         end
@@ -121,9 +148,25 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
         if (XPLMFindDataRef("CL650/xp_sys_bridge/efis/v2") ~= nil) then
             dataref("cpxpV2", "CL650/xp_sys_bridge/efis/v2")
         end
+        if (XPLMFindDataRef("CL650/pedestal/flaps") ~= nil) then
+            dataref("cpxpFLAP_LEVER", "CL650/pedestal/flaps")
+        end
+        if (XPLMFindDataRef("CL650/fo_state/flaps_ind") ~= nil) then
+            dataref("cpxpFLAP_IND", "CL650/fo_state/flaps_ind")
+        end
+        if (XPLMFindDataRef("CL650/pedestal/gear/ldg_value") ~= nil) then
+            dataref("cpxpGEAR_LEVER", "CL650/pedestal/gear/ldg_value")
+        end
+        if (XPLMFindDataRef("CL650/fo_state/gear_up_all") ~= nil) then
+            dataref("cpxpGEAR_UPIND", "CL650/fo_state/gear_up_all")
+        end
+        if (XPLMFindDataRef("CL650/fo_state/gear_dn_all") ~= nil) then
+            dataref("cpxpGEAR_DNIND", "CL650/fo_state/gear_dn_all")
+        end
+
         if (XPLMFindDataRef("CL650/overhead/elec/batt_master") == nil) then
             return
-         end
+        end
 
         if not cpxpReady then
             print("CrewPackXP: Datarefs Initialised for " .. PLANE_ICAO .. " at time " .. math.floor(cpxp_SIM_TIME))
@@ -223,12 +266,14 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
     do_often("CPXPFlightAttendant()")
 
     local cpxpCDU3Mode = ""
+    local cpxpTORaw = ""
     local cpxpCLBRaw = ""
-    local cpxpClbN1 = ""
-    local cpxpClbInt = ""
-    local cpxpClbAct = ""
+    local cpxpTON1 = ""
+    local cpxpTOACT = ""
+    local cpxpCLBN1 = ""
+    local cpxpCLBACT = ""
 
-    function testreading()
+    --[[function testreading()
         if not cpxpReady then
             return
         end
@@ -252,11 +297,186 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
         print("CDU3Var = " .. cpxpCDU3Mode)
     end
 
-    do_sometimes ("testreading()")
+    do_sometimes ("testreading()")]]
 
+    function CPXPThrustRef()
+        -- Cant directly read the mode ooofty
+        -- Routine Called as req
+        if cpxpENG1_N2 >=  60 and cpxpENG2_N2 >= 60 then
+            -- Check CDU 3 is showing thrust ref
+            cpxpCDU3Mode = tostring(get("CL650/CDU/3/screen/text_line0"))
+            if cpxpCDU3Mode == "      THRUST LIMIT      " then
+                print("CDU3 Display Valid")
+                cpxpTORaw = tostring(get("CL650/CDU/3/screen/text_line2"))
+                cpxpCLBRaw = tostring(get("CL650/CDU/3/screen/text_line4"))
+                -- Convert to useable
+                cpxpTON1 = string.sub(cpxpTORaw, 1, 4)
+                cpxpTOACT = string.sub(cpxpTORaw, 7, 9)
+                cpxpCLBN1 = string.sub(cpxpCLBRaw, 1, 4)
+                cpxpCLBACT = string.sub(cpxpCLBACT, 7, 9)
+            else
+                print("Mode is wrong " .. cpxpCDU3Mode)
+                set("CL650/CDU/3/perf_value" ,1)
+                print("Attempting to change mode")
+            end
+        end
+    end
 
-
+    local cpxpToEngRate = false
     
+
+    function CPXPEngRateMonitor()
+        if not cpxpReady then
+            return
+        end
+
+        if not cpxpToEngRate and get("CL650/fo_state/ats_n1_to") == 1 then
+            cpxpToEngRate = true
+            print("CrewPackXP: TO Mode Detected")
+        end
+    end
+
+    do_often("CPXPEngRateMonitor()")
+
+    -- Takeoff Calls - Reset by master
+
+    local cpxpToCalloutMode = false
+    local cpxpCalloutTimer = 5
+    local cpxpPlaySeq = 0
+    local cpxpSixtyPlayed = true
+
+    function CPXPTakeoffCalls()
+        if not cpxpReady then
+            return
+        end
+
+        -- TO Callout mode - Reset by climb thurst set call
+        if cpxpToEngRate and cpxpWEIGHT_ON_WHEELS == 1 then
+            cpxpToCalloutMode = true
+            print("CrewPackXP: TO Callouts Armed")
+        end
+
+        -- TO Call Timer
+        if cpxpCalloutTimer < 4 then
+            cpxpCalloutTimer = (cpxpCalloutTimer + 1)
+            print("CrewPackXP: Call Timer" .. cpxpCalloutTimer)
+        end
+        
+        -- Set Thrust
+        if cpxpToCalloutMode and cpxpENG1_N1 >= 60 and cpxpENG2_N1 >= 60 and cpxpPlaySeq == 0 then
+            play_sound(cpxpSetThrust_snd)
+            cpxpCalloutTimer = 0
+            print("CrewPackXP: TO Mode > 60 N1 Set Thrust")
+            cpxpPlaySeq = 1
+        end
+        if cpxpToCalloutMode and cpxpPlaySeq == 1 then
+            CPXPThrustRef()
+            print("CrewPackXP: Looking for TO Thrust of " .. cpxpTON1)
+            if cpxpTON1 ~= nil and cpxpCalloutTimer >= 2 then
+                if cpxpENG1_N1 >= (cpxpTON1 * 0.95)  then
+                play_sound(cpxpThrustSet_snd)
+                cpxpCalloutTimer = 0
+                print("CrewPackXP: TO Thrust Set")       
+                cpxpPlaySeq = 2             
+                end
+            end
+        end
+        
+        -- 80 Kts
+        if cpxpToCalloutMode and cpxpPlaySeq == 2 and cpxpIAS > 78 and cpxpCalloutTimer >= 2 then
+            play_sound(cpxpEightyKts_snd)
+            cpxpCalloutTimer = 0 
+            cpxpSixtyPlayed = false
+            cpxpPlaySeq = 3   
+        end 
+
+        -- V1
+        if cpxpToCalloutMode and cpxpIAS > cpxpV1 - 3 and cpxpPlaySeq == 6 and cpxpCalloutTimer >= 2 then
+            play_sound(cpxpV1_snd)
+            cpxpCalloutTimer = 0
+            print("CrewPackXP: V1 of " .. math.floor(cpxpV1) .. " Played at " .. math.floor(cpxpIAS) .. " kts")
+            cpxpPlaySeq = 3
+         end
+
+         -- VR
+        if cpxpToCalloutMode and cpxpIAS > cpxpVR - 3 and cpxpPlaySeq == 3 and cpxpCalloutTimer >= 2 then
+            play_sound(cpxpVR_snd)
+            cpxpCalloutTimer = 0
+            print("CrewPackXP: VR of " .. math.floor(cpxpVR) .. " Played at " .. math.floor(cpxpIAS) .. " kts")
+            cpxpPlaySeq = 4
+        end
+
+     -- V2
+        if cpxpToCalloutMode and cpxpIAS > cpxpV2 - 3 and cpxpPlaySeq == 4 and cpxpCalloutTimer >= 2 then
+            play_sound(cpxpV2_snd)
+            cpxpCalloutTimer = 0
+            print("CrewPackXP: V2 of " .. math.floor(cpxpVR) .. " Played at " .. math.floor(cpxpIAS) .. " kts")
+            cpxpPlaySeq = 5
+        end
+    
+        -- Pos Rate
+        if cpxpToCalloutMode and cpxpWEIGHT_ON_WHEELS == 0 and cpxpVSI > 50 and cpxpPlaySeq == 5 and cpxpCalloutTimer >= 2 then
+            play_sound(cpxpPosRate_snd)
+            cpxpCalloutTimer = 0
+            print("CrewPackXP: Positive Rate " .. math.floor(cpxpAGL) .. " AGL and " .. math.floor(cpxpVSI) .. " ft/min")
+            cpxpPlaySeq = 6
+         end
+
+    end
+
+    do_often("CPXPTakeoffCalls()")
+
+    local cpxpInvalidVSpeed = false
+
+    function CPXPTakeoffNoSpeeds()
+        if not cpxpReady then
+           return
+        end
+        if not cpxpInvalidVSpeed and cpxpToCalloutMode and cpxpIAS > 100 and cpxpV1 < 100 then
+           print("CrewPackXP: V1 Speed invalid value " .. math.floor(cpxpV1))
+           cpxpInvalidVSpeed = true
+        end
+        if not cpxpInvalidVSpeed and cpxpToCalloutMode and cpxpIAS > 100 and cpxpVR < 100 then
+           print("CrewPackXP: VR Speed invalid value " .. math.floor(cpxpVR))
+           cpxpInvalidVSpeed = true
+        end
+        if not cpxpInvalidVSpeed and cpxpToCalloutMode and cpxpIAS > 100 and cpxpV2 < 100 then
+            print("CrewPackXP: V2 Speed invalid value " .. math.floor(cpxpVR))
+            cpxpInvalidVSpeed = true
+         end
+     end
+  
+     do_often("CPXPTakeoffNoSpeeds()")
+
+     local cpxpClimbThrustPressed = false
+     -- Takeoff Climb Thrust - Reset by Master
+     function CPXPClimbThrust()
+        if not cpxpReady then
+            return
+        end
+
+        CPXPThrustRef()
+        if cpxpToCalloutMode and cpxpPlaySeq == 6 and (cpxpAGL / 0.3048) > 1100 and not cpxpClimbThrustPressed then
+            if cpxpFLAP_IND == 0 and cpxpGEAR_UPIND == 1 and cpxpCalloutTimer >= 2 then
+                if tostring(get("CL650/CDU/3/screen/text_line0")) == "      THRUST LIMIT      " and cpxpCLBACT ~= "ACT" then
+                    set("CL650/CDU/3/lsk_l2_value", 1)
+                    print("CrewPackXP Attempting to set climb thrust")
+                elseif cpxpCLBACT == "ACT" then
+                    play_sound(cpxpClimbThrust_snd)
+                    cpxpCalloutTimer = 0
+                    cpxpClimbThrustPressed = true
+                    cpxpToCalloutMode = false
+                    print("CrewPackXP: ClimbThrust at ".. math.floor(cpxpAGL / 0.3048))
+                    print("CrewPackXP: TO Mode off")
+                end
+            end
+        end
+    end
+
+    do_often("CPXPClimbThrust()")
+
+
+
     -- Settings
 
     if not SUPPORTS_FLOATING_WINDOWS then
