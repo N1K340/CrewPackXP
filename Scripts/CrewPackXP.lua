@@ -10,7 +10,7 @@ Safety: Leslie
 Changelog:
 V0.1 - Initial Test Beta
 --]]
-if AIRCRAFT_FILENAME ~= "757-200_xp11.acf" and AIRCRAFT_FILENAME ~= "LES_Saab_340A_Cargo.acf" and AIRCRAFT_FILENAME ~= "LES_Saab_340A.acf" then
+if AIRCRAFT_FILENAME ~= "757-200_xp11.acf" and AIRCRAFT_FILENAME ~= "CL650.acf" and AIRCRAFT_FILENAME ~= "LES_Saab_340A_Cargo.acf" and AIRCRAFT_FILENAME ~= "LES_Saab_340A.acf" then
    --------
    -- Initialisation Variables
    local version = "CPXP_UKN: 0.1-beta"
@@ -52,6 +52,7 @@ if AIRCRAFT_FILENAME ~= "757-200_xp11.acf" and AIRCRAFT_FILENAME ~= "LES_Saab_34
       imgui.TextUnformatted("Aircraft compatible with CrewPackXP:")
       imgui.TextUnformatted("- Flight Factor Boeing 757-200/-300")
       imgui.TextUnformatted("- Flight Factor Boeing 767-200/-300ER")
+      imgui.TextUnformatted("- Hot Start Challenger 650")
       imgui.Separator()
       imgui.TextUnformatted("")
       imgui.TextUnformatted("If you believe the aircraft should have been recognised,")

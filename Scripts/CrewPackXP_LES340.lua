@@ -69,7 +69,8 @@ if AIRCRAFT_FILENAME == "LES_Saab_340A_Cargo.acf" or AIRCRAFT_FILENAME == "LES_S
       local cpxpFASeat = false
       local cpxpStairSlide = false
       local cpxpStairFold = false
-  
+      -- Start Flight Window
+      local cpxpStartFlightWindowShown = false
       -- Not Yet assigned
 
 
@@ -552,7 +553,8 @@ if AIRCRAFT_FILENAME == "LES_Saab_340A_Cargo.acf" or AIRCRAFT_FILENAME == "LES_S
 
 
 
-
+    -- Start Flight Window
+    
 
     -- Settings
 
