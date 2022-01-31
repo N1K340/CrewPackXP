@@ -555,9 +555,9 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
 
     -- Flaps Callouts in air only
 
-    local cpxpFlapPos = nil
+    local cpxpFlapPos = 0
     local cpxpFlapTime = 3
-    local cpxpFlapInd = nil
+    local cpxpFlapInd = 0
     local cpxpFlapIndTime = 3
     local cpxpFlap0IndPlay = false
     local cpxpFlap20IndPlay = false
