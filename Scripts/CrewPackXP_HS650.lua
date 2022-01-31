@@ -585,9 +585,9 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
          play_sound(cpxpFlap20_snd)
          print("CrewPackXP: Flaps 20 Indicated")    
          cpxpFlap20IndPlay = true
-     end 
+     end
 
-     if cpxpFlapPos == 2 cpxpFlapTime == 1 and cpxpWEIGHT_ON_WHEELS == 0 then
+     if cpxpFlapPos == 2 and cpxpFlapTime == 1 and cpxpWEIGHT_ON_WHEELS == 0 then
         play_sound(cpxpFlap30_snd)
         print("CrewPackXP: Flaps 30 Selected for 1 Seconds -- ")
      end
@@ -596,7 +596,7 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
          print("CrewPackXP: Flaps 30 Indicated")    
      end 
 
-     if cpxpFlapPos == 3 cpxpFlapTime == 1 and cpxpWEIGHT_ON_WHEELS == 0 then
+     if cpxpFlapPos == 3 and cpxpFlapTime == 1 and cpxpWEIGHT_ON_WHEELS == 0 then
         play_sound(cpxpFlap30_snd)
         print("CrewPackXP: Flaps 45 Selected for 1 Seconds -- ")
      end
