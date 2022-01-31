@@ -60,7 +60,9 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
    local cpxpGearIsUp_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/HS650/pnf_GearUp.wav")
    local cpxpGearDn_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_GearDn.wav")
    local cpxpGearIsDn_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/HS650/pnf_GearDn.wav")
-   
+   local cpxpFlap0_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_Flap0.wav")
+   local cpxpFlap20_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_Flap20.wav")
+   local cpxpFlap30_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_Flap30.wav")
 
     function cpxpSetGain()
         set_sound_gain(cpxpStart1, cpxpSoundVol)
@@ -85,7 +87,9 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
         set_sound_gain(cpxpGearIsUp_snd, cpxpSoundVol)
         set_sound_gain(cpxpGearDn_snd, cpxpSoundVol)
         set_sound_gain(cpxpGearIsDn_snd, cpxpSoundVol)
-
+        set_sound_gain(cpxpFlap0_snd, cpxpSoundVol)
+        set_sound_gain(cpxpFlap20_snd, cpxpSoundVol)
+        set_sound_gain(cpxpFlap30_snd, cpxpSoundVol)
     end
 
     -- Generic Datarefs
@@ -147,21 +151,7 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
             return
         end
         -- Delay based on CL650 specific variables
-        if (XPLMFindDataRef("CL650/xp_sys_bridge/efis/v1") ~= nil) then
-            dataref("cpxpV1", "CL650/xp_sys_bridge/efis/v1")
-        else
-            cpxpV1 = 0
-        end
-        if (XPLMFindDataRef("CL650/xp_sys_bridge/efis/vr") ~= nil) then
-            dataref("cpxpVR", "CL650/xp_sys_bridge/efis/vr")
-        else
-            cpxpVR = 0
-        end
-        if (XPLMFindDataRef("CL650/xp_sys_bridge/efis/v2") ~= nil) then
-            dataref("cpxpV2", "CL650/xp_sys_bridge/efis/v2")
-        else
-            cpxpV2 = 0
-        end
+       
         if (XPLMFindDataRef("CL650/pedestal/flaps") ~= nil) then
             dataref("cpxpFLAP_LEVER", "CL650/pedestal/flaps")
         end
@@ -370,6 +360,9 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
     local cpxpPlaySeq = 0
     local cpxpSixtyPlayed = true
     local cpxpClimbThrustPressed = false
+    local cpxpV1 = 0
+    local cpxpVR = 0
+    local cpxpV2 = 0
 
     function CPXPTakeoffTrigger()
     -- TO Callout mode - Reset by climb thurst set call
@@ -377,6 +370,7 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
             cpxpToCalloutMode = true
             print("CrewPackXP: TO Callouts Armed")
         end
+
     end
 
     do_often("CPXPTakeoffTrigger()")
@@ -422,6 +416,19 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
             cpxpSixtyPlayed = false
             cpxpPlaySeq = 3   
         end 
+
+        -- Obtain EFIS VSpeeds
+        if get("CL650/xp_sys_bridge/efis/v1") > 0 and cpxpV1 ~= get("CL650/xp_sys_bridge/efis/v1") then
+            cpxpV1 = get("CL650/xp_sys_bridge/efis/v1")
+        end
+
+        if get("CL650/xp_sys_bridge/efis/vr") > 0 and cpxpVR ~= get("CL650/xp_sys_bridge/efis/vr") then
+            cpxpVR = get("CL650/xp_sys_bridge/efis/vr")
+        end
+
+        if get("CL650/xp_sys_bridge/efis/v2") > 0 and cpxpV2 ~= get("CL650/xp_sys_bridge/efis/v2") then
+            cpxpV2 = get("CL650/xp_sys_bridge/efis/v2")
+        end
 
         -- V1
         if cpxpToCalloutMode and cpxpV1 ~= 0 and cpxpIAS > (cpxpV1 - 3) and cpxpPlaySeq == 3 and cpxpCalloutTimer >= 1 then
@@ -484,7 +491,7 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
     end
 
 
-    do_often("CPXPTakeoffCalls()")
+    do_every_frame("CPXPTakeoffCalls()")
     
 
     -- Gear Selection
@@ -544,6 +551,96 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
     end
 
     do_often("CPXPGearSelection()")
+
+
+    -- Flaps Callouts in air only
+
+    local cpxpFlapPos = nil
+    local cpxpFlapTime = 3
+    local cpxpFlapInd = nil
+    local cpxpFlapIndTime = 3
+    local cpxpFlap0IndPlay = false
+    local cpxpFlap20IndPlay = false
+
+   function CPXPFlapsSelection()
+    if not cpxpReady then
+       return
+    end
+
+    if cpxpFlapPos == 0 and cpxpFlapTime == 1 and cpxpWEIGHT_ON_WHEELS == 0 then
+       play_sound(cpxpFlap0_snd)
+       print("CrewPackXP: Flaps 0 Selected for 1 Seconds -- ")
+    end
+    if cpxpFLAP_IND == 0 and cpxpFlapIndTime == 1 and not cpxpFlap0IndPlay then
+        play_sound(cpxpFlap0_snd)
+        print("CrewPackXP: Flaps 0 Indicated")    
+        cpxpFlap0IndPlay = true
+    end 
+
+    if cpxpFlapPos == 1 and cpxpFlapTime == 1 and cpxpWEIGHT_ON_WHEELS == 0 then
+        play_sound(cpxpFlap20_snd)
+        print("CrewPackXP: Flaps 20 Selected for 1 Seconds -- ")
+     end
+     if cpxpFLAP_IND == 20 and cpxpFlapIndTime == 1 and not cpxpFlap20IndPlay then
+         play_sound(cpxpFlap20_snd)
+         print("CrewPackXP: Flaps 20 Indicated")    
+         cpxpFlap20IndPlay = true
+     end 
+
+     if cpxpFlapPos == 2 cpxpFlapTime == 1 and cpxpWEIGHT_ON_WHEELS == 0 then
+        play_sound(cpxpFlap30_snd)
+        print("CrewPackXP: Flaps 30 Selected for 1 Seconds -- ")
+     end
+     if cpxpFLAP_IND == 30 and cpxpFlapIndTime == 1 then
+         play_sound(cpxpFlap30_snd)
+         print("CrewPackXP: Flaps 30 Indicated")    
+     end 
+
+     if cpxpFlapPos == 3 cpxpFlapTime == 1 and cpxpWEIGHT_ON_WHEELS == 0 then
+        play_sound(cpxpFlap30_snd)
+        print("CrewPackXP: Flaps 45 Selected for 1 Seconds -- ")
+     end
+     if cpxpFLAP_IND == 45 and cpxpFlapIndTime == 1 then
+         play_sound(cpxpFlap30_snd)
+         print("CrewPackXP: Flaps 45 Indicated")    
+     end 
+    
+ end
+
+ do_often("CPXPFlapsSelection()")
+
+ --Monitor Flap Movement
+ function CPXPFlapPosCheck()
+    if not cpxpReady then
+       return
+    end
+    if cpxpFlapPos ~= cpxpFLAP_LEVER then
+       cpxpFlapTime = 0
+       cpxpFlapPos = cpxpFLAP_LEVER
+       cpxpFlap0IndPlay = false
+       cpxpFlap20IndPlay = false
+       print("CrewPackXP: Flaps Moved to " .. cpxpFlapPos)
+    else
+       if cpxpFlapTime <= 1 then
+          cpxpFlapTime = cpxpFlapTime + 1
+          print("CrewPackXP: cpxpFlapTime = " .. cpxpFlapTime)
+       end
+    end
+    if cpxpFlapInd ~= cpxpFLAP_IND then
+        cpxpFlapIndTime = 0
+        cpxpFlapInd = cpxpFLAP_IND
+        print("CrewPackXP: Flaps Set to " .. cpxpFlapPos)
+     else
+        if cpxpFlapIndTime <= 1 then
+           cpxpFlapIndTime = cpxpFlapIndTime + 1
+           print("CrewPackXP: cpxpFlapTime = " .. cpxpFlapIndTime)
+        end
+     end
+ end -- End FlapPosCheck
+
+ do_often("CPXPFlapPosCheck()")
+
+
 
 
     -- Settings
