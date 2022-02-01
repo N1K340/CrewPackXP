@@ -63,6 +63,10 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
    local cpxpFlap0_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_Flap0.wav")
    local cpxpFlap20_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_Flap20.wav")
    local cpxpFlap30_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_Flap30.wav")
+   local cpxpGScap_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pnf_GS.wav")
+   local cpxpLOCcap_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pnf_LOC.wav")
+   local cpxpLOCGScap_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pnf_LOCandGS.wav")
+   local cpxpAltAlert_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pnf_60kts.wav")
 
     function cpxpSetGain()
         set_sound_gain(cpxpStart1, cpxpSoundVol)
@@ -90,6 +94,10 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
         set_sound_gain(cpxpFlap0_snd, cpxpSoundVol)
         set_sound_gain(cpxpFlap20_snd, cpxpSoundVol)
         set_sound_gain(cpxpFlap30_snd, cpxpSoundVol)
+        set_sound_gain(cpxpGScap_snd, cpxpSoundVol)
+        set_sound_gain(cpxpLOCcap_snd, cpxpSoundVol)
+        set_sound_gain(cpxpLOCGScap_snd, cpxpSoundVol)
+        set_sound_gain(cpxpAltAlert_snd, cpxpSoundVol)
     end
 
     -- Generic Datarefs
@@ -650,7 +658,7 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
     function CPXPAltAlert()
         if get("CL650/snd/reu/alt_alert", 0) ~= cpxpAltAlert then
             if get("CL650/snd/reu/alt_alert", 0) == 1 and not cpxpAltAlertPlay then
-              --  play_sound(cpxpAltAlert_snd)
+                play_sound(cpxpAltAlert_snd)
                 print("1000 to go")
                 cpxpAltAlert = 1
                 cpxpAltAlertPlay = true
