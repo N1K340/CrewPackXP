@@ -333,6 +333,8 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
                 print("CrewPackXP: CDU3 Mode is wrong " .. cpxpCDU3Mode)
                 set("CL650/CDU/3/perf_value" ,1)
                 print("CrewPackXP: Attempting to change mode")
+                cpxpTON1 = 85
+                print("CrewPackXP: TO N1 not found, substituting 85%")
             end
         end
     end
@@ -641,6 +643,98 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
  do_often("CPXPFlapPosCheck()")
 
 
+-- 1000 to go call
+    local cpxpAltAlert = 0
+    local cpxpAltAlertPlay = false
+
+    function CPXPAltAlert()
+        if get("CL650/snd/reu/alt_alert", 0) ~= cpxpAltAlert then
+            if get("CL650/snd/reu/alt_alert", 0) == 1 and not cpxpAltAlertPlay then
+              --  play_sound(cpxpAltAlert_snd)
+                print("1000 to go")
+                cpxpAltAlert = 1
+                cpxpAltAlertPlay = true
+            elseif get("CL650/snd/reu/alt_alert", 0) == 0 and cpxpAltAlert == 1 then
+                cpxpAltAlert = 0
+                cpxpAltAlertPlay = false
+            end
+        end       
+    end
+
+    do_often("CPXPAltAlert()")
+
+    -- Localiser / GlideSlope
+    local cpxpLocgsCalls = true
+    local cpxpLocPlayed = true
+    local cpxpGsPlayed = true
+
+   dataref("cpxpLOC_DEVIATION", "sim/cockpit/radios/nav1_hdef_dot")
+   dataref("cpxpLOC_RECEIVED", "libradio/nav1/have_loc_signal")
+   dataref("cpxpGS_DEVIATION", "sim/cockpit/radios/nav1_vdef_dot")
+   dataref("cpxpGS_RECEIVED", "libradio/nav1/have_gp_signal")
+
+   function CPXPLocGsAlive()
+    if not cpxpReady then
+       return
+    end
+    -- Loc Capture Right of localiser (CDI Left) Reset by: Full scale LOC deflection
+    if cpxpLocgsCalls then
+       if  cpxpWEIGHT_ON_WHEELS == 0 and cpxpLOC_RECEIVED == 1 and cpxpLOC_DEVIATION > -1.95 and cpxpLOC_DEVIATION <= 0 and not cpxpLocPlayed and not cpxpTogaEvent and not cpxpToCalloutMode then
+          if cpxpGS_RECEIVED == 1 and cpxpGS_DEVIATION > -1.95 and cpxpGS_DEVIATION < 1  then
+             play_sound(cpxpLOCGScap_snd)
+             print("CrewPackXP: LOC and GS Active")
+             cpxpCalloutTimer = 0
+             cpxpLocPlayed = true
+             cpxpGsPlayed = true
+          else
+             play_sound(cpxpLOCcap_snd)
+             print("CrewPackXP: LOC Active")
+             cpxpCalloutTimer = 0
+             cpxpLocPlayed = true
+          end
+       end
+
+       if cpxpLOC_DEVIATION <= -2.5 and cpxpLocPlayed then
+          print("CrewPackXP: Reset Loc Active Logic")
+          print("CrewPackXP: Reset GS Alive Logic")
+          cpxpLocPlayed = false
+          cpxpGsPlayed = false
+       end
+       -- Loc Capture Left of localiser (CDI Right)
+       if cpxpWEIGHT_ON_WHEELS == 0 and cpxpLOC_RECEIVED == 1 and cpxpLOC_DEVIATION < 1.95 and cpxpLOC_DEVIATION >= 0 and not cpxpLocPlayed and not cpxpTogaEvent and not cpxpToCalloutMode then
+          if cpxpGS_RECEIVED == 1 and cpxpGS_DEVIATION > -1.95 and cpxpGS_DEVIATION < 1  then
+             play_sound(cpxpLOCGScap_snd)
+             print("CrewPackXP: LOC and GS Active")
+             cpxpCalloutTimer = 0
+             cpxpLocPlayed = true
+             cpxpGsPlayed = true
+          else
+             play_sound(cpxpLOCcap_snd)
+             print("CrewPackXP: LOC Active")
+             cpxpCalloutTimer = 0
+             cpxpLocPlayed = true
+          end
+       end
+
+       if cpxpLOC_DEVIATION >= 2.5 and cpxpLocPlayed then
+          cpxpLocPlayed = false
+          cpxpGsPlayed = false
+          print("CrewPackXP: Reset Loc Active Logic")
+          print("CrewPackXP: Reset GS Alive Logic")
+       end
+       -- GS
+       if
+       cpxpWEIGHT_ON_WHEELS == 0 and  cpxpGS_RECEIVED == 1 and cpxpGS_DEVIATION > -1.95 and cpxpGS_DEVIATION < 1 and cpxpLocPlayed and not cpxpGsPlayed and cpxpCalloutTimer >= 2 and not cpxpTogaEvent and not cpxpToCalloutMode then
+          play_sound(cpxpGScap_snd)
+          print("CrewPackXP: GS Alive")
+          cpxpGsPlayed = true
+       end
+    end
+ end
+
+ do_often("CPXPLocGsAlive()")
+
+
 
 
     -- Settings
@@ -709,11 +803,6 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
        end
        imgui.EndCombo()
     end
-
-    
-        --[[
-  
-
     imgui.SetCursorPos(20, imgui.GetCursorPosY())
     local changed, newVal = imgui.Checkbox("Play Localiser and Glideslop calls", cpxpLocgsCalls)
     if changed then
@@ -721,6 +810,11 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
        SaveCrewPackXPData()
        print("CrewPackXP: LOC / GS Call logic set to " .. tostring(syncAlt))
     end
+    
+        --[[
+  
+
+    
     imgui.SetCursorPos(20, imgui.GetCursorPosY())
     local changed, newVal = imgui.Checkbox("FO Performs Preflight Scan Flow", cpxpFoPreflight)
     if changed then
@@ -828,6 +922,7 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
             cpxpPaVol = cpxpCrewPackXPSettings.CrewPackXP.cpxpPaVol
             cpxpEngStartType = cpxpCrewPackXPSettings.CrewPackXP.cpxpEngStartType
             cpxpFaOnboard = cpxpCrewPackXPSettings.CrewPackXP.cpxpFaOnboard
+            cpxpLocgsCalls = cpxpCrewPackXPSettings.CrewPackXP.cpxpLocgsCalls
             print("CrewPackXP: Settings Loaded")
             cpxpSetGain()
         else
@@ -848,6 +943,7 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
                 cpxpPaVol = cpxpPaVol,
                 cpxpEngStartType = cpxpEngStartType,
                 cpxpFaOnboard = cpxpFaOnboard,
+                cpxpLocgsCalls = cpxpLocgsCalls,
             }
         }
         print("CrewPackXP: Settings Saved")
