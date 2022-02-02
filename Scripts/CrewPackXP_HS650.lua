@@ -28,6 +28,7 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
    local cpxpRightStart = false
    local cpxpPaTimer = 230
    local cpxpFaPlaySeq = 0
+   local cpxpFlightOccoured = false
 
     local cpxpCrewPackXPSettings = {}
     local cpxpShowSettingsWindow = true
@@ -460,7 +461,7 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
         if cpxpToCalloutMode and cpxpWEIGHT_ON_WHEELS == 0 and cpxpVSI > 50 and cpxpAGL > 50 and cpxpPlaySeq == 6 and cpxpCalloutTimer >= 2 then
             play_sound(cpxpPosRate_snd)
             cpxpCalloutTimer = 0
-            print("CrewPackXP: Positive Rate " .. math.floor(cpxpAGL) .. " AGL and " .. math.floor(cpxpVSI) .. " ft/min")
+            print("CrewPackXP: Positive Rate " .. math.floor(cpxpAGL / 0.3048) .. " AGL and " .. math.floor(cpxpVSI) .. " ft/min")
             cpxpPlaySeq = 7
          end
 
@@ -516,8 +517,9 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
         end
 
         if get("CL650/lamps/glareshield/FCP/ap_eng_1") ~= cpxpAPmode then
-            if get("CL650/lamps/glareshield/FCP/ap_eng_1") ~= 0 and not cpxpAPPlay then
+            if get("CL650/lamps/glareshield/FCP/ap_eng_1") ~= 0 and not cpxpAPPlay  and cpxpCalloutTimer > 2 then
                 play_sound(cpxpAutopilot_snd)
+                cpxpCalloutTimer = 0
                 print("CrewPackXP: AP On")
                 cpxpAPmode = 1
                 cpxpAPPlay = true
@@ -546,7 +548,7 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
             cpxpGearUpSelectedPlay = true
             cpxpGearUpIndPlay = false
             cpxpGearDnSelectedPlay = false
-          --  cpxpFlightOccoured = true
+           cpxpFlightOccoured = true
           --  cpxpApuStart = false
           --  cpxpSpdBrkNotPlayed = false
           -- cpxpSpdBrkPlayed = false
@@ -706,6 +708,7 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
    dataref("cpxpLOC_RECEIVED", "libradio/nav1/have_loc_signal")
    dataref("cpxpGS_DEVIATION", "sim/cockpit/radios/nav1_vdef_dot")
    dataref("cpxpGS_RECEIVED", "libradio/nav1/have_gp_signal")
+   dataref("cpxpAPPR", "CL650/lamps/glareshield/FCP/appr_1")
 
    function CPXPLocGsAlive()
     if not cpxpReady then
@@ -713,15 +716,17 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
     end
     -- Loc Capture Right of localiser (CDI Left) Reset by: Full scale LOC deflection
     if cpxpLocgsCalls then
-       if  cpxpWEIGHT_ON_WHEELS == 0 and cpxpLOC_RECEIVED == 1 and cpxpLOC_DEVIATION > -1.3 and cpxpLOC_DEVIATION <= 1 and not cpxpLocPlayed and not cpxpToCalloutMode then
-          if cpxpGS_RECEIVED == 1 and cpxpGS_DEVIATION > -1.3 and cpxpGS_DEVIATION < 1  then
+       if  cpxpWEIGHT_ON_WHEELS == 0 and cpxpAPPR ~= 0 and cpxpLOC_DEVIATION > -1.3 and cpxpLOC_DEVIATION <= 1 and not cpxpLocPlayed and not cpxpToCalloutMode then
+          if cpxpGS_RECEIVED == 1 and cpxpGS_DEVIATION > -1.3 and cpxpGS_DEVIATION < 1 and cpxpCalloutTimer > 2 then
              play_sound(cpxpLOCGScap_snd)
+             cpxpCalloutTimer = 0
              print("CrewPackXP: LOC and GS Active")
              cpxpCalloutTimer = 0
              cpxpLocPlayed = true
              cpxpGsPlayed = true
           else
              play_sound(cpxpLOCcap_snd)
+             cpxpCalloutTimer = 0
              print("CrewPackXP: LOC Active")
              cpxpCalloutTimer = 0
              cpxpLocPlayed = true
@@ -735,15 +740,17 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
           cpxpGsPlayed = false
        end
        -- Loc Capture Left of localiser (CDI Right)
-       if cpxpWEIGHT_ON_WHEELS == 0 and cpxpLOC_RECEIVED == 1 and cpxpLOC_DEVIATION < 1.3 and cpxpLOC_DEVIATION >= 1 and not cpxpLocPlayed and not cpxpToCalloutMode then
-          if cpxpGS_RECEIVED == 1 and cpxpGS_DEVIATION > -1.3 and cpxpGS_DEVIATION < 1  then
+       if cpxpWEIGHT_ON_WHEELS == 0 and cpxpAPPR == 0 and cpxpLOC_DEVIATION < 1.3 and cpxpLOC_DEVIATION >= 1 and not cpxpLocPlayed and not cpxpToCalloutMode then
+          if cpxpGS_RECEIVED == 1 and cpxpGS_DEVIATION > -1.3 and cpxpGS_DEVIATION < 1 and cpxpCalloutTimer > 2 then
              play_sound(cpxpLOCGScap_snd)
+             cpxpCalloutTimer = 0
              print("CrewPackXP: LOC and GS Active")
              cpxpCalloutTimer = 0
              cpxpLocPlayed = true
              cpxpGsPlayed = true
           else
              play_sound(cpxpLOCcap_snd)
+             cpxpCalloutTimer = 0
              print("CrewPackXP: LOC Active")
              cpxpCalloutTimer = 0
              cpxpLocPlayed = true
@@ -758,8 +765,9 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
        end
        -- GS
        if
-       cpxpWEIGHT_ON_WHEELS == 0 and  cpxpGS_RECEIVED == 1 and cpxpGS_DEVIATION > -1.95 and cpxpGS_DEVIATION < 1 and cpxpLocPlayed and not cpxpGsPlayed and cpxpCalloutTimer >= 2 and not cpxpToCalloutMode then
+       cpxpWEIGHT_ON_WHEELS == 0 and cpxpAPPR == 0 and  cpxpGS_RECEIVED == 1 and cpxpGS_DEVIATION > -1.95 and cpxpGS_DEVIATION < 1 and cpxpLocPlayed and not cpxpGsPlayed and cpxpCalloutTimer >= 2 and not cpxpToCalloutMode then
           play_sound(cpxpGScap_snd)
+          cpxpCalloutTimer = 0
           print("CrewPackXP: GS Alive")
           cpxpGsPlayed = true
        end
@@ -770,7 +778,7 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
 
 
    -- Landing Roll / Speedbrakes - Reset by: Gear Up
- local cpxpFlightOccoured = false
+ 
  local cpxpRevPlayed = true
  local cpxpRevTime = 0
 
@@ -829,7 +837,7 @@ end
     if not cpxpReady then
        return
     end
-    if cpxpIAS > 30 and cpxpIAS < 40 and cpxpWEIGHT_ON_WHEELS == 1 then
+    if cpxpIAS < 2 and cpxpWEIGHT_ON_WHEELS == 1 then
        cpxpPlaySeq = 0
        print("CrewPackXP: TO Calls Reset")
     end
