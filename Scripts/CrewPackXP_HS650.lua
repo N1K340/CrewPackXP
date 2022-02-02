@@ -474,7 +474,7 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
          end
 
          if cpxpFLCH and cpxpPlaySeq == 7 and cpxpFLCHPress and not cpxpFLCHPlay and cpxpCalloutTimer >= 2 then
-            if get("CL650/lamps/glareshield/FCP/flc_1") == 1 then
+            if get("CL650/lamps/glareshield/FCP/flc_1") ~= 0 then
                 play_sound(cpxpFLCH_snd)
                 cpxpFLCHPlay = true
                 cpxpCalloutTimer = 0
@@ -487,11 +487,11 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
 
          -- Climb Thrust Workaround
          if cpxpToCalloutMode and cpxpPlaySeq == 7 and (cpxpAGL / 0.3048) > 1100 and not cpxpClimbThrustPressed then
+            CPXPThrustRef()
             if cpxpFLAP_IND == 0 and cpxpGEAR_UPIND == 1 and cpxpCalloutTimer >= 2 then
                 if tostring(get("CL650/CDU/3/screen/text_line0")) == "      THRUST LIMIT      " and cpxpCLBACT ~= "ACT" then
                     set("CL650/CDU/3/lsk_l2_value", 1)
                     print("CrewPackXP Attempting to set climb thrust")
-                    CPXPThrustRef()
                 elseif cpxpCLBACT == "ACT" then
                     play_sound(cpxpClimbThrust_snd)
                     cpxpCalloutTimer = 0
@@ -740,7 +740,7 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
           cpxpGsPlayed = false
        end
        -- Loc Capture Left of localiser (CDI Right)
-       if cpxpWEIGHT_ON_WHEELS == 0 and cpxpAPPR == 0 and cpxpLOC_DEVIATION < 1.3 and cpxpLOC_DEVIATION >= 1 and not cpxpLocPlayed and not cpxpToCalloutMode then
+       if cpxpWEIGHT_ON_WHEELS == 0 and cpxpAPPR ~= 0 and cpxpLOC_DEVIATION < 1.3 and cpxpLOC_DEVIATION >= 1 and not cpxpLocPlayed and not cpxpToCalloutMode then
           if cpxpGS_RECEIVED == 1 and cpxpGS_DEVIATION > -1.3 and cpxpGS_DEVIATION < 1 and cpxpCalloutTimer > 2 then
              play_sound(cpxpLOCGScap_snd)
              cpxpCalloutTimer = 0
@@ -765,7 +765,7 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
        end
        -- GS
        if
-       cpxpWEIGHT_ON_WHEELS == 0 and cpxpAPPR == 0 and  cpxpGS_RECEIVED == 1 and cpxpGS_DEVIATION > -1.95 and cpxpGS_DEVIATION < 1 and cpxpLocPlayed and not cpxpGsPlayed and cpxpCalloutTimer >= 2 and not cpxpToCalloutMode then
+       cpxpWEIGHT_ON_WHEELS == 0 and cpxpAPPR ~= 0 and  cpxpGS_RECEIVED == 1 and cpxpGS_DEVIATION > -1.95 and cpxpGS_DEVIATION < 1 and cpxpLocPlayed and not cpxpGsPlayed and cpxpCalloutTimer >= 2 and not cpxpToCalloutMode then
           play_sound(cpxpGScap_snd)
           cpxpCalloutTimer = 0
           print("CrewPackXP: GS Alive")
@@ -839,6 +839,7 @@ end
     end
     if cpxpIAS < 2 and cpxpWEIGHT_ON_WHEELS == 1 then
        cpxpPlaySeq = 0
+       cpxpFlightOccoured = false
        print("CrewPackXP: TO Calls Reset")
     end
  end
