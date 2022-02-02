@@ -215,6 +215,8 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
             cpxpStartPlayed = true
             set("CL650/CDU/3/idx", 1)
             set("CL650/CCP/1/cas", 1)
+            set("CL650/glareshield/master_warn_L", 1)
+            set("CL650/pedestal/throttle/at_disc_L" ,1)
         end
     end
 
@@ -770,6 +772,7 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
    -- Landing Roll / Speedbrakes - Reset by: Gear Up
  local cpxpFlightOccoured = false
  local cpxpRevPlayed = true
+ local cpxpRevTime = 0
 
  dataref("CPXP_REV1", "CL650/pedestal/throttle/reverse_L")
  dataref("CPXP_REV2", "CL650/pedestal/throttle/reverse_R")
@@ -788,17 +791,19 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
           cpxpRevPlayed = true
           print("CrewPackXP: Both Eng in Reverse")
        end
-       if cpxpRevTime == 5 and PXP_REV1 ~= 0 and CPXP_REV1ACT == 0 not cpxpRevPlayed then
+       if cpxpRevTime == 5 and PXP_REV1 ~= 0 and CPXP_REV1ACT == 0 and not cpxpRevPlayed then
           play_sound(cpxpRevUnsafe_snd)
           cpxpRevPlayed = true
           cpxpCalloutTimer = 0
           print("CrewPackXP: Eng 1 not in Reverse")
-       elseif cpxpRevTime == 5 and PXP_REV2 ~= 0 and CPXP_REV2ACT == 0 not cpxpRevPlayed and cpxpCalloutTimer > 2 then
+       elseif cpxpRevTime == 5 and PXP_REV2 ~= 0 and CPXP_REV2ACT == 0 and not cpxpRevPlayed and cpxpCalloutTimer > 2 then
             play_sound(cpxpRevUnsafe_snd)
             cpxpRevPlayed = true
             print("CrewPackXP: Eng 2 not in Reverse")
        end
     end
+end
+
 
  do_often("CPXPLanding()")
 
@@ -824,7 +829,7 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
     if not cpxpReady then
        return
     end
-    if IAS > 30 and IAS < 40 and cpxpWEIGHT_ON_WHEELS == 1 then
+    if cpxpIAS > 30 and cpxpIAS < 40 and cpxpWEIGHT_ON_WHEELS == 1 then
        cpxpPlaySeq = 0
        print("CrewPackXP: TO Calls Reset")
     end
