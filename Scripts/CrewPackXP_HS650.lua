@@ -2,7 +2,8 @@
     Crew Pack Script for Hot Start Challenger 650
 
     Voices by https://www.naturalreaders.com/
-
+    Captain - Will
+    FO - Rodney
 
     Changelog:
     v0.1 - Initial Release
@@ -35,6 +36,8 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
     local cpxpPaVol = 0.3
     local cpxpSoundVol = 1.0
     local cpxpEngStartType = 1
+    local cpxpFLCH = true
+    local cpxpLocgsCalls = true
 
     -- Sounds
     local cpxpStart1 = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/HS650/start_1.wav")
@@ -46,11 +49,9 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
    local cpxpStartRight_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_StartRight.wav")
    local cpxpStartLeft1_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_Start1.wav")
    local cpxpStartRight2_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_Start2.wav")
-   local cpxpFA_Welcome_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/fa_welcome.wav")
-   local cpxpCabinSecure_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/fa_cabinSecure.wav")
    local cpxpSetThrust_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/HS650/pf_SetThrust.wav")
    local cpxpThrustSet_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/HS650/pnf_ThrustSet.wav")
-   local cpxpEightyKts_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pnf_pf_80kts.wav")
+   local cpxpEightyKts_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/HS650/pnf_80kts.wav")
    local cpxpV1_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pnf_V1.wav")
    local cpxpVR_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pnf_VR.wav")
    local cpxpV2_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/HS650/pnf_V2.wav")
@@ -63,10 +64,17 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
    local cpxpFlap0_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_Flap0.wav")
    local cpxpFlap20_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_Flap20.wav")
    local cpxpFlap30_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_Flap30.wav")
+   local cpxpFlap45_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pf_Flap45.wav")
+   local cpxpFlapIs0_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pnf_Flap0.wav")
+   local cpxpFlapIs20_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pnf_Flap20.wav")
+   local cpxpFlapIs30_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pnf_Flap30.wav")
+   local cpxpFlapIs45_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pnf_Flap45.wav")
    local cpxpGScap_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pnf_GS.wav")
    local cpxpLOCcap_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pnf_LOC.wav")
    local cpxpLOCGScap_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pnf_LOCandGS.wav")
    local cpxpAltAlert_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pnf_60kts.wav")
+   local cpxpFLCH_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/HS650/SpeedMode.wav")
+   local cpxpAutopilot_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/HS650/Autopilot.wav")
 
     function cpxpSetGain()
         set_sound_gain(cpxpStart1, cpxpSoundVol)
@@ -77,8 +85,6 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
         set_sound_gain(cpxpStartRight_snd, cpxpSoundVol)
         set_sound_gain(cpxpStartLeft1_snd, cpxpSoundVol)
         set_sound_gain(cpxpStartRight2_snd, cpxpSoundVol)
-        set_sound_gain(cpxpFA_Welcome_snd, cpxpPaVol)
-        set_sound_gain(cpxpCabinSecure_snd, cpxpSoundVol)
         set_sound_gain(cpxpSetThrust_snd, cpxpSoundVol)
         set_sound_gain(cpxpThrustSet_snd, cpxpSoundVol)
         set_sound_gain(cpxpEightyKts_snd, cpxpSoundVol)
@@ -98,6 +104,8 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
         set_sound_gain(cpxpLOCcap_snd, cpxpSoundVol)
         set_sound_gain(cpxpLOCGScap_snd, cpxpSoundVol)
         set_sound_gain(cpxpAltAlert_snd, cpxpSoundVol)
+        set_sound_gain(cpxpFLCH_snd, cpxpSoundVol)
+        set_sound_gain(cpxpAutopilot_snd, cpxpSoundVol)
     end
 
     -- Generic Datarefs
@@ -244,38 +252,6 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
     
     do_often("CPXPEngineStart()")
     
-    function CPXPFlightAttendant()
-        if not cpxpReady then
-            return
-        end
-        if cpxpPaTimer < 241 then
-            cpxpPaTimer = cpxpPaTimer + 1
-            print("CrewPackXP: Cabin timer " .. cpxpPaTimer)
-            print(math.floor(get("sim/flightmodel2/position/groundspeed")))
-         end
-        if cpxpFaOnboard then
-            if cpxpBEACON == 1 and cpxpWEIGHT_ON_WHEELS == 1 and cpxpENG2_N2 > 30 and cpxpFaPlaySeq == 0 then
-                cpxpPaTimer = 210
-                play_sound(cpxpFA_Welcome_snd)
-                cpxpFaPlaySeq = 2
-                print("CrewPackXP: Playing FA welcome PA - Engine Start")
-             end
-             if cpxpBEACON == 1 and cpxpWEIGHT_ON_WHEELS == 1 and (math.floor(get("sim/flightmodel2/position/groundspeed"))) ~= 0 and cpxpFaPlaySeq == 0 then
-                cpxpPaTimer = 210
-                play_sound(cpxpFA_Welcome_snd)
-                cpxpFaPlaySeq = 2
-                print("CrewPackXP: Playing FA welcome PA, GS "..(math.floor(get("sim/flightmodel2/position/groundspeed"))))
-             end
-
-             if cpxpBEACON == 1 and cpxpWEIGHT_ON_WHEELS == 1 and cpxpFaPlaySeq == 2 and cpxpPaTimer == 241 then
-                play_sound(cpxpCabinSecure_snd)
-                print("CrewPackXP: Played Cabin Secure")
-                cpxpFaPlaySeq = 3
-             end
-        end
-    end
-
-    do_often("CPXPFlightAttendant()")
 
     local cpxpCDU3Mode = ""
     local cpxpTORaw = ""
@@ -373,6 +349,8 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
     local cpxpV1 = 0
     local cpxpVR = 0
     local cpxpV2 = 0
+    local cpxpFLCHPress = false
+    local cpxpFLCHPlay = false
 
     function CPXPTakeoffTrigger()
     -- TO Callout mode - Reset by climb thurst set call
@@ -402,14 +380,15 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
             cpxpCalloutTimer = 0
             print("CrewPackXP: TO Mode > 60 N1 Set Thrust")
             cpxpPlaySeq = 1
+            CPXPThrustRef()
         end
         if cpxpToCalloutMode and cpxpPlaySeq == 1 then
             CPXPThrustRef()
-            print("CrewPackXP: Looking for TO Thrust of " .. cpxpTON1)
             if cpxpTON1 ~= nil and cpxpCalloutTimer >= 2 then
                 if cpxpENG1_N1 >= (cpxpTON1 * 0.95)  then
                 play_sound(cpxpThrustSet_snd)
                 cpxpCalloutTimer = 0
+                print("CrewPackXP: Looking for TO Thrust of " .. cpxpTON1)
                 print("CrewPackXP: TO Thrust Set")       
                 cpxpPlaySeq = 2             
                 end
@@ -474,11 +453,31 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
         end
     
         -- Pos Rate
-        if cpxpToCalloutMode and cpxpWEIGHT_ON_WHEELS == 0 and cpxpVSI > 50 and cpxpPlaySeq == 6 and cpxpCalloutTimer >= 2 then
+        if cpxpToCalloutMode and cpxpWEIGHT_ON_WHEELS == 0 and cpxpVSI > 50 and cpxpAGL > 328 and cpxpPlaySeq == 6 and cpxpCalloutTimer >= 2 then
             play_sound(cpxpPosRate_snd)
             cpxpCalloutTimer = 0
             print("CrewPackXP: Positive Rate " .. math.floor(cpxpAGL) .. " AGL and " .. math.floor(cpxpVSI) .. " ft/min")
             cpxpPlaySeq = 7
+         end
+
+         -- FLCH
+
+         if cpxpFLCH and cpxpToCalloutMode and cpxpVSI > 50 and cpxpAGL > 1312 and cpxpPlaySeq == 7 and not cpxpFLCHPress then
+            set("CL650/FCP/flc_mode", 1)
+            cpxpFLCHPress = true
+            print("CrewPackXP: Pressing FLCH")
+         end
+
+         if cpxpFLCH and cpxpPlaySeq == 7 and cpxpFLCHPress and not cpxpFLCHPlay and cpxpCalloutTimer >= 2 then
+            if get("CL650/lamps/glareshield/FCP/flc_1") == 1 then
+                play_sound(cpxpFLCH_snd)
+                cpxpFLCHPlay = true
+                cpxpCalloutTimer = 0
+                print("CrewPackXP: FLCH Engaged")
+            else
+                cpxpFLCHPlay = true
+                print("CrewPackXP: Appears FLCH Failed")
+            end
          end
 
          -- Climb Thrust Workaround
@@ -502,7 +501,30 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
 
 
     do_every_frame("CPXPTakeoffCalls()")
+
+    --Autopilot on
+    local cpxpAPmode = 0
+    local cpxpAPPlay = false
+
+    function CPXPAutoPilot()
+        if not cpxpReady then
+            return
+        end
+
+        if get("CL650/lamps/glareshield/FCP/ap_eng_1") ~= cpxpAPmode then
+            if get("CL650/lamps/glareshield/FCP/ap_eng_1") == 1 and not cpxpAPPlay then
+                play_sound(cpxpAutopilot_snd)
+                print("CrewPackXP: AP On")
+                cpxpAPmode = 1
+                cpxpAPPlay = true
+            elseif get("CL650/lamps/glareshield/FCP/ap_eng_1") == 0 and cpxpAPmode == 1 then
+                cpxpAPmode = 0
+                cpxpAPPlay = false
+            end
+        end     
+    end
     
+    do_often("CPXPAutoPilot()")
 
     -- Gear Selection
     local cpxpGearUpSelectedPlay = false
@@ -581,8 +603,8 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
        play_sound(cpxpFlap0_snd)
        print("CrewPackXP: Flaps 0 Selected for 1 Seconds -- ")
     end
-    if cpxpFLAP_IND == 0 and cpxpFlapIndTime == 1 and not cpxpFlap0IndPlay then
-        play_sound(cpxpFlap0_snd)
+    if cpxpFLAP_IND == 0 and cpxpFlapIndTime == 1 and not cpxpFlap0IndPlay and cpxpWEIGHT_ON_WHEELS == 0 then
+        play_sound(cpxpFlapIs0_snd)
         print("CrewPackXP: Flaps 0 Indicated")    
         cpxpFlap0IndPlay = true
     end 
@@ -591,8 +613,8 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
         play_sound(cpxpFlap20_snd)
         print("CrewPackXP: Flaps 20 Selected for 1 Seconds -- ")
      end
-     if cpxpFLAP_IND == 20 and cpxpFlapIndTime == 1 and not cpxpFlap20IndPlay then
-         play_sound(cpxpFlap20_snd)
+     if cpxpFLAP_IND == 20 and cpxpFlapIndTime == 1 and not cpxpFlap20IndPlay and cpxpWEIGHT_ON_WHEELS == 0 then
+         play_sound(cpxpFlapIs20_snd)
          print("CrewPackXP: Flaps 20 Indicated")    
          cpxpFlap20IndPlay = true
      end
@@ -601,17 +623,17 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
         play_sound(cpxpFlap30_snd)
         print("CrewPackXP: Flaps 30 Selected for 1 Seconds -- ")
      end
-     if cpxpFLAP_IND == 30 and cpxpFlapIndTime == 1 then
-         play_sound(cpxpFlap30_snd)
+     if cpxpFLAP_IND == 30 and cpxpFlapIndTime == 1 and cpxpWEIGHT_ON_WHEELS == 0 then
+         play_sound(cpxpFlapIs30_snd)
          print("CrewPackXP: Flaps 30 Indicated")    
      end 
 
      if cpxpFlapPos == 3 and cpxpFlapTime == 1 and cpxpWEIGHT_ON_WHEELS == 0 then
-        play_sound(cpxpFlap30_snd)
+        play_sound(cpxpFlap45_snd)
         print("CrewPackXP: Flaps 45 Selected for 1 Seconds -- ")
      end
-     if cpxpFLAP_IND == 45 and cpxpFlapIndTime == 1 then
-         play_sound(cpxpFlap30_snd)
+     if cpxpFLAP_IND == 45 and cpxpFlapIndTime == 1 and cpxpWEIGHT_ON_WHEELS == 0 then
+         play_sound(cpxpFlapIs45_snd)
          print("CrewPackXP: Flaps 45 Indicated")    
      end 
     
@@ -672,7 +694,7 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
     do_often("CPXPAltAlert()")
 
     -- Localiser / GlideSlope
-    local cpxpLocgsCalls = true
+    
     local cpxpLocPlayed = true
     local cpxpGsPlayed = true
 
@@ -790,25 +812,17 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
         end
 
         imgui.SetCursorPos(20, imgui.GetCursorPosY())
-        local changed, newVal = imgui.Checkbox("Crew Pack FA Onboard?", cpxpFaOnboard)
-        if changed then
-           cpxpFaOnboard = newVal
-           SaveCrewPackXPData()
-           print("CrewPackXP: Start message logic set to " .. tostring(cpxpStartMsg))
+        if imgui.BeginCombo("Engine Start Call", "", imgui.constant.ComboFlags.NoPreview) then
+        if imgui.Selectable("Left / Right", cpxpEngStartType == 1) then
+            cpxpEngStartType = 1
+            SaveCrewPackXPData()
+            print("CrewPackXP: Engine start call set to Left / Right")
         end
-
-        imgui.SetCursorPos(20, imgui.GetCursorPosY())
-    if imgui.BeginCombo("Engine Start Call", "", imgui.constant.ComboFlags.NoPreview) then
-       if imgui.Selectable("Left / Right", cpxpEngStartType == 1) then
-          cpxpEngStartType = 1
-          SaveCrewPackXPData()
-          print("CrewPackXP: Engine start call set to Left / Right")
-       end
-       if imgui.Selectable("Engine 1 / 2", cpxpEngStartType == 2) then
-          cpxpEngStartType = 2
-          SaveCrewPackXPData()
-          print("CrewPackXP: Engine start call set to 1 / 2")
-       end
+        if imgui.Selectable("1 / 2", cpxpEngStartType == 2) then
+            cpxpEngStartType = 2
+            SaveCrewPackXPData()
+            print("CrewPackXP: Engine start call set to 1 / 2")
+        end
        imgui.EndCombo()
     end
     imgui.SetCursorPos(20, imgui.GetCursorPosY())
@@ -818,10 +832,34 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
        SaveCrewPackXPData()
        print("CrewPackXP: LOC / GS Call logic set to " .. tostring(syncAlt))
     end
+    imgui.SetCursorPos(20, imgui.GetCursorPosY())
+    local changed, newVal = imgui.Checkbox("Automate FLCH at 400ft on TO", cpxpFLCH)
+    if changed then
+       cpxpFLCH = newVal
+       SaveCrewPackXPData()
+       print("CrewPackXP: FLCH press at 400ft set to " .. tostring(syncAlt))
+    end
     
         --[[
   
+        imgui.SetCursorPos(20, imgui.GetCursorPosY())
+        local changed, newVal = imgui.Checkbox("Crew Pack FA Onboard?", cpxpFaOnboard)
+        if changed then
+           cpxpFaOnboard = newVal
+           SaveCrewPackXPData()
+           print("CrewPackXP: Start message logic set to " .. tostring(cpxpStartMsg))
+        end
 
+imgui.TextUnformatted("")
+        imgui.SetCursorPos(75, imgui.GetCursorPosY())
+        local changed, newVal1 = imgui.SliderFloat("PA Volume", (cpxpPaVol * 100), 1, 100, "%.0f")
+        if changed then
+            cpxpPaVol = (newVal1 / 100)
+            set_sound_gain(Output_snd, cpxpPaVol)
+            play_sound(Output_snd)
+            SaveCrewPackXPData()
+            print("767CrewPacks: Volume set to " .. (cpxpPaVol * 100) .. " %")
+        end
     
     imgui.SetCursorPos(20, imgui.GetCursorPosY())
     local changed, newVal = imgui.Checkbox("FO Performs Preflight Scan Flow", cpxpFoPreflight)
@@ -885,16 +923,7 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
             SaveCrewPackXPData()
             print("767CrewPacks: Volume set to " .. (cpxpSoundVol * 100) .. " %")
         end
-        imgui.TextUnformatted("")
-        imgui.SetCursorPos(75, imgui.GetCursorPosY())
-        local changed, newVal1 = imgui.SliderFloat("PA Volume", (cpxpPaVol * 100), 1, 100, "%.0f")
-        if changed then
-            cpxpPaVol = (newVal1 / 100)
-            set_sound_gain(Output_snd, cpxpPaVol)
-            play_sound(Output_snd)
-            SaveCrewPackXPData()
-            print("767CrewPacks: Volume set to " .. (cpxpPaVol * 100) .. " %")
-        end
+        
         imgui.Separator()
         imgui.TextUnformatted("")
         imgui.SetCursorPos(200, imgui.GetCursorPosY())
@@ -929,7 +958,7 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
             cpxpSoundVol = cpxpCrewPackXPSettings.CrewPackXP.cpxpSoundVol
             cpxpPaVol = cpxpCrewPackXPSettings.CrewPackXP.cpxpPaVol
             cpxpEngStartType = cpxpCrewPackXPSettings.CrewPackXP.cpxpEngStartType
-            cpxpFaOnboard = cpxpCrewPackXPSettings.CrewPackXP.cpxpFaOnboard
+            cpxpFLCH = cpxpCrewPackXPSettings.CrewPackXP.cpxpFLCH
             cpxpLocgsCalls = cpxpCrewPackXPSettings.CrewPackXP.cpxpLocgsCalls
             print("CrewPackXP: Settings Loaded")
             cpxpSetGain()
@@ -950,7 +979,7 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
                 cpxpSoundVol = cpxpSoundVol,
                 cpxpPaVol = cpxpPaVol,
                 cpxpEngStartType = cpxpEngStartType,
-                cpxpFaOnboard = cpxpFaOnboard,
+                cpxpFLCH = cpxpFLCH,
                 cpxpLocgsCalls = cpxpLocgsCalls,
             }
         }
