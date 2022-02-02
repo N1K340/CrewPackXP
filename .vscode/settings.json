@@ -63,7 +63,25 @@
         "AIRCRAFT_PATH",
         "cpxp_SIM_TIME",
         "AIRCRAFT_FILENAME",
-        "cpxpLEFT_STARTER"
+        "cpxpLEFT_STARTER",
+        "cpxpRIGHT_STARTER",
+        "cpxpENG1_N2",
+        "cpxpENG2_N2",
+        "cpxpWEIGHT_ON_WHEELS",
+        "cpxpENG1_N1",
+        "cpxpENG2_N1",
+        "cpxpIAS",
+        "cpxpVSI",
+        "cpxpAGL",
+        "cpxpFLAP_IND",
+        "cpxpGEAR_UPIND",
+        "cpxpGEAR_LEVER",
+        "cpxpGEAR_DNIND",
+        "cpxpFLAP_LEVER",
+        "cpxpLOC_RECEIVED",
+        "cpxpLOC_DEVIATION",
+        "cpxpGS_RECEIVED",
+        "cpxpGS_DEVIATION"
     ],
     "Lua.diagnostics.disable": [
         "undefined-doc-name"
