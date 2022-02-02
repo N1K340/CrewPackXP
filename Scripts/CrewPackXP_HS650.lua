@@ -711,8 +711,8 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
     end
     -- Loc Capture Right of localiser (CDI Left) Reset by: Full scale LOC deflection
     if cpxpLocgsCalls then
-       if  cpxpWEIGHT_ON_WHEELS == 0 and cpxpLOC_RECEIVED == 1 and cpxpLOC_DEVIATION > -1.95 and cpxpLOC_DEVIATION <= 0 and not cpxpLocPlayed and not cpxpToCalloutMode then
-          if cpxpGS_RECEIVED == 1 and cpxpGS_DEVIATION > -1.95 and cpxpGS_DEVIATION < 1  then
+       if  cpxpWEIGHT_ON_WHEELS == 0 and cpxpLOC_RECEIVED == 1 and cpxpLOC_DEVIATION > -1.3 and cpxpLOC_DEVIATION <= 1 and not cpxpLocPlayed and not cpxpToCalloutMode then
+          if cpxpGS_RECEIVED == 1 and cpxpGS_DEVIATION > -1.3 and cpxpGS_DEVIATION < 1  then
              play_sound(cpxpLOCGScap_snd)
              print("CrewPackXP: LOC and GS Active")
              cpxpCalloutTimer = 0
@@ -733,8 +733,8 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
           cpxpGsPlayed = false
        end
        -- Loc Capture Left of localiser (CDI Right)
-       if cpxpWEIGHT_ON_WHEELS == 0 and cpxpLOC_RECEIVED == 1 and cpxpLOC_DEVIATION < 1.95 and cpxpLOC_DEVIATION >= 0 and not cpxpLocPlayed and not cpxpToCalloutMode then
-          if cpxpGS_RECEIVED == 1 and cpxpGS_DEVIATION > -1.95 and cpxpGS_DEVIATION < 1  then
+       if cpxpWEIGHT_ON_WHEELS == 0 and cpxpLOC_RECEIVED == 1 and cpxpLOC_DEVIATION < 1.3 and cpxpLOC_DEVIATION >= 1 and not cpxpLocPlayed and not cpxpToCalloutMode then
+          if cpxpGS_RECEIVED == 1 and cpxpGS_DEVIATION > -1.3 and cpxpGS_DEVIATION < 1  then
              play_sound(cpxpLOCGScap_snd)
              print("CrewPackXP: LOC and GS Active")
              cpxpCalloutTimer = 0
