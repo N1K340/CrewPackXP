@@ -388,7 +388,6 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
             CPXPThrustRef()
         end
         if cpxpToCalloutMode and cpxpPlaySeq == 1 then
-            CPXPThrustRef()
             if cpxpTON1 ~= nil and cpxpCalloutTimer >= 2 then
                 if cpxpENG1_N1 >= (cpxpTON1 - 5)  then
                 play_sound(cpxpThrustSet_snd)
