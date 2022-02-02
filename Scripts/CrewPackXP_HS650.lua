@@ -606,39 +606,47 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
 
     if cpxpFlapPos == 0 and cpxpFlapTime == 1 and cpxpWEIGHT_ON_WHEELS == 0 then
        play_sound(cpxpFlap0_snd)
+       cpxpCalloutTimer = 0
        print("CrewPackXP: Flaps 0 Selected for 1 Seconds -- ")
     end
     if cpxpFLAP_IND == 0 and cpxpFlapIndTime == 1 and not cpxpFlap0IndPlay and cpxpWEIGHT_ON_WHEELS == 0 then
         play_sound(cpxpFlapIs0_snd)
+        cpxpCalloutTimer = 0
         print("CrewPackXP: Flaps 0 Indicated")    
         cpxpFlap0IndPlay = true
     end 
 
     if cpxpFlapPos == 1 and cpxpFlapTime == 1 and cpxpWEIGHT_ON_WHEELS == 0 then
         play_sound(cpxpFlap20_snd)
+        cpxpCalloutTimer = 0
         print("CrewPackXP: Flaps 20 Selected for 1 Seconds -- ")
      end
      if cpxpFLAP_IND == 20 and cpxpFlapIndTime == 1 and not cpxpFlap20IndPlay and cpxpWEIGHT_ON_WHEELS == 0 then
          play_sound(cpxpFlapIs20_snd)
+         cpxpCalloutTimer = 0
          print("CrewPackXP: Flaps 20 Indicated")    
          cpxpFlap20IndPlay = true
      end
 
      if cpxpFlapPos == 2 and cpxpFlapTime == 1 and cpxpWEIGHT_ON_WHEELS == 0 then
         play_sound(cpxpFlap30_snd)
+        cpxpCalloutTimer = 0
         print("CrewPackXP: Flaps 30 Selected for 1 Seconds -- ")
      end
      if cpxpFLAP_IND == 30 and cpxpFlapIndTime == 1 and cpxpWEIGHT_ON_WHEELS == 0 then
          play_sound(cpxpFlapIs30_snd)
+         cpxpCalloutTimer = 0
          print("CrewPackXP: Flaps 30 Indicated")    
      end 
 
      if cpxpFlapPos == 3 and cpxpFlapTime == 1 and cpxpWEIGHT_ON_WHEELS == 0 then
         play_sound(cpxpFlap45_snd)
+        cpxpCalloutTimer = 0
         print("CrewPackXP: Flaps 45 Selected for 1 Seconds -- ")
      end
      if cpxpFLAP_IND == 45 and cpxpFlapIndTime == 1 and cpxpWEIGHT_ON_WHEELS == 0 then
          play_sound(cpxpFlapIs45_snd)
+         cpxpCalloutTimer = 0
          print("CrewPackXP: Flaps 45 Indicated")    
      end 
     
