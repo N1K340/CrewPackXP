@@ -457,7 +457,7 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
         end
     
         -- Pos Rate
-        if cpxpToCalloutMode and cpxpWEIGHT_ON_WHEELS == 0 and cpxpVSI > 50 and cpxpAGL > 50 and cpxpPlaySeq == 6 and cpxpCalloutTimer >= 2 then
+        if cpxpToCalloutMode and cpxpWEIGHT_ON_WHEELS == 0 and cpxpVSI > 50 and cpxpPlaySeq == 6 and cpxpCalloutTimer >= 2 then
             play_sound(cpxpPosRate_snd)
             cpxpCalloutTimer = 0
             print("CrewPackXP: Positive Rate " .. math.floor(cpxpAGL / 0.3048) .. " AGL and " .. math.floor(cpxpVSI) .. " ft/min")
@@ -466,7 +466,7 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
 
          -- FLCH
 
-         if cpxpFLCH and cpxpToCalloutMode and cpxpVSI > 50 and cpxpAGL > 1312 and cpxpPlaySeq == 7 and not cpxpFLCHPress then
+         if cpxpFLCH and cpxpToCalloutMode and cpxpVSI > 50 and cpxpAGL > 121 and cpxpPlaySeq == 7 and not cpxpFLCHPress then
             set("CL650/FCP/flc_mode", 1)
             cpxpFLCHPress = true
             print("CrewPackXP: Pressing FLCH")
@@ -485,7 +485,7 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
          end
 
          -- Climb Thrust Workaround
-         if cpxpToCalloutMode and cpxpPlaySeq == 7 and (cpxpAGL / 0.3048) > 1100 and not cpxpClimbThrustPressed then
+         if cpxpToCalloutMode and cpxpPlaySeq == 7 and cpxpAGL > 335 and not cpxpClimbThrustPressed then
             CPXPThrustRef()
             if cpxpFLAP_IND == 0 and cpxpGEAR_UPIND == 1 and cpxpCalloutTimer >= 2 then
                 if tostring(get("CL650/CDU/3/screen/text_line0")) == "      THRUST LIMIT      " and cpxpCLBACT ~= "ACT" then
@@ -715,8 +715,8 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
     end
     -- Loc Capture Right of localiser (CDI Left) Reset by: Full scale LOC deflection
     if cpxpLocgsCalls then
-       if  cpxpWEIGHT_ON_WHEELS == 0 and cpxpAPPR ~= 0 and cpxpLOC_DEVIATION > -1.3 and cpxpLOC_DEVIATION <= 1 and not cpxpLocPlayed and not cpxpToCalloutMode then
-          if cpxpGS_RECEIVED == 1 and cpxpGS_DEVIATION > -1.3 and cpxpGS_DEVIATION < 1 and cpxpCalloutTimer > 2 then
+       if  cpxpWEIGHT_ON_WHEELS == 0 and cpxpAPPR ~= 0 and cpxpLOC_DEVIATION > -1.8 and cpxpLOC_DEVIATION <= 1 and not cpxpLocPlayed and not cpxpToCalloutMode then
+          if cpxpGS_RECEIVED == 1 and cpxpGS_DEVIATION > -1.8 and cpxpGS_DEVIATION < 1 and cpxpCalloutTimer > 2 then
              play_sound(cpxpLOCGScap_snd)
              cpxpCalloutTimer = 0
              print("CrewPackXP: LOC and GS Active")
@@ -739,8 +739,8 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
           cpxpGsPlayed = false
        end
        -- Loc Capture Left of localiser (CDI Right)
-       if cpxpWEIGHT_ON_WHEELS == 0 and cpxpAPPR ~= 0 and cpxpLOC_DEVIATION < 1.3 and cpxpLOC_DEVIATION >= 1 and not cpxpLocPlayed and not cpxpToCalloutMode then
-          if cpxpGS_RECEIVED == 1 and cpxpGS_DEVIATION > -1.3 and cpxpGS_DEVIATION < 1 and cpxpCalloutTimer > 2 then
+       if cpxpWEIGHT_ON_WHEELS == 0 and cpxpAPPR ~= 0 and cpxpLOC_DEVIATION < 1.8 and cpxpLOC_DEVIATION >= 1 and not cpxpLocPlayed and not cpxpToCalloutMode then
+          if cpxpGS_RECEIVED == 1 and cpxpGS_DEVIATION > -1.8 and cpxpGS_DEVIATION < 1 and cpxpCalloutTimer > 2 then
              play_sound(cpxpLOCGScap_snd)
              cpxpCalloutTimer = 0
              print("CrewPackXP: LOC and GS Active")
@@ -819,11 +819,12 @@ end
        return
     end
 
-    if cpxp_REV1 == 0 and CPXP_REV2 == 0 then
+    if CPXP_REV1 == 0 and CPXP_REV2 == 0 then
        cpxpRevTime = 0
     else
        if cpxpRevTime < 5 then
           cpxpRevTime = cpxpRevTime + 1
+          print("CrewPackXP: Rev Time " .. cpxpRevTime )
        end
     end
  end -- End of OnGrndCheck
@@ -836,7 +837,7 @@ end
     if not cpxpReady then
        return
     end
-    if cpxpIAS < 2 and cpxpWEIGHT_ON_WHEELS == 1 then
+    if cpxpIAS < 2 and cpxpWEIGHT_ON_WHEELS == 1 and get("CL650/pedestal/park_brake") == 1 then
        cpxpPlaySeq = 0
        cpxpFlightOccoured = false
        print("CrewPackXP: TO Calls Reset")
