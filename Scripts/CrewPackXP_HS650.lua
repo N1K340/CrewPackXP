@@ -514,12 +514,12 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
         end
 
         if get("CL650/lamps/glareshield/FCP/ap_eng_1") ~= cpxpAPmode then
-            if get("CL650/lamps/glareshield/FCP/ap_eng_1") == 1 and not cpxpAPPlay then
+            if get("CL650/lamps/glareshield/FCP/ap_eng_1") ~= 0 and not cpxpAPPlay then
                 play_sound(cpxpAutopilot_snd)
                 print("CrewPackXP: AP On")
                 cpxpAPmode = 1
                 cpxpAPPlay = true
-            elseif get("CL650/lamps/glareshield/FCP/ap_eng_1") == 0 and cpxpAPmode == 1 then
+            elseif get("CL650/lamps/glareshield/FCP/ap_eng_1") == 0 and cpxpAPmode ~= 0 then
                 cpxpAPmode = 0
                 cpxpAPPlay = false
             end
@@ -766,6 +766,71 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
 
  do_often("CPXPLocGsAlive()")
 
+
+   -- Landing Roll / Speedbrakes - Reset by: Gear Up
+ local cpxpFlightOccoured = false
+ local cpxpRevPlayed = true
+
+ dataref("CPXP_REV1", "CL650/pedestal/throttle/reverse_L")
+ dataref("CPXP_REV2", "CL650/pedestal/throttle/reverse_R")
+ dataref("CPXP_REV1ACT", "CL650/anim/engines/thrust_reverser_deploy_ratio", 0)
+ dataref("CPXP_REV2ACT", "CL650/anim/engines/thrust_reverser_deploy_ratio", 1)
+
+
+   function CPXPLanding()
+    if not cpxpReady then
+       return
+    end
+
+    if cpxpWEIGHT_ON_WHEELS == 1 and cpxpFlightOccoured then
+       if CPXP_REV1 ~= 0 and CPXP_REV2 ~= 0 and CPXP_REV1ACT ~= 0 and CPXP_REV2ACT ~= 0 and not cpxpRevPlayed then
+          play_sound(cpxp2Green_snd)
+          cpxpRevPlayed = true
+          print("CrewPackXP: Both Eng in Reverse")
+       end
+       if cpxpRevTime == 5 and PXP_REV1 ~= 0 and CPXP_REV1ACT == 0 not cpxpRevPlayed then
+          play_sound(cpxpRevUnsafe_snd)
+          cpxpRevPlayed = true
+          cpxpCalloutTimer = 0
+          print("CrewPackXP: Eng 1 not in Reverse")
+       elseif cpxpRevTime == 5 and PXP_REV2 ~= 0 and CPXP_REV2ACT == 0 not cpxpRevPlayed and cpxpCalloutTimer > 2 then
+            play_sound(cpxpRevUnsafe_snd)
+            cpxpRevPlayed = true
+            print("CrewPackXP: Eng 2 not in Reverse")
+       end
+    end
+
+ do_often("CPXPLanding()")
+
+ function CPXPRevCheck()
+    if not cpxpReady then
+       return
+    end
+
+    if cpxp_REV1 == 0 and CPXP_REV2 == 0 then
+       cpxpRevTime = 0
+    else
+       if cpxpRevTime < 5 then
+          cpxpRevTime = cpxpRevTime + 1
+       end
+    end
+ end -- End of OnGrndCheck
+
+ do_often("CPXPRevCheck()")
+
+
+   -- Reset Variables for next Flight
+   function CPXPMasterReset()
+    if not cpxpReady then
+       return
+    end
+    if IAS > 30 and IAS < 40 and cpxpWEIGHT_ON_WHEELS == 1 then
+       cpxpPlaySeq = 0
+       print("CrewPackXP: TO Calls Reset")
+    end
+ end
+
+ do_often("CPXPMasterReset()")
 
 
 
