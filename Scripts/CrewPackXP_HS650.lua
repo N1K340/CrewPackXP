@@ -72,7 +72,7 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
    local cpxpGScap_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/HS650/pnf_GS.wav")
    local cpxpLOCcap_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/HS650/pnf_LOC.wav")
    local cpxpLOCGScap_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/HS650/pnf_LOCandGS.wav")
-   local cpxpAltAlert_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/HS650/pnf_60kts.wav")
+   local cpxpAltAlert_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/HS650/pnf_AltAlert.wav")
    local cpxpFLCH_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/HS650/SpeedMode.wav")
    local cpxpAutopilot_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/HS650/Autopilot.wav")
 
@@ -214,6 +214,7 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
             play_sound(soundFile[math.random(1, 4)])
             cpxpStartPlayed = true
             set("CL650/CDU/3/idx", 1)
+            set("CL650/CCP/1/cas", 1)
         end
     end
 
@@ -303,23 +304,23 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
                     cpxpTON1 = string.sub(cpxpTORaw, 1, 4)
                     cpxpTOACT = string.sub(cpxpTORaw, 7, 9)
                 else
-                    cpxpTON1 = 85
-                    print("CrewPackXP: TO N1 not found, using 85")
+                    cpxpTON1 = 90
+                    print("CrewPackXP: TO N1 not found, using 90")
                 end
                 if cpxpCLBRaw ~= nil then
                     cpxpCLBN1 = string.sub(cpxpCLBRaw, 1, 4)
                     cpxpCLBACT = string.sub(cpxpCLBRaw, 7, 9)
                 else
-                    cpxpCLBN1 = 85
-                    print("CrewPackXP: CLB N1 not found, using 85")    
+                    cpxpCLBN1 = 90
+                    print("CrewPackXP: CLB N1 not found, using 90")    
                 end
                 
             else
                 print("CrewPackXP: CDU3 Mode is wrong " .. cpxpCDU3Mode)
                 set("CL650/CDU/3/perf_value" ,1)
                 print("CrewPackXP: Attempting to change mode")
-                cpxpTON1 = 85
-                print("CrewPackXP: TO N1 not found, substituting 85%")
+                cpxpTON1 = 90
+                print("CrewPackXP: TO N1 not found, substituting 90%")
             end
         end
     end
@@ -386,7 +387,7 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
         if cpxpToCalloutMode and cpxpPlaySeq == 1 then
             CPXPThrustRef()
             if cpxpTON1 ~= nil and cpxpCalloutTimer >= 2 then
-                if cpxpENG1_N1 >= (cpxpTON1 * 0.95)  then
+                if cpxpENG1_N1 >= (cpxpTON1 - 5)  then
                 play_sound(cpxpThrustSet_snd)
                 cpxpCalloutTimer = 0
                 print("CrewPackXP: Looking for TO Thrust of " .. cpxpTON1)
@@ -454,7 +455,7 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
         end
     
         -- Pos Rate
-        if cpxpToCalloutMode and cpxpWEIGHT_ON_WHEELS == 0 and cpxpVSI > 50 and cpxpAGL > 328 and cpxpPlaySeq == 6 and cpxpCalloutTimer >= 2 then
+        if cpxpToCalloutMode and cpxpWEIGHT_ON_WHEELS == 0 and cpxpVSI > 50 and cpxpAGL > 50 and cpxpPlaySeq == 6 and cpxpCalloutTimer >= 2 then
             play_sound(cpxpPosRate_snd)
             cpxpCalloutTimer = 0
             print("CrewPackXP: Positive Rate " .. math.floor(cpxpAGL) .. " AGL and " .. math.floor(cpxpVSI) .. " ft/min")
