@@ -214,6 +214,8 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
             math.randomseed(os.time())
             play_sound(soundFile[math.random(1, 4)])
             cpxpStartPlayed = true
+            set("CL650/CDU/1/idx", 1)
+            set("CL650/CDU/2/idx", 1)
             set("CL650/CDU/3/idx", 1)
             set("CL650/CCP/1/cas", 1)
             set("CL650/glareshield/master_warn_L", 1)
@@ -831,6 +833,7 @@ end
 
     if CPXP_REV1 == 0 and CPXP_REV2 == 0 then
        cpxpRevTime = 0
+       cpxpRevPlayed = false
     else
        if cpxpRevTime < 5 then
           cpxpRevTime = cpxpRevTime + 1

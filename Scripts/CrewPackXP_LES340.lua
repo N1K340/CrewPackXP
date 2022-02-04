@@ -11,7 +11,7 @@ I have 1,800hrs on the Saab, about half on the A.
 They are tanks, such a solid plane.
 
 Changelog:
-V0.1 - Initial release
+V0.0 - This is not release code. It does not function yet.
 --]]
 
 if AIRCRAFT_FILENAME == "LES_Saab_340A_Cargo.acf" or AIRCRAFT_FILENAME == "LES_Saab_340A.acf" then

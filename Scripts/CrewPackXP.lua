@@ -8,12 +8,13 @@ Ground Crew: en-AU-B-Male (what a name...)
 Safety: Leslie
 
 Changelog:
-V0.1 - Initial Test Beta
+V1.0 - Main loader
+
 --]]
 if AIRCRAFT_FILENAME ~= "757-200_xp11.acf" and AIRCRAFT_FILENAME ~= "CL650.acf" and AIRCRAFT_FILENAME ~= "LES_Saab_340A_Cargo.acf" and AIRCRAFT_FILENAME ~= "LES_Saab_340A.acf" then
    --------
    -- Initialisation Variables
-   local version = "CPXP_UKN: 0.1-beta"
+   local version = "CPXP_UKN: V1.0"
 
    require "graphics"
 
@@ -50,8 +51,8 @@ if AIRCRAFT_FILENAME ~= "757-200_xp11.acf" and AIRCRAFT_FILENAME ~= "CL650.acf" 
       imgui.TextUnformatted("CrewPackXP has not recognised the loaded aircraft,")
       imgui.TextUnformatted("Callout functions are not available.")
       imgui.TextUnformatted("Aircraft compatible with CrewPackXP:")
-      imgui.TextUnformatted("- Flight Factor Boeing 757-200/-300")
-      imgui.TextUnformatted("- Flight Factor Boeing 767-200/-300ER")
+      imgui.TextUnformatted("- Flight Factor Boeing 757-200")
+      -- imgui.TextUnformatted("- Flight Factor Boeing 767-200/-300ER")
       imgui.TextUnformatted("- Hot Start Challenger 650")
       imgui.Separator()
       imgui.TextUnformatted("")

@@ -8,14 +8,8 @@ Ground Crew: en-AU-B-Male (what a name...)
 Safety: Leslie
 
 Changelog:
-V0.1 - Initial Test Beta
-V0.2 - Variable name corrections
-V0.3 - Crosscheck and correction of variable adjustments
-V0.4 - Corrected TO VNAV and LOC logic Bug#3
-v0.5 - Added GPU connection logic to cockpit setup and shutdown. Cargo doors and L1 open on eng off setup with belt loaders. N.B. Ext Pwr will fail if disconnected whilst on bus.
-v0.5.1 - Finally found chocks dataref. Adjust doors logic per frame. Added beacon on to remove all GSE. Cockpit Setup expanded to FO preflight and Baro sync.
-v0.6 - Added settings widnow, require LIP module to save and load settigns. Options added for ammount of automation.
-v0.7 - Rewriting with newer ways of doing things
+V0.1 - Initial Release for 757-200 only.
+
 --]]
 if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
    --------
