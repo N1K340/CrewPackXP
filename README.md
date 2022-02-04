@@ -75,7 +75,7 @@ Main Plugin:
 Aircraft Configs:
 
 Flight Factor 757:
-* v0.1 - Initial release for compatability with 757-200 only. Remaining variants not yet tested.
+* v0.1 - Initial release for compatability with 757-200 only. Remaining variants not yet tested properly
 
 Hot Start Challenger 650
 * v0.1 - Initial release.
