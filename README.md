@@ -1,9 +1,9 @@
 # CrewPackXP
-Crew Pack for the Flight Factor 757 / 767 in X-Plane 11
-
-This plugin adds basic crew calls to the FF 757 and 767 aircraft, along with some procedural PNF help.
+Utility to add crew voices for aircraft in X-Plane 11. This includes basic call outs and in some cases assistance from the PNF in high workload phases of flight. Settings can be adjusted to enable or dissable the whole plugin, or just certain features of each aircraft. 
 
 Includes:
+
+Flight Factor 757:
 * Automatically selects the EHSI to map mode and displays 10 nm range with TFC on initialisaiton. If engines are shutdown the GPU will be brought online.
 * Full takeoff calls by both crew, based on the FMS speed entreies, automatic VNAV engagement if not already armed at the acceleration height in FMS takeoff ref page 2.
 * Automatic selection of transponder to TA/RA when passing 80kts, if not already turned on.
@@ -11,6 +11,12 @@ Includes:
 * Landing speedbrake calls.
 * Go around calls with PNF actively managing aircraft configuration. When pressing the TOGA clickspot on the MCP, the PNF will select flaps 20, select the gear up,   attempt to engage LNAV at 400ft AGL, select climb thrust at the acceleration height, attempt to engage VNAV or FLCH at Flap 0 speed if there is no valid VNAV path.
 * After shutdown, the ground crew will connect the GPU, open L1, fwd/aft cargo doors and bring the belt loaders to the aircraft.
+
+Hot Start Challenger 650:
+* Takeoff calls by both crew based on the FMS Speed entries with automatic engagement of FLCH at 1,000 ft AGL. Requires CDU 3 to be on Thrust Ref page.
+* Localiser and Glide Slope Calls if the APPR mode is armed.
+* Landing reverse calls
+* 1'000 ft to go on altitude captures.
 
 Prerequisite
 ============
@@ -28,16 +34,6 @@ This is a common plugin, it may already exist in your modules folder causing a p
 Installation
 ============
 
-Required File List:
-- Scripts
-    767CrewPack.ini
-    767CrewPack.lua
-    - 767Callouts
-        Associated sound files 
-        
-- Modules
-    LIP.lua
-
 
 Copy the Scripts and Modules folders into the main folder of FlyWithLUA: 
 X-Plane 11 > Resources > plugins > FlyWithLua
@@ -45,7 +41,7 @@ X-Plane 11 > Resources > plugins > FlyWithLua
 If sucesfull the First Officer should announce his entery the cockpit roughly 15 seconds after loading in.
 
 Settings can be accessed within the sim by navigating too:
-Plugins > FlyWithLua > FlyWithLua Macros > 767 Crew Pack Settings
+Plugins > FlyWithLua > FlyWithLua Macros > Crew Pack Settings
 
 
 Disclaimer / Feedback
@@ -64,6 +60,8 @@ This plugin is still a work in progress, to be considered as public beta. Errors
 
 Change Log
 ==========
+Main Plugin:
+
 * V0.1 - Initial Beta Release.
 * v0.2 - local variable corrections to TOGA, Speedbrakes and Horseplay.
 * v0.3 - Complete crosscheck and tweak of local variables.
@@ -72,3 +70,13 @@ Change Log
             N.B. Attempting to disconnect the GPU whilst it is on bus will cause the GPU circuit of the aircraft to fail.
 * v0.5.1 - Finally found chocks dataref. Adjust doors logic per frame. Added beacon on to remove all GSE. Cockpit Setup expanded to FO preflight and  Baro sync.
 * v0.6 - Added settings window accesible via: plugins > FlyWithLua > Macros > 767 Crew Pack Settings.
+* v1.0 - Rewritten core components to make it expandable for other aircraft. Initial release of Flight Factor 757 and Hot Start Challenger 650
+
+Aircraft Configs:
+
+Flight Factor 757:
+*
+
+Hot Start Challenger 650
+*
+
