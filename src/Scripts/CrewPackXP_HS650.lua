@@ -460,7 +460,7 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
         end
     
         -- Pos Rate
-        if cpxpToCalloutMode and cpxpWEIGHT_ON_WHEELS == 0 and cpxpVSI > 50 and cpxpPlaySeq == 6 and cpxpCalloutTimer >= 2 then
+        if cpxpToCalloutMode and cpxpWEIGHT_ON_WHEELS == 0 and cpxpVSI > 50 and cpxpAGL > 50 and cpxpPlaySeq == 6 and cpxpCalloutTimer >= 2 then
             play_sound(cpxpPosRate_snd)
             cpxpCalloutTimer = 0
             print("CrewPackXP: Positive Rate " .. math.floor(cpxpAGL / 0.3048) .. " AGL and " .. math.floor(cpxpVSI) .. " ft/min")
