@@ -73,7 +73,8 @@ Main Plugin:
 * v0.6 - Added settings window accesible via: plugins > FlyWithLua > Macros > 767 Crew Pack Settings.
 * v1.0 - Rewritten core components to make it expandable for other aircraft. Initial release of Flight Factor 757 and Hot Start Challenger 650.
 * v1.1 - Corrected error in HS650 script resulting in LUA stopping
+* v1.2 - Added missing sounds to HS650 Reverse. 
 
 Current Aircraft Scripts:
 Flight Factor 767 - v0.1
-Hot Start CL650 - v0.2
+Hot Start CL650 - v0.3

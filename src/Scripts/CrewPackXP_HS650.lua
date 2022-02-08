@@ -8,10 +8,11 @@
     Changelog:
     v0.1 - Initial Release
     v0.2 - Corrected typo on line 853
+    v0.3 - Added missing sounds for reverse on landing.
 ]]
 if AIRCRAFT_FILENAME == "CL650.acf" then
     -- Initiialisation Variables
-    local cpxpVersion = "HS650: 0.2"
+    local cpxpVersion = "HS650: 0.3"
     local cpxpInitDelay = 10
     local cpxpStartTime = 0
     dataref("cpxp_SIM_TIME", "sim/time/total_running_time_sec")
@@ -77,6 +78,8 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
    local cpxpAltAlert_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/HS650/pnf_AltAlert.wav")
    local cpxpFLCH_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/HS650/SpeedMode.wav")
    local cpxpAutopilot_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/HS650/Autopilot.wav")
+   local cpxp2Green_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/HS650/pnf_RevGreen.wav")
+   local cpxpRevUnsafe_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/HS650/pnf_RevUnsafe.wav")
 
     function cpxpSetGain()
         set_sound_gain(cpxpStart1, cpxpSoundVol)
@@ -108,6 +111,8 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
         set_sound_gain(cpxpAltAlert_snd, cpxpSoundVol)
         set_sound_gain(cpxpFLCH_snd, cpxpSoundVol)
         set_sound_gain(cpxpAutopilot_snd, cpxpSoundVol)
+        set_sound_gain(cpxp2Green_snd, cpxpSoundVol)
+        set_sound_gain(cpxpRevUnsafe_snd, cpxpSoundVol)
     end
 
     -- Generic Datarefs
@@ -811,12 +816,12 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
           cpxpRevPlayed = true
           print("CrewPackXP: Both Eng in Reverse")
        end
-       if cpxpRevTime == 5 and PXP_REV1 ~= 0 and CPXP_REV1ACT == 0 and not cpxpRevPlayed then
+       if cpxpRevTime == 5 and CPXP_REV1 ~= 0 and CPXP_REV1ACT == 0 and not cpxpRevPlayed then
           play_sound(cpxpRevUnsafe_snd)
           cpxpRevPlayed = true
           cpxpCalloutTimer = 0
           print("CrewPackXP: Eng 1 not in Reverse")
-       elseif cpxpRevTime == 5 and PXP_REV2 ~= 0 and CPXP_REV2ACT == 0 and not cpxpRevPlayed and cpxpCalloutTimer > 2 then
+       elseif cpxpRevTime == 5 and CPXP_REV2 ~= 0 and CPXP_REV2ACT == 0 and not cpxpRevPlayed and cpxpCalloutTimer > 2 then
             play_sound(cpxpRevUnsafe_snd)
             cpxpRevPlayed = true
             print("CrewPackXP: Eng 2 not in Reverse")

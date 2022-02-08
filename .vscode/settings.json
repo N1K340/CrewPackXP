@@ -81,7 +81,14 @@
         "cpxpLOC_RECEIVED",
         "cpxpLOC_DEVIATION",
         "cpxpGS_RECEIVED",
-        "cpxpGS_DEVIATION"
+        "cpxpGS_DEVIATION",
+        "cpxpAPPR",
+        "CPXP_REV1",
+        "CPXP_REV2",
+        "CPXP_REV1ACT",
+        "CPXP_REV2ACT",
+        "PXP_REV1",
+        "PXP_REV2"
     ],
     "Lua.diagnostics.disable": [
         "undefined-doc-name"
