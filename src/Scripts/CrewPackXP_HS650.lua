@@ -7,10 +7,11 @@
 
     Changelog:
     v0.1 - Initial Release
+    v0.2 - Corrected typo on line 853
 ]]
 if AIRCRAFT_FILENAME == "CL650.acf" then
     -- Initiialisation Variables
-    local cpxpVersion = "HS650: 0.1"
+    local cpxpVersion = "HS650: 0.2"
     local cpxpInitDelay = 10
     local cpxpStartTime = 0
     dataref("cpxp_SIM_TIME", "sim/time/total_running_time_sec")
