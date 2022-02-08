@@ -76,5 +76,5 @@ Main Plugin:
 * v1.2 - Added missing sounds to HS650 Reverse. 
 
 Current Aircraft Scripts:
-Flight Factor 767 - v0.1
-Hot Start CL650 - v0.3
+- Flight Factor 767 - v0.1
+- Hot Start CL650 - v0.3
