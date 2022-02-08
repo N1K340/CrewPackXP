@@ -79,4 +79,5 @@ Flight Factor 757:
 
 Hot Start Challenger 650
 * v0.1 - Initial release.
+* v0.2 - Corrected error resulting in lua stopping
 

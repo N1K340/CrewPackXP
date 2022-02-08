@@ -850,7 +850,7 @@ end
     if not cpxpReady then
        return
     end
-    if cpxpIAS < 2 and cpxpWEIGHT_ON_WHEELS == 1 and get("CL650/pedestal/park_brake") =~ 0 then
+    if cpxpIAS < 2 and cpxpWEIGHT_ON_WHEELS == 1 and get("CL650/pedestal/park_brake") ~= 0 then
        cpxpPlaySeq = 0
        cpxpFlightOccoured = false
        print("CrewPackXP: TO Calls Reset")
