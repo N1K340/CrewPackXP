@@ -1,7 +1,7 @@
 # CrewPackXP
 Utility to add crew voices for aircraft in X-Plane 11. This includes basic call outs and in some cases assistance from the PNF in high workload phases of flight. Settings can be adjusted to enable or dissable the whole plugin, or just certain features of each aircraft. 
 
-Includes:
+Includes Configs for:
 
 Flight Factor 757:
 * Automatically selects the EHSI to map mode and displays 10 nm range with TFC on initialisaiton. If engines are shutdown the GPU will be brought online.
@@ -13,7 +13,8 @@ Flight Factor 757:
 * After shutdown, the ground crew will connect the GPU, open L1, fwd/aft cargo doors and bring the belt loaders to the aircraft.
 
 Hot Start Challenger 650:
-* Takeoff calls by both crew based on the FMS Speed entries with automatic engagement of FLCH at 1,000 ft AGL. Requires CDU 3 to be on Thrust Ref page.
+* Takeoff calls by both crew based on the Speed entries on the EFIS with automatic engagement of FLCH at 1,000 ft AGL. 
+Note: Thurst values require CDU 3 to be on the thrust ref page for departure, the script will make an attempt to select the page during takeoff.
 * Localiser and Glide Slope Calls if the APPR mode is armed.
 * Landing reverse calls
 * 1'000 ft to go on altitude captures.
