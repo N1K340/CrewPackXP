@@ -817,12 +817,12 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
           cpxpRevPlayed = true
           print("CrewPackXP: Both Eng in Reverse")
        end
-       if cpxpRevTime == 5 and CPXP_REV1 ~= 0 and CPXP_REV1ACT == 0 and not cpxpRevPlayed then
+       if cpxpRevTime == 2 and CPXP_REV1 ~= 0 and CPXP_REV1ACT == 0 and not cpxpRevPlayed then
           play_sound(cpxpRevUnsafe_snd)
           cpxpRevPlayed = true
           cpxpCalloutTimer = 0
           print("CrewPackXP: Eng 1 not in Reverse")
-       elseif cpxpRevTime == 5 and CPXP_REV2 ~= 0 and CPXP_REV2ACT == 0 and not cpxpRevPlayed and cpxpCalloutTimer > 2 then
+       elseif cpxpRevTime == 2 and CPXP_REV2 ~= 0 and CPXP_REV2ACT == 0 and not cpxpRevPlayed and cpxpCalloutTimer > 2 then
             play_sound(cpxpRevUnsafe_snd)
             cpxpRevPlayed = true
             print("CrewPackXP: Eng 2 not in Reverse")
@@ -842,7 +842,7 @@ end
        cpxpRevTime = 0
        cpxpRevPlayed = false
     else
-       if cpxpRevTime < 5 then
+       if cpxpRevTime < 2 then
           cpxpRevTime = cpxpRevTime + 1
           print("CrewPackXP: Rev Time " .. cpxpRevTime )
        end
