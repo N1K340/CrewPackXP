@@ -474,14 +474,14 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
 
          -- FLCH
 
-         if cpxpFLCH and cpxpToCalloutMode and cpxpVSI > 50 and cpxpAGL > 121 and cpxpPlaySeq == 7 and not cpxpFLCHPress then
+         if cpxpFLCH and cpxpToCalloutMode and cpxpVSI > 50 and cpxpAGL > 152 and cpxpPlaySeq == 7 and not cpxpFLCHPress then
             set("CL650/FCP/flc_mode", 1)
             cpxpFLCHPress = true
             cpxpCalloutTimer = 0
             print("CrewPackXP: Pressing FLCH")
          end
 
-         if cpxpFLCH and cpxpPlaySeq == 7 and cpxpFLCHPress and cpxpCalloutTimer >= 2 and not cpxpFLCHPlay  then
+         if cpxpFLCH and cpxpPlaySeq == 7 and cpxpFLCHPress and cpxpCalloutTimer > 2 and not cpxpFLCHPlay  then
             if get("CL650/lamps/glareshield/FCP/flc_1") ~= 0 then
                 play_sound(cpxpFLCH_snd)
                 cpxpFLCHPlay = true
@@ -494,7 +494,7 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
          end
 
          -- Climb Thrust Workaround
-         if cpxpToCalloutMode and cpxpPlaySeq == 7 and cpxpAGL > 335 and not cpxpClimbThrustPressed then
+         if cpxpToCalloutMode and cpxpPlaySeq == 7 and cpxpAGL > 365 and not cpxpClimbThrustPressed then
             CPXPThrustRef()
             if cpxpFLAP_IND == 0 and cpxpGEAR_UPIND == 1 and cpxpCalloutTimer >= 2 then
                 if tostring(get("CL650/CDU/3/screen/text_line0")) == "      THRUST LIMIT      " and cpxpCLBACT ~= "ACT" then
