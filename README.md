@@ -14,7 +14,7 @@ Flight Factor 757:
 
 Hot Start Challenger 650:
 * Takeoff calls by both crew based on the Speed entries on the EFIS with automatic engagement of FLCH at 1,000 ft AGL. 
-Note: Thurst values require CDU 3 to be on the thrust ref page for departure, the script will make an attempt to select the page during takeoff.
+Note: Thurst values require CDU 3 to be on the thrust ref page for departure, the script will make an attempt to select the page during takeoff or default to 90% N1.
 * Localiser and Glide Slope Calls if the APPR mode is armed.
 * Landing reverse calls
 * 1'000 ft to go on altitude captures.
@@ -73,7 +73,7 @@ Main Plugin:
 * v0.6 - Added settings window accesible via: plugins > FlyWithLua > Macros > 767 Crew Pack Settings.
 * v1.0 - Rewritten core components to make it expandable for other aircraft. Initial release of Flight Factor 757 and Hot Start Challenger 650.
 * v1.1 - Corrected error in HS650 script resulting in LUA stopping
-* v1.2 - Added missing sounds to HS650 Reverse. 
+* v1.2 - Added missing sounds to HS650 Reverse, tweaked FLCH logic. 
 
 Current Aircraft Scripts:
 - Flight Factor 767 - v0.1
