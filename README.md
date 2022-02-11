@@ -74,7 +74,8 @@ Main Plugin:
 * v1.0 - Rewritten core components to make it expandable for other aircraft. Initial release of Flight Factor 757 and Hot Start Challenger 650.
 * v1.1 - Corrected error in HS650 script resulting in LUA stopping
 * v1.2 - Added missing sounds to HS650 Reverse, tweaked FLCH logic. 
+* v1.2.1 - Enabled all 757/767 variants
 
 Current Aircraft Scripts:
-- Flight Factor 767 - v0.1
-- Hot Start CL650 - v0.3
+- Flight Factor 767 - v1.0
+- Hot Start CL650 - v1.0

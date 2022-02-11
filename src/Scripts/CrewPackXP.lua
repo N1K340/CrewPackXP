@@ -8,13 +8,14 @@ Ground Crew: en-AU-B-Male (what a name...)
 Safety: Leslie
 
 Changelog:
-V1.0 - Main loader
+v1.0 - Main loader
+v1.1 - Enable all 757/767 variants
 
 --]]
-if AIRCRAFT_FILENAME ~= "757-200_xp11.acf" and AIRCRAFT_FILENAME ~= "CL650.acf" and AIRCRAFT_FILENAME ~= "LES_Saab_340A_Cargo.acf" and AIRCRAFT_FILENAME ~= "LES_Saab_340A.acf" then
+if AIRCRAFT_FILENAME ~= "757-200_xp11.acf" and AIRCRAFT_FILENAME ~= "757-300_xp11.acf" and AIRCRAFT_FILENAME ~= "757-c32_xp11.acf" and AIRCRAFT_FILENAME ~= "757-RF_xp11.acf" and AIRCRAFT_FILENAME ~= "767-200ER_xp11.acf" and AIRCRAFT_FILENAME ~= "767-300ER_xp11.acf" and AIRCRAFT_FILENAME ~= "767-F_xp11.acf" and AIRCRAFT_FILENAME ~= "CL650.acf" and AIRCRAFT_FILENAME ~= "LES_Saab_340A_Cargo.acf" and AIRCRAFT_FILENAME ~= "LES_Saab_340A.acf" then
    --------
    -- Initialisation Variables
-   local version = "CPXP_UKN: V1.0"
+   local cpxpVersion = "CPXP Main v1.1"
 
    require "graphics"
 
@@ -40,7 +41,7 @@ if AIRCRAFT_FILENAME ~= "757-200_xp11.acf" and AIRCRAFT_FILENAME ~= "CL650.acf" 
    function CrewPackXPSettings_contents(CrewPackXPSettings_wnd, x, y)
       local winWidth = imgui.GetWindowWidth()
       local winHeight = imgui.GetWindowHeight()
-      local titleText = "CrewPackXP Settings"
+      local titleText = "CrewPackXP " .. cpxpVersion
       local titleTextWidth, titileTextHeight = imgui.CalcTextSize(titleText)
 
       imgui.SetCursorPos(winWidth / 2 - titleTextWidth / 2, imgui.GetCursorPosY())
