@@ -6,13 +6,14 @@
     FO - Rodney
 
     Changelog:
-    v0.1 - Initial Release
+    v0.1 - Initial Protoyping
     v0.2 - Corrected typo on line 853
     v0.3 - Added missing sounds for reverse on landing.
+    v1.0 - Release candidate
 ]]
 if AIRCRAFT_FILENAME == "CL650.acf" then
     -- Initiialisation Variables
-    local cpxpVersion = "Hot Start CL-650 v0.3"
+    local cpxpVersion = "Hot Start CL-650 v1.0"
     local cpxpInitDelay = 10
     local cpxpStartTime = 0
     dataref("cpxp_SIM_TIME", "sim/time/total_running_time_sec")

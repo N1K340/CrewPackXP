@@ -9,12 +9,13 @@ Safety: Leslie
 
 Changelog:
 V0.1 - Initial Release for 757-200 only.
+v1.0 - Enabled all 757/767 variants. 757-200 is only tested aircraft.
 
 --]]
 if AIRCRAFT_FILENAME == "757-200_xp11.acf" or AIRCRAFT_FILENAME == "757-300_xp11.acf" or AIRCRAFT_FILENAME == "757-c32_xp11.acf" or AIRCRAFT_FILENAME == "757-RF_xp11.acf" or AIRCRAFT_FILENAME == "767-200ER_xp11.acf" or AIRCRAFT_FILENAME == "767-300ER_xp11.acf" or AIRCRAFT_FILENAME == "767-F_xp11.acf" then
    --------
    -- Initialisation Variables
-   local cpxpVersion = "FF767 v0.1"
+   local cpxpVersion = "FF 767 v1.0"
    local cpxpInitDelay = 15
    local cpxpStartTime = 0
    dataref("cpxp_SIM_TIME", "sim/time/total_running_time_sec")
