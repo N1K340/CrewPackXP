@@ -14,7 +14,7 @@ V0.1 - Initial Release for 757-200 only.
 if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
    --------
    -- Initialisation Variables
-   local cpxpVersion = "FF767: 0.7-beta"
+   local cpxpVersion = "FF767 v0.1"
    local cpxpInitDelay = 15
    local cpxpStartTime = 0
    dataref("cpxp_SIM_TIME", "sim/time/total_running_time_sec")
@@ -1233,7 +1233,7 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
    function ShowCrewPackXPSettings_wnd()
       ParseCrewPackXPSettings()
       CrewPackXPSettings_wnd = float_wnd_create(450, 450, 0, true)
-      float_wnd_set_title(CrewPackXPSettings_wnd, "CrewPackXP Settings")
+      float_wnd_set_title(CrewPackXPSettings_wnd, "CrewPackXP " .. cpxpVersion .. " Settings")
       float_wnd_set_imgui_builder(CrewPackXPSettings_wnd, "CrewPackXPSettings_contents")
       float_wnd_set_onclose(CrewPackXPSettings_wnd, "CloseCrewPackXPSettings_wnd")
    end

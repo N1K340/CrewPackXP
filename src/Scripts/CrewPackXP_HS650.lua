@@ -12,7 +12,7 @@
 ]]
 if AIRCRAFT_FILENAME == "CL650.acf" then
     -- Initiialisation Variables
-    local cpxpVersion = "HS650: 0.3"
+    local cpxpVersion = "Hot Start CL-650 v0.3"
     local cpxpInitDelay = 10
     local cpxpStartTime = 0
     dataref("cpxp_SIM_TIME", "sim/time/total_running_time_sec")
@@ -879,7 +879,7 @@ end
     function ShowCrewPackXPSettings_wnd()
         ParseCrewPackXPSettings()
         CrewPackXPSettings_wnd = float_wnd_create(450, 450, 0, true)
-        float_wnd_set_title(CrewPackXPSettings_wnd, "CrewPackXP Settings")
+        float_wnd_set_title(CrewPackXPSettings_wnd, "CrewPackXP " .. cpxpVersion .. " Settings")
         float_wnd_set_imgui_builder(CrewPackXPSettings_wnd, "CrewPackXPSettings_contents")
         float_wnd_set_onclose(CrewPackXPSettings_wnd, "CloseCrewPackXPSettings_wnd")
     end
