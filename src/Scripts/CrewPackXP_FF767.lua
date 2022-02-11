@@ -11,7 +11,7 @@ Changelog:
 V0.1 - Initial Release for 757-200 only.
 
 --]]
-if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
+if AIRCRAFT_FILENAME == "757-200_xp11.acf" or AIRCRAFT_FILENAME == "757-300_xp11.acf" or AIRCRAFT_FILENAME == "757-c32_xp11.acf" or AIRCRAFT_FILENAME == "757-RF_xp11.acf" or AIRCRAFT_FILENAME == "767-200ER_xp11.acf" or AIRCRAFT_FILENAME == "767-300ER_xp11.acf" or AIRCRAFT_FILENAME == "767-F_xp11.acf" then
    --------
    -- Initialisation Variables
    local cpxpVersion = "FF767 v0.1"
@@ -1233,7 +1233,7 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
    function ShowCrewPackXPSettings_wnd()
       ParseCrewPackXPSettings()
       CrewPackXPSettings_wnd = float_wnd_create(450, 450, 0, true)
-      float_wnd_set_title(CrewPackXPSettings_wnd, "CrewPackXP " .. cpxpVersion .. " Settings")
+      float_wnd_set_title(CrewPackXPSettings_wnd, "CrewPackXP Settings")
       float_wnd_set_imgui_builder(CrewPackXPSettings_wnd, "CrewPackXPSettings_contents")
       float_wnd_set_onclose(CrewPackXPSettings_wnd, "CloseCrewPackXPSettings_wnd")
    end
@@ -1241,7 +1241,7 @@ if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
    function CrewPackXPSettings_contents(CrewPackXPSettings_wnd, x, y)
       local winWidth = imgui.GetWindowWidth()
       local winHeight = imgui.GetWindowHeight()
-      local titleText = "CrewPackXP Settings"
+      local titleText = "CrewPackXP " .. cpxpVersion
       local titleTextWidth, titileTextHeight = imgui.CalcTextSize(titleText)
 
       imgui.SetCursorPos(winWidth / 2 - titleTextWidth / 2, imgui.GetCursorPosY())

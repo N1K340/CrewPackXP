@@ -879,7 +879,7 @@ end
     function ShowCrewPackXPSettings_wnd()
         ParseCrewPackXPSettings()
         CrewPackXPSettings_wnd = float_wnd_create(450, 450, 0, true)
-        float_wnd_set_title(CrewPackXPSettings_wnd, "CrewPackXP " .. cpxpVersion .. " Settings")
+        float_wnd_set_title(CrewPackXPSettings_wnd, "CrewPackXP Settings")
         float_wnd_set_imgui_builder(CrewPackXPSettings_wnd, "CrewPackXPSettings_contents")
         float_wnd_set_onclose(CrewPackXPSettings_wnd, "CloseCrewPackXPSettings_wnd")
     end
@@ -887,7 +887,7 @@ end
     function CrewPackXPSettings_contents(CrewPackXPSettings_wnd, x, y)
         local winWidth = imgui.GetWindowWidth()
         local winHeight = imgui.GetWindowHeight()
-        local titleText = "CrewPackXP Settings"
+        local titleText = "CrewPackXP " .. cpxpVersion
         local titleTextWidth, titileTextHeight = imgui.CalcTextSize(titleText)
 
         imgui.SetCursorPos(winWidth / 2 - titleTextWidth / 2, imgui.GetCursorPosY())
