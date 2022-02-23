@@ -71,10 +71,13 @@ Main Plugin:
             N.B. Attempting to disconnect the GPU whilst it is on bus will cause the GPU circuit of the aircraft to fail.
 * v0.5.1 - Finally found chocks dataref. Adjust doors logic per frame. Added beacon on to remove all GSE. Cockpit Setup expanded to FO preflight and  Baro sync.
 * v0.6 - Added settings window accesible via: plugins > FlyWithLua > Macros > 767 Crew Pack Settings.
-* v1.0 - Rewritten core components to make it expandable for other aircraft. Initial release of Flight Factor 757 and Hot Start Challenger 650.
+* v1.0 - Rewritten core components to make it expandable for other aircraft.
+         Initial release of Flight Factor 757 and Hot Start Challenger 650.
 * v1.1 - Corrected error in HS650 script resulting in LUA stopping
 * v1.2 - Added missing sounds to HS650 Reverse, tweaked FLCH logic. 
+* v1.3 - Update for HS650 to restore functions after aircraft 1.4.1 changed
+         thrust ref page and added flex to.
 
 Current Aircraft Scripts:
 - Flight Factor 767 - v0.1
-- Hot Start CL650 - v0.3
+- Hot Start CL650 - v0.4

@@ -9,10 +9,11 @@
     v0.1 - Initial Release
     v0.2 - Corrected typo on line 853
     v0.3 - Added missing sounds for reverse on landing.
+    v0.4 - Corrected thrust ref logic after HS 1.4.1 update.
 ]]
 if AIRCRAFT_FILENAME == "CL650.acf" then
     -- Initiialisation Variables
-    local cpxpVersion = "Hot Start CL-650 v0.3"
+    local cpxpVersion = "Hot Start CL-650 v0.4"
     local cpxpInitDelay = 10
     local cpxpStartTime = 0
     dataref("cpxp_SIM_TIME", "sim/time/total_running_time_sec")
@@ -306,7 +307,7 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
         if cpxpENG1_N2 >=  60 and cpxpENG2_N2 >= 60 then
             -- Check CDU 3 is showing thrust ref
             cpxpCDU3Mode = tostring(get("CL650/CDU/3/screen/text_line0"))
-            if cpxpCDU3Mode == "      THRUST LIMIT      " then
+            if cpxpCDU3Mode == "      THRUST LIMIT  1/2 " then
                 print("CDU3 Display Valid")
                 cpxpTORaw = tostring(get("CL650/CDU/3/screen/text_line2"))
                 cpxpCLBRaw = tostring(get("CL650/CDU/3/screen/text_line4"))
@@ -343,7 +344,7 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
         if not cpxpReady then
             return
         end
-
+        -- Check for TO Thrust Ref
         if not cpxpToEngRate and get("CL650/fo_state/ats_n1_to") == 1 then
             cpxpToEngRate = true
             print("CrewPackXP: TO Mode Detected")
