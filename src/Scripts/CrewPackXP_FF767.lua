@@ -9,7 +9,8 @@ Safety: Leslie
 
 Changelog:
 v0.1 - Initial Release for 757-200 only.
-v1.1.1 - Changed code for init of aircraft
+v1.0 - Enabled all 757/767 variants. 757-200 is only tested aircraft.
+v1.0.1 - Changed code for init of aircraft
 
 --]]
 local coded_aircraft = {
@@ -23,9 +24,10 @@ local coded_aircraft = {
 }
 
 if coded_aircraft[AIRCRAFT_FILENAME] then 
+
    --------
    -- Initialisation Variables
-   local cpxpVersion = "FF767 v0.1"
+   local cpxpVersion = "FF 767 v1.0"
    local cpxpInitDelay = 15
    local cpxpStartTime = 0
    dataref("cpxp_SIM_TIME", "sim/time/total_running_time_sec")
@@ -1244,7 +1246,7 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
    function ShowCrewPackXPSettings_wnd()
       ParseCrewPackXPSettings()
       CrewPackXPSettings_wnd = float_wnd_create(450, 450, 0, true)
-      float_wnd_set_title(CrewPackXPSettings_wnd, "CrewPackXP " .. cpxpVersion .. " Settings")
+      float_wnd_set_title(CrewPackXPSettings_wnd, "CrewPackXP Settings")
       float_wnd_set_imgui_builder(CrewPackXPSettings_wnd, "CrewPackXPSettings_contents")
       float_wnd_set_onclose(CrewPackXPSettings_wnd, "CloseCrewPackXPSettings_wnd")
    end
@@ -1252,7 +1254,7 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
    function CrewPackXPSettings_contents(CrewPackXPSettings_wnd, x, y)
       local winWidth = imgui.GetWindowWidth()
       local winHeight = imgui.GetWindowHeight()
-      local titleText = "CrewPackXP Settings"
+      local titleText = "CrewPackXP " .. cpxpVersion
       local titleTextWidth, titileTextHeight = imgui.CalcTextSize(titleText)
 
       imgui.SetCursorPos(winWidth / 2 - titleTextWidth / 2, imgui.GetCursorPosY())

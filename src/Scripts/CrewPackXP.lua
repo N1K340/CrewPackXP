@@ -3,9 +3,11 @@ Crew Pack Script for Non Assigned Aircraft
 
 Changelog:
 v1.0 - Main loader
-v1.0.1 - Changed method for determining if aircraft is known
+v1.1 - Enable all 757/767 variants
+v1.1.1 - Changed method for determining if aircraft is known
 
 --]]
+
 local coded_aircraft = {
    ["757-200_xp11"] = true,
    ["757-300_xp11.acf"] = true,
@@ -21,7 +23,9 @@ if not coded_aircraft[AIRCRAFT_FILENAME] then
    
    --------
    -- Initialisation Variables
-   local version = "CPXP_UKN: v1.0.1"
+   local version = "CPXP_UKN: v1.1.1"
+  
+  
    require "graphics"
    
    print("CrewPackXP: Initialising version " .. version)
@@ -43,7 +47,7 @@ if not coded_aircraft[AIRCRAFT_FILENAME] then
    function CrewPackXPSettings_contents(CrewPackXPSettings_wnd, x, y)
       local winWidth = imgui.GetWindowWidth()
       local winHeight = imgui.GetWindowHeight()
-      local titleText = "CrewPackXP Settings"
+      local titleText = "CrewPackXP " .. cpxpVersion
       local titleTextWidth, titileTextHeight = imgui.CalcTextSize(titleText)
 
       imgui.SetCursorPos(winWidth / 2 - titleTextWidth / 2, imgui.GetCursorPosY())

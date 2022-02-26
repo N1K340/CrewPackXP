@@ -6,14 +6,17 @@
     FO - Rodney
 
     Changelog:
-    v0.1 - Initial Release
+    v0.1 - Initial Protoyping
     v0.2 - Corrected typo on line 853
     v0.3 - Added missing sounds for reverse on landing.
-    v0.4 - Corrected thrust ref logic after HS 1.4.1 update.
+    v1.0 - Release candidate
+    v1.1 - Corrected thrust ref logic after HS 1.4.1 update.
 ]]
+
 if AIRCRAFT_FILENAME == "CL650.acf" then
     -- Initiialisation Variables
-    local cpxpVersion = "Hot Start CL-650 v0.4"
+    local cpxpVersion = "Hot Start CL-650 v1.1"
+
     local cpxpInitDelay = 10
     local cpxpStartTime = 0
     dataref("cpxp_SIM_TIME", "sim/time/total_running_time_sec")
@@ -880,7 +883,7 @@ end
     function ShowCrewPackXPSettings_wnd()
         ParseCrewPackXPSettings()
         CrewPackXPSettings_wnd = float_wnd_create(450, 450, 0, true)
-        float_wnd_set_title(CrewPackXPSettings_wnd, "CrewPackXP " .. cpxpVersion .. " Settings")
+        float_wnd_set_title(CrewPackXPSettings_wnd, "CrewPackXP Settings")
         float_wnd_set_imgui_builder(CrewPackXPSettings_wnd, "CrewPackXPSettings_contents")
         float_wnd_set_onclose(CrewPackXPSettings_wnd, "CloseCrewPackXPSettings_wnd")
     end
@@ -888,7 +891,7 @@ end
     function CrewPackXPSettings_contents(CrewPackXPSettings_wnd, x, y)
         local winWidth = imgui.GetWindowWidth()
         local winHeight = imgui.GetWindowHeight()
-        local titleText = "CrewPackXP Settings"
+        local titleText = "CrewPackXP " .. cpxpVersion
         local titleTextWidth, titileTextHeight = imgui.CalcTextSize(titleText)
 
         imgui.SetCursorPos(winWidth / 2 - titleTextWidth / 2, imgui.GetCursorPosY())
