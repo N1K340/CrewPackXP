@@ -45,6 +45,7 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
     local cpxpEngStartType = 1
     local cpxpFLCH = true
     local cpxpLocgsCalls = true
+    local cpxpFoPreflight = true
 
     -- Sounds
     local cpxpStart1 = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/HS650/start_1.wav")
@@ -159,7 +160,6 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
     do_every_draw("CPXPmsg()")
     do_often("CPXPBubbleTiming()")
 
-    
     --	Delaying initialisation of datarefs till aircraft loaded
     function CPXPDelayedInit()
         -- Dealy based on time
@@ -234,6 +234,266 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
     end
 
     do_often("CPXPStartSound()")
+
+    -- FO Preflight Aircraft
+    local cpxpFoPreflighComplete = false
+    local cpxpFoDoor = false
+
+    function CPXPFoDoor()
+        if not cpxpReady then
+            return
+        end
+        if not cpxpFoDoor and cpxpFoPreflight then
+            if get("CL650/doors/main/door") ~= 1 then
+                if get("CL650/doors/main/ext_handle_inout_value") == 0 then
+                    set("CL650/doors/main/ext_handle_inout", 1)
+                end
+                if
+                    get("CL650/doors/main/ext_handle_inout_value") == 1 and
+                        get("CL650/doors/main/ext_handle_rotate_value") == 0
+                 then
+                    set("CL650/doors/main/ext_handle_rotate", 1)
+                end
+                if get("CL650/doors/main/ext_handle_rotate_value") == 1 then
+                    set("CL650/doors/main/door", 1)
+                end
+                if get("CL650/doors/main/door_value") == 1 then
+                    cpxpFoDoor = true
+                end
+            end
+        end
+    end
+    
+    
+    do_often("CPXPFoDoor()")
+    
+    local cpxpFoPre_Basics = false
+    local cpxpFoPre_ApuOnline = false
+    local cpxpFoPre_AfterPower = false
+    local cpxpFoPre_CDU1 = false
+    local cpxpFoPre_CDU2 = false
+    local cpxpFoPre_CDU3 = false
+    local cpxpFoPre_CDU1S = false
+    local cpxpFoPre_CDU2S = false
+    local cpxpFoPre_CDU3S = false
+    local cpxpFoPre_CDUS = false
+    local cpxpFoPre_ECS = false
+
+    local cpxpHoldTimer = 0
+    function CPXPFoPreflight()
+        if not cpxpReady then
+            return
+        end
+        if cpxp_SIM_TIME > (cpxpStartTime + 10) then
+            if cpxpFoPreflight and not cpxpFoPreflighComplete then
+                if (get("CL650/overhead/ext_lts/beacon") == 0) then
+                    if not cpxpFoPre_Basics then
+                        print("starting preflight")
+                        -- Remove Mains Chocks
+                        print("removing chocks")
+                        set_array("CL650/gear/chocks", 0, 1)
+                        set_array("CL650/gear/chocks", 1, 0)
+                        set_array("CL650/gear/chocks", 2, 0)
+    
+                        -- Remove covers
+                        print("removing covers")
+                        set("CL650/covers/pitot/pilot", 0)
+                        set("CL650/covers/pitot/standby", 0)
+                        set("CL650/covers/aoa/pilot", 0)
+                        set("CL650/covers/ice/pilot", 0)
+                        set("CL650/covers/pitot/copilot", 0)
+                        set("CL650/covers/ice/copilot", 0)
+                        set("CL650/covers/aoa/copilot", 0)
+    
+                        -- Remove Pins
+                        print("removing pins")
+                        set("CL650/gear/pins/left", 0)
+                        set("CL650/gear/pins/nose", 0)
+                        set("CL650/gear/pins/right", 0)
+    
+                        -- Move HUD out of way
+                        set("CL650/overhead/hud_combiner", 0)
+                        -- Move Control columns down
+                        set("CL650/contcoll/0/compact", 1)
+                        set("CL650/contcoll/1/compact", 1)
+    
+                        -- Cockpit Lighting
+                        set("CL650/overhead/ext_lts/nav", 1)
+                        set("CL650/overhead/int_lts/overhead", 0.2)
+                        set("CL650/pedestal/lighting/L/flood", 0.2)
+                        set("CL650/pedestal/lighting/L/integ", 0.2)
+                        set("CL650/pedestal/lighting/L/integ", 0.2)
+                        set("CL650/pedestal/lighting/C/flood", 0.2)
+                        set("CL650/pedestal/lighting/R/integ", 0.2)
+                        set("CL650/pedestal/lighting/R/flood", 0.2)
+                        set("CL650/overhead/map_lt/lh", 1)
+                        set("CL650/overhead/map_lt/rh", 1)
+                        --
+                        if get("CL650/lamps/svc/DS5LC_board_dome") == 0 then
+                            command_once("CL650/overhead/int_lts/board_down")
+                        end
+                        set("CL650/galley_lts/entry_dome", 1)
+                        set("CL650/cabin_lts/downwash", 0.5)
+                        set("CL650/lav_lts/dome", 1)
+                        set("CL650/bag_lts/dome", 1)
+                        cpxpFoPre_Basics = true
+                        print("Basics complete")
+                    end
+    
+                    -- Establish power
+                    if not cpxpFoPre_ApuOnline then
+                        if get("CL650/overhead/elec/batt_master") == 0 then
+                            set("CL650/overhead/elec/batt_master", 1)
+                            print("turning on power")
+                            print("Battery")
+                        else
+                            if get("CL650/overhead/apu/pwr_fuel") == 0 then
+                                set("CL650/overhead/apu/pwr_fuel", 1)
+                                print("APU Master")
+                            else
+                                if get("CL650/overhead/apu/start_stop") == 0 then
+                                    set("CL650/overhead/apu/start_stop", 1)
+                                    print("APU Start")
+                                else
+                                    if get("libelec/comp/APU_GEN/in_volts") > 110 then
+                                        set("CL650/overhead/elec/apu_gen", 1)
+                                        print("APU Online")
+                                        cpxpHoldTimer = (cpxp_SIM_TIME + 20)
+                                        print("Timer = " .. cpxpHoldTimer)
+                                        cpxpFoPre_ApuOnline = true
+                                        set("CL650/overhead/elec/ac_dc_util", 0)
+                                        
+                                    end
+                                end
+                            end
+                        end
+                    end
+
+                    if cpxpFoPre_ApuOnline and cpxp_SIM_TIME > cpxpHoldTimer and not cpxpFoPre_AfterPower then
+                        print("After power items")
+                        -- Hydr Auto/On
+                        set("CL650/overhead/hyd/hyd_1B", -1)
+                        set("CL650/overhead/hyd/hyd_3A", 1)
+                        set("CL650/overhead/hyd/hyd_3B", -1)
+                        set("CL650/overhead/hyd/hyd_2B", -1)
+                        -- Pedestal
+                        command_once("CL650/pedestal/trim/stab_trim_ch_1")
+                        command_once("CL650/pedestal/trim/stab_trim_ch_2")
+                        -- if get("CL650/lamps/pedestal/trim/mach_trim") ~= 0 then
+                        --     set("CL650/pedestal/trim/mach", 1)
+                        --     print("Yes i pressed mach trim")
+                        -- end
+                        command_once("CL650/pedestal/yd/yd_1")
+                        command_once("CL650/pedestal/yd/yd_2")
+                        command_once("CL650/pedestal/throttle/ats_disc_L")
+                        command_once("CL650/glareshield/master_warn_L")
+                        command_once("CL650/CCP/1/cas")
+
+                        set("CL650/overhead/signs/no_smoking", -1)
+                        set("CL650/overhead/signs/emer_lts", 1)
+                        set("CL650/ACP/1/vhf2_tog", 1)
+                        
+                        cpxpFoPre_AfterPower = true
+                    end
+    
+                    -- Set FMS to status
+                    if cpxpFoPre_ApuOnline and cpxp_SIM_TIME > cpxpHoldTimer then
+                        if cpxpFoPre_ApuOnline and not cpxpFoPre_CDU1 then
+                            if get("CL650/CDU/1/screen/text_line0") ~= "" then
+                                if get("CL650/CDU/1/screen/text_line0") == "         INDEX      1/2 " then
+                                    cpxpFoPre_CDU1 = true
+                                elseif get("CL650/CDU/1/screen/text_line0") ~= "         INDEX      1/2 " then
+                                    command_once("CL650/CDU/1/idx")
+                                end
+                            end
+                        end
+                        if cpxpFoPre_ApuOnline and not cpxpFoPre_CDU2 then
+                            if get("CL650/CDU/2/screen/text_line0") ~= "" then
+                                if get("CL650/CDU/2/screen/text_line0") == "         INDEX      1/2 " then
+                                    cpxpFoPre_CDU2 = true
+                                elseif get("CL650/CDU/2/screen/text_line0") ~= "         INDEX      1/2 " then
+                                    print("CDU2 pressing index")
+                                    command_once("CL650/CDU/2/idx")
+                                end
+                            end
+                        end
+    
+                        if cpxpFoPre_ApuOnline and not cpxpFoPre_CDU3 then
+                            if get("CL650/CDU/3/screen/text_line0") ~= "" then
+                                print("CDU3 not blank")
+                                if get("CL650/CDU/3/screen/text_line0") == "         INDEX      1/2 " then
+                                    cpxpFoPre_CDU3 = true
+                                elseif get("CL650/CDU/3/screen/text_line0") ~= "         INDEX      1/2 " then
+                                    print("CDU3 pressing index")
+                                    command_once("CL650/CDU/3/idx")
+                                end
+                            end
+                        end
+
+                        if cpxpFoPre_CDU1 and not cpxpFoPre_CDU1S then
+                            if get("CL650/CDU/1/screen/text_line0") == "         INDEX      1/2 " then
+                                command_once("CL650/CDU/1/lsk_l3")
+                            elseif get("CL650/CDU/1/screen/text_line0") == "         STATUS     1/2 " then
+                                cpxpFoPre_CDU1S = true
+                                print("cdu1 done")
+                            end
+                        end
+
+                        if cpxpFoPre_CDU2 and not cpxpFoPre_CDU2S then
+                            if get("CL650/CDU/2/screen/text_line0") == "         INDEX      1/2 " then
+                                print("CDU2 in index, pressing status")
+                                command_once("CL650/CDU/2/lsk_l3")
+                            elseif get("CL650/CDU/2/screen/text_line0") == "         STATUS     1/2 " then
+                                    print("cdu 2 done")
+                                    cpxpFoPre_CDU2S = true
+                            end
+                        end
+
+                        if cpxpFoPre_CDU3 and not cpxpFoPre_CDU3S then
+                            if get("CL650/CDU/3/screen/text_line0") == "         INDEX      1/2 " then
+                                print("CDU3 in index, pressing LSK3")
+                                command_once("CL650/CDU/3/lsk_l3")
+                            end
+                            if get("CL650/CDU/3/screen/text_line0") == "         STATUS     1/2 " then
+                                print("cdu 3 done")
+                                cpxpFoPre_CDU3S = true
+                            end
+                        end
+
+                        if cpxpFoPre_CDU1S and cpxpFoPre_CDU2S and cpxpFoPre_CDU3S then
+                            cpxpFoPre_CDUS = true
+                            print("CDU's all complete")
+                        end
+                    end
+                    -- ECS
+                    if not cpxpFoPre_ECS and cpxpFoPre_ApuOnline and cpxp_SIM_TIME > cpxpHoldTimer then
+                        set("CL650/overhead/bleed/10st/apu_lcv", 1)
+                        set("CL650/overhead/bleed/10st/isol", 1)
+                        set("CL650/overhead/aircond/pack_L", 1)
+                        set("CL650/overhead/aircond/pack_R", 1)
+                        cpxpFoPre_ECS = true
+                    end
+
+                    -- done
+                    if cpxpFoPre_ECS and cpxpFoPre_Basics and cpxpFoPre_ApuOnline and cpxpFoPre_AfterPower and cpxpFoPre_CDUS then
+                        set("CL650/pedestal/trim/mach", 1)
+                        print("fo preflight complete")
+                        cpxpFoPreflighComplete = true
+                    end
+                else
+                    print("CrewPackXP: Skipping FO Preflight, Beacon is on")
+                    cpxpFoPreflighComplete = true
+                end
+            end
+        end
+    end
+    
+    
+    
+    
+
+    do_often("CPXPFoPreflight()")
+    do_often("CPXPFoDoor()")
 
     -- Engine Start Calls
 
@@ -944,18 +1204,25 @@ end
        SaveCrewPackXPData()
        print("CrewPackXP: FLCH press at 400ft set to " .. tostring(syncAlt))
     end
+    imgui.SetCursorPos(20, imgui.GetCursorPosY())
+    local changed, newVal = imgui.Checkbox("FO Performs Preflight Scan Flow", cpxpFoPreflight)
+    if changed then
+       cpxpFoPreflight = newVal
+       SaveCrewPackXPData()
+       print("CrewPackXP: FO PreScan logic set to " .. tostring(cpxpFoPreflight))
+    end
     
-        --[[
+    --[[
   
         imgui.SetCursorPos(20, imgui.GetCursorPosY())
         local changed, newVal = imgui.Checkbox("Crew Pack FA Onboard?", cpxpFaOnboard)
         if changed then
-           cpxpFaOnboard = newVal
-           SaveCrewPackXPData()
+            cpxpFaOnboard = newVal
+            SaveCrewPackXPData()
            print("CrewPackXP: Start message logic set to " .. tostring(cpxpStartMsg))
         end
 
-imgui.TextUnformatted("")
+        imgui.TextUnformatted("")
         imgui.SetCursorPos(75, imgui.GetCursorPosY())
         local changed, newVal1 = imgui.SliderFloat("PA Volume", (cpxpPaVol * 100), 1, 100, "%.0f")
         if changed then
@@ -965,42 +1232,35 @@ imgui.TextUnformatted("")
             SaveCrewPackXPData()
             print("767CrewPacks: Volume set to " .. (cpxpPaVol * 100) .. " %")
         end
-    
-    imgui.SetCursorPos(20, imgui.GetCursorPosY())
-    local changed, newVal = imgui.Checkbox("FO Performs Preflight Scan Flow", cpxpFoPreflight)
-    if changed then
-       cpxpFoPreflight = newVal
-       SaveCrewPackXPData()
-       print("CrewPackXP: FO PreScan logic set to " .. tostring(cpxpFoPreflight))
-    end
-    imgui.SetCursorPos(20, imgui.GetCursorPosY())
-    local changed, newVal = imgui.Checkbox("Supress default flight attendant from pestering", cpxpDefaultFA)
-    if changed then
-       cpxpDefaultFA = newVal
-       SaveCrewPackXPData()
-       print("CrewPackXP: Default FA logic set to " .. tostring(cpxpFoPreflight))
-    end
-    imgui.SetCursorPos(20, imgui.GetCursorPosY())
-    local changed, newVal = imgui.Checkbox("FO automation on go around", cpxpGaAutomation)
-    if changed then
-       cpxpGaAutomation = newVal
-       SaveCrewPackXPData()
-       print("CrewPackXP: Go Around automation logic set to " .. tostring(cpxpGaAutomation))
-    end
-    imgui.SetCursorPos(20, imgui.GetCursorPosY())
-    local changed, newVal = imgui.Checkbox("Chocks, Doors and belt loaders tied to Beacon on/off", cpxpGseOnBeacon)
-    if changed then
-       cpxpGseOnBeacon = newVal
-       SaveCrewPackXPData()
-       print("CrewPackXP: GSE on beacon set to " .. tostring(cpxpGseOnBeacon))
-    end
-    
-    imgui.SetCursorPos(20, imgui.GetCursorPosY())
-    local changed, newVal = imgui.Checkbox("Auto sync Cpt and FO Altimiters", syncAlt)
-    if changed then
-       syncAlt = newVal
-       SaveCrewPackXPData()
-       print("CrewPackXP: Altimiter Sync logic set to " .. tostring(syncAlt))
+        
+        imgui.SetCursorPos(20, imgui.GetCursorPosY())
+        local changed, newVal = imgui.Checkbox("Supress default flight attendant from pestering", cpxpDefaultFA)
+        if changed then
+            cpxpDefaultFA = newVal
+            SaveCrewPackXPData()
+            print("CrewPackXP: Default FA logic set to " .. tostring(cpxpFoPreflight))
+        end
+        imgui.SetCursorPos(20, imgui.GetCursorPosY())
+        local changed, newVal = imgui.Checkbox("FO automation on go around", cpxpGaAutomation)
+        if changed then
+            cpxpGaAutomation = newVal
+            SaveCrewPackXPData()
+            print("CrewPackXP: Go Around automation logic set to " .. tostring(cpxpGaAutomation))
+        end
+        imgui.SetCursorPos(20, imgui.GetCursorPosY())
+        local changed, newVal = imgui.Checkbox("Chocks, Doors and belt loaders tied to Beacon on/off", cpxpGseOnBeacon)
+        if changed then
+            cpxpGseOnBeacon = newVal
+            SaveCrewPackXPData()
+            print("CrewPackXP: GSE on beacon set to " .. tostring(cpxpGseOnBeacon))
+        end
+        
+        imgui.SetCursorPos(20, imgui.GetCursorPosY())
+        local changed, newVal = imgui.Checkbox("Auto sync Cpt and FO Altimiters", syncAlt)
+        if changed then
+            syncAlt = newVal
+            SaveCrewPackXPData()
+            print("CrewPackXP: Altimiter Sync logic set to " .. tostring(syncAlt))
     end
     imgui.SetCursorPos(20, imgui.GetCursorPosY())
     imgui.TextUnformatted("Auto power connections: ")
@@ -1065,6 +1325,7 @@ imgui.TextUnformatted("")
             cpxpEngStartType = cpxpCrewPackXPSettings.CrewPackXP.cpxpEngStartType
             cpxpFLCH = cpxpCrewPackXPSettings.CrewPackXP.cpxpFLCH
             cpxpLocgsCalls = cpxpCrewPackXPSettings.CrewPackXP.cpxpLocgsCalls
+            cpxpFoPreflight = cpxpCrewPackXPSettings.CrewPackXP.cpxpFoPreflight
             print("CrewPackXP: Settings Loaded")
             cpxpSetGain()
         else
@@ -1086,6 +1347,7 @@ imgui.TextUnformatted("")
                 cpxpEngStartType = cpxpEngStartType,
                 cpxpFLCH = cpxpFLCH,
                 cpxpLocgsCalls = cpxpLocgsCalls,
+                cpxpFoPreflight = cpxpFoPreflight,
             }
         }
         print("CrewPackXP: Settings Saved")
