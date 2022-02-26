@@ -364,14 +364,18 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
                             set("CL650/overhead/elec/batt_master", 1)
                             print("turning on power")
                             print("Battery")
+                            set("CL650/CCP/1/dc_elec", 1)
+                            cpxpHoldTimer = cpxp_SIM_TIME + 3
                         else
-                            if get("CL650/overhead/apu/pwr_fuel") == 0 then
+                            if cpxpHoldTimer < cpxp_SIM_TIME and get("CL650/overhead/apu/pwr_fuel") == 0 then
                                 set("CL650/overhead/apu/pwr_fuel", 1)
                                 print("APU Master")
+                                cpxpHoldTimer = cpxp_SIM_TIME + 3
                             else
-                                if get("CL650/overhead/apu/start_stop") == 0 then
+                                if cpxpHoldTimer < cpxp_SIM_TIME and get("CL650/overhead/apu/start_stop") == 0 then
                                     set("CL650/overhead/apu/start_stop", 1)
                                     print("APU Start")
+                                    set("CL650/CCP/1/ac_elec", 1)
                                 else
                                     if get("libelec/comp/APU_GEN/in_volts") > 110 then
                                         set("CL650/overhead/elec/apu_gen", 1)
