@@ -8,10 +8,21 @@ Ground Crew: en-AU-B-Male (what a name...)
 Safety: Leslie
 
 Changelog:
-V0.1 - Initial Release for 757-200 only.
+v0.1 - Initial Release for 757-200 only.
+v1.1.1 - Changed code for init of aircraft
 
 --]]
-if AIRCRAFT_FILENAME == "757-200_xp11.acf" then
+local coded_aircraft = {
+   ["757-200_xp11"] = true,
+   ["757-300_xp11.acf"] = true,
+   ["757-c32_xp11.acf"] = true,
+   ["757-RF_xp11.acf"] = true,
+   ["767-200ER_xp11.acf"] = true,
+   ["767-300ER_xp11.acf"] = true,
+   ["767-F_xp11.acf"] = true,
+}
+
+if coded_aircraft[AIRCRAFT_FILENAME] then 
    --------
    -- Initialisation Variables
    local cpxpVersion = "FF767 v0.1"

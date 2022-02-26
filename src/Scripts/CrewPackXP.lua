@@ -1,29 +1,32 @@
 --[[
 Crew Pack Script for Non Assigned Aircraft
 
-Voices by https://www.naturalreaders.com/
-Captn: Guy
-FO: Ranald
-Ground Crew: en-AU-B-Male (what a name...)
-Safety: Leslie
-
 Changelog:
-V1.0 - Main loader
+v1.0 - Main loader
+v1.0.1 - Changed method for determining if aircraft is known
 
 --]]
-if AIRCRAFT_FILENAME ~= "757-200_xp11.acf" and AIRCRAFT_FILENAME ~= "CL650.acf" and AIRCRAFT_FILENAME ~= "LES_Saab_340A_Cargo.acf" and AIRCRAFT_FILENAME ~= "LES_Saab_340A.acf" then
+local coded_aircraft = {
+   ["757-200_xp11"] = true,
+   ["757-300_xp11.acf"] = true,
+   ["757-c32_xp11.acf"] = true,
+   ["757-RF_xp11.acf"] = true,
+   ["767-200ER_xp11.acf"] = true,
+   ["767-300ER_xp11.acf"] = true,
+   ["767-F_xp11.acf"] = true,
+   ["CL650.acf"] = true
+}
+
+if not coded_aircraft[AIRCRAFT_FILENAME] then 
+   
    --------
    -- Initialisation Variables
-   local version = "CPXP_UKN: V1.0"
-
+   local version = "CPXP_UKN: v1.0.1"
    require "graphics"
-
-   -- Local Variables
-
+   
    print("CrewPackXP: Initialising version " .. version)
    print("CrewPackXP: Unsupported Aircraft Type " .. AIRCRAFT_FILENAME)
-   -- Settings
-
+   
    if not SUPPORTS_FLOATING_WINDOWS then
       -- to make sure the script doesn't stop old FlyWithLua versions
       print("imgui not supported by your FlyWithLua version, please update to latest version")
@@ -31,7 +34,7 @@ if AIRCRAFT_FILENAME ~= "757-200_xp11.acf" and AIRCRAFT_FILENAME ~= "CL650.acf" 
 
    -- Create Settings window
    function ShowCrewPackXPSettings_wnd()
-      CrewPackXPSettings_wnd = float_wnd_create(450, 450, 0, true)
+      CrewPackXPSettings_wnd = float_wnd_create(500, 450, 0, true)
       float_wnd_set_title(CrewPackXPSettings_wnd, "CrewPackXP Settings")
       float_wnd_set_imgui_builder(CrewPackXPSettings_wnd, "CrewPackXPSettings_contents")
       float_wnd_set_onclose(CrewPackXPSettings_wnd, "CloseCrewPackXPSettings_wnd")
@@ -48,11 +51,10 @@ if AIRCRAFT_FILENAME ~= "757-200_xp11.acf" and AIRCRAFT_FILENAME ~= "CL650.acf" 
 
       imgui.Separator()
       imgui.TextUnformatted("")
-      imgui.TextUnformatted("CrewPackXP has not recognised the loaded aircraft,")
+      imgui.TextUnformatted("CrewPackXP has not recognised the loaded aircraft " .. AIRCRAFT_FILENAME)
       imgui.TextUnformatted("Callout functions are not available.")
       imgui.TextUnformatted("Aircraft compatible with CrewPackXP:")
-      imgui.TextUnformatted("- Flight Factor Boeing 757-200")
-      -- imgui.TextUnformatted("- Flight Factor Boeing 767-200/-300ER")
+      imgui.TextUnformatted("- Flight Factor Boeing 757-200 / 300")
       imgui.TextUnformatted("- Hot Start Challenger 650")
       imgui.Separator()
       imgui.TextUnformatted("")
