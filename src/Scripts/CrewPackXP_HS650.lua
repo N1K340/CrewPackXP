@@ -310,6 +310,24 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
                         set("CL650/gear/pins/left", 0)
                         set("CL650/gear/pins/nose", 0)
                         set("CL650/gear/pins/right", 0)
+
+                        -- Open Blinds
+                        set("CL650/window/blinds/1R", 1)
+                        set("CL650/window/blinds/2R", 1)
+                        set("CL650/window/blinds/3R", 1)
+                        set("CL650/window/blinds/4R", 1)
+                        set("CL650/window/blinds/5R", 1)
+                        set("CL650/window/blinds/6R", 1)
+                        set("CL650/window/blinds/7R", 1)
+                        set("CL650/window/blinds/8R", 1)
+                        set("CL650/window/blinds/1L", 1)
+                        set("CL650/window/blinds/2L", 1)
+                        set("CL650/window/blinds/3L", 1)
+                        set("CL650/window/blinds/4L", 1)
+                        set("CL650/window/blinds/5L", 1)
+                        set("CL650/window/blinds/6L", 1)
+                        set("CL650/window/blinds/7L", 1)
+                        print("Blinds Opened")
     
                         -- Move HUD out of way
                         set("CL650/overhead/hud_combiner", 0)
