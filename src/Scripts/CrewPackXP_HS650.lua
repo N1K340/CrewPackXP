@@ -417,6 +417,7 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
                         command_once("CL650/pedestal/throttle/ats_disc_L")
                         command_once("CL650/glareshield/master_warn_L")
                         command_once("CL650/CCP/1/cas")
+                        command_once("CL650/pedestal/throttle/toga_L")
 
                         set("CL650/overhead/signs/no_smoking", -1)
                         set("CL650/overhead/signs/emer_lts", 1)
@@ -790,7 +791,7 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
          if cpxpToCalloutMode and cpxpPlaySeq == 7 and cpxpAGL > 365 and not cpxpClimbThrustPressed then
             CPXPThrustRef()
             if cpxpFlap0IndPlay and cpxpGEAR_UPIND == 1 and cpxpCalloutTimer >= 2 then
-                if tostring(get("CL650/CDU/3/screen/text_line0")) == "      THRUST LIMIT      " and cpxpCLBACT ~= "ACT" then
+                if tostring(get("CL650/CDU/3/screen/text_line0")) == "      THRUST LIMIT  1/2 " and cpxpCLBACT ~= "ACT" then
                     set("CL650/CDU/3/lsk_l2_value", 1)
                     print("CrewPackXP Attempting to set climb thrust")
                 elseif cpxpCLBACT == "ACT" then
