@@ -23,12 +23,12 @@ if not coded_aircraft[AIRCRAFT_FILENAME] then
    
    --------
    -- Initialisation Variables
-   local version = "CPXP_UKN: v1.1.1"
+   local cpxpVersion = "CPXP_UKN: v1.1.1"
   
   
    require "graphics"
    
-   print("CrewPackXP: Initialising version " .. version)
+   print("CrewPackXP: Initialising version " .. cpxpVersion)
    print("CrewPackXP: Unsupported Aircraft Type " .. AIRCRAFT_FILENAME)
    
    if not SUPPORTS_FLOATING_WINDOWS then

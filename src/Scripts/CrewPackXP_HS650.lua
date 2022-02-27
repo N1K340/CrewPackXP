@@ -655,7 +655,7 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
     -- TO Callout mode - Reset by climb thurst set call
         if cpxpToEngRate and cpxpWEIGHT_ON_WHEELS == 1 then
             cpxpToCalloutMode = true
-            print("CrewPackXP: TO Callouts Armed")
+            -- print("CrewPackXP: TO Callouts Armed")
         end
 
     end
