@@ -15,6 +15,7 @@ Flight Factor 757:
 Hot Start Challenger 650:
 * Takeoff calls by both crew based on the Speed entries on the EFIS with automatic engagement of FLCH at 1,000 ft AGL. 
 Note: Thurst values require CDU 3 to be on the thrust ref page for departure, the script will make an attempt to select the page during takeoff or default to 90% N1.
+    Flex takeoff is only supported if full thrust takeoff is engaged first with 'TO N1' shown on the ATS screen.
 * Localiser and Glide Slope Calls if the APPR mode is armed.
 * Landing reverse calls
 * 1'000 ft to go on altitude captures.

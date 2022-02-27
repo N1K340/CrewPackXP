@@ -24,18 +24,18 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
     -- dependencies
     local LIP = require("LIP")
     require "graphics"
-
+    
     -- Var
     local cpxpBubbleTimer = 0
     local cpxpMsgStr = ""
     local cpxpReady = false
     local cpxpStartPlayed = false
     local cpxpLeftStart = false
-   local cpxpRightStart = false
-   local cpxpPaTimer = 230
-   local cpxpFaPlaySeq = 0
-   local cpxpFlightOccoured = false
-
+    local cpxpRightStart = false
+    local cpxpPaTimer = 230
+    local cpxpFaPlaySeq = 0
+    local cpxpFlightOccoured = false
+    
     local cpxpCrewPackXPSettings = {}
     local cpxpShowSettingsWindow = true
     local cpxpMaster = true
@@ -46,7 +46,14 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
     local cpxpFLCH = true
     local cpxpLocgsCalls = true
     local cpxpFoPreflight = true
-
+    
+    local cpxpFlapPos = 0
+    local cpxpFlapTime = 3
+    local cpxpFlapInd = 0
+    local cpxpFlapIndTime = 3
+    local cpxpFlap0IndPlay = false
+    local cpxpFlap20IndPlay = false
+    
     -- Sounds
     local cpxpStart1 = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/HS650/start_1.wav")
     local cpxpStart2 = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/HS650/start_2.wav")
@@ -782,7 +789,7 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
          -- Climb Thrust Workaround
          if cpxpToCalloutMode and cpxpPlaySeq == 7 and cpxpAGL > 365 and not cpxpClimbThrustPressed then
             CPXPThrustRef()
-            if cpxpFLAP_IND == 0 and cpxpGEAR_UPIND == 1 and cpxpCalloutTimer >= 2 then
+            if cpxpFlap0IndPlay and cpxpGEAR_UPIND == 1 and cpxpCalloutTimer >= 2 then
                 if tostring(get("CL650/CDU/3/screen/text_line0")) == "      THRUST LIMIT      " and cpxpCLBACT ~= "ACT" then
                     set("CL650/CDU/3/lsk_l2_value", 1)
                     print("CrewPackXP Attempting to set climb thrust")
@@ -889,12 +896,6 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
 
     -- Flaps Callouts in air only
 
-    local cpxpFlapPos = 0
-    local cpxpFlapTime = 3
-    local cpxpFlapInd = 0
-    local cpxpFlapIndTime = 3
-    local cpxpFlap0IndPlay = false
-    local cpxpFlap20IndPlay = false
 
    function CPXPFlapsSelection()
     if not cpxpReady then
