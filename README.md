@@ -42,9 +42,9 @@ Important to Note:
     - Thurst values require CDU 3 to be on the thrust ref page for departure, the script will make an attempt to select
       the page during takeoff or default to 90% N1.
     - Flex takeoff is only supported if full thrust takeoff is armed first with 'N1 TO' shown on the ATS screen. This
-      is required for the script to determine it is taking off and not landing as it is the only engine mode that can be read by dataref. Flex takeoff 'thrust set' call will then be based on 85% N1.
-      ![alt text](https://github.com/N1K340/CrewPackXP/blob/main/src/Screenshots/CL650_TON1.jpg?raw=true)
+      is required for the script to determine it is taking off and not landing as it is the only engine mode that can be read by dataref. Flex takeoff 'thrust set' call will then be based on 85% N1. A pop up will appear in top left of screen to confirm Takeoff has been armed once 'N1 TO' has occoured.
     - Calls can be reset after a rejected takeoff by coming to a stop and setting the park brake.
+    ![alt text](https://github.com/N1K340/CrewPackXP/blob/main/src/Screenshots/CL650_TON1.jpg?raw=true)
 * Localiser and Glide Slope Calls if the APPR mode is armed.
 * Landing reverse calls
 * 1'000 ft to go on altitude captures.
