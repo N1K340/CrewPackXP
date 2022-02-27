@@ -43,7 +43,9 @@ Important to Note:
       the page during takeoff or default to 90% N1.
     - Flex takeoff is only supported if full thrust takeoff is armed first with 'TO N1' shown on the ATS screen. This
       is required for the script to determine it is taking off and not landing as it is the only engine mode that can be read by dataref. Flex takeoff 'thrust set' call will then be based on 85% N1.
+    - Calls can be reset after a rejected takeoff by coming to a stop and setting the park brake.
 ![alt text](https://github.com/N1K340/CrewPackXP/main/Screenshots/CL650_TON1.jpg?raw=true)
+
 
 * Localiser and Glide Slope Calls if the APPR mode is armed.
 * Landing reverse calls
