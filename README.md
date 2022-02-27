@@ -91,6 +91,6 @@ Current Aircraft Scripts:
 - Flight Factor 767 - v1.0.1
 - Hot Start CL650 - v1.1
 
-Alternate Sources
-X-Plane.org https://forums.x-plane.org/index.php?/files/file/79042-crewpackxp-crew-callouts/
-X_Pilot.com https://forums.x-pilot.com/files/file/1404-crewpackxp-crew-callouts/
+Alternate Sources<br>
+X-Plane.org https://forums.x-plane.org/index.php?/files/file/79042-crewpackxp-crew-callouts/<br>
+X_Pilot.com https://forums.x-pilot.com/files/file/1404-crewpackxp-crew-callouts/<br>
