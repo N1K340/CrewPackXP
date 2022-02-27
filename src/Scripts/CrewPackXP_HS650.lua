@@ -294,6 +294,8 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
         if cpxp_SIM_TIME > (cpxpStartTime + 10) then
             if cpxpFoPreflight and not cpxpFoPreflighComplete then
                 if (get("CL650/overhead/ext_lts/beacon") == 0) then
+                    cpxpMsgStr = "CrewPackXP: Conducting Preflight"
+                    cpxpBubbleTimer = 0
                     if not cpxpFoPre_Basics then
                         print("starting preflight")
                         -- Remove Mains Chocks
@@ -641,6 +643,8 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
         if not cpxpToEngRate and get("CL650/fo_state/ats_n1_to") == 1 then
             cpxpToEngRate = true
             print("CrewPackXP: TO Mode Detected")
+            cpxpMsgStr = "CrewPackXP: Takeoff Calls Armed"
+            cpxpBubbleTimer = 0
         end
     end
 
@@ -723,6 +727,8 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
 
         if get("CL650/xp_sys_bridge/efis/v2") > 0 and cpxpV2 ~= get("CL650/xp_sys_bridge/efis/v2") then
             cpxpV2 = get("CL650/xp_sys_bridge/efis/v2")
+            cpxpMsgStr = "CrewPackXP: vSpeeds Captured"
+            cpxpBubbleTimer = 0
         end
 
         -- V1
@@ -1312,7 +1318,28 @@ end
             SaveCrewPackXPData()
             print("767CrewPacks: Volume set to " .. (cpxpSoundVol * 100) .. " %")
         end
-        
+        imgui.Separator()
+        imgui.TextUnformatted("")
+        imgui.SetCursorPos(150, imgui.GetCursorPosY())
+        if imgui.Button("Ask FO to Preflight") then
+            cpxpFoPre_Basics = false
+            cpxpFoPre_ApuOnline = false
+            cpxpFoPre_AfterPower = false
+            cpxpFoPre_CDU1 = false
+            cpxpFoPre_CDU2 = false
+            cpxpFoPre_CDU3 = false
+            cpxpFoPre_CDU1S = false
+            cpxpFoPre_CDU2S = false
+            cpxpFoPre_CDU3S = false
+            cpxpFoPre_CDUS = false
+            cpxpFoPre_ECS = false
+            cpxpFoPreflighComplete = false
+            cpxpFoDoor = false
+            cpxpFoPreflight = true
+            CPXPFoPreflight()
+            CPXPFoDoor()
+        end
+
         imgui.Separator()
         imgui.TextUnformatted("")
         imgui.SetCursorPos(200, imgui.GetCursorPosY())
