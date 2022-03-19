@@ -3,7 +3,8 @@ site_url: https://github.com/N1K340/CrewPackXP
 nav:
   - Home: index.md
   - Aircraft:
-    - Flight Factor: 757.md
+    - Hot Start CL-650: CL650.md
+    - Flight Factor 757/767: 757.md
   - About:
     - Changelog: changelog.md
     - License: license.md
