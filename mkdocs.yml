@@ -9,5 +9,3 @@ nav:
     - Changelog: changelog.md
     - License: license.md
 theme: readthedocs
-plugins:
-    - with-pdf:
