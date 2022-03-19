@@ -2,8 +2,9 @@ site_name: CrewPackXP
 site_url: https://github.com/N1K340/CrewPackXP
 nav:
   - Home: index.md
-  - Flight Factor 757 / 767:
-    - About: about.md
+  - Aircraft:
+    - Flight Factor: 757.md
+  - About:
     - Changelog: changelog.md
     - License: license.md
 theme: readthedocs
