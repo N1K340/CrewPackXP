@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+<meta charset="utf-8"/>
+<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://github.com/N1K340/CrewPackXP/CL650/" rel="canonical"/>
+<link href="../img/favicon.ico" rel="shortcut icon"/>
+<title>Hot Start CL-650 - CrewPackXP</title>
+<link href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" rel="stylesheet">
+<link href="../css/theme.css" rel="stylesheet">
+<link href="../css/theme_extra.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" rel="stylesheet"/>
+<script>
+    // Current page data
+    var mkdocs_page_name = "Hot Start CL-650";
+    var mkdocs_page_input_path = "CL650.md";
+    var mkdocs_page_url = "/N1K340/CrewPackXP/CL650/";
+  </script>
+<script defer="" src="../js/jquery-2.1.1.min.js"></script>
+<script defer="" src="../js/modernizr-2.8.3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</link></link><link href="..\pdf\document.pdf" rel="alternate" title="PDF" type="application/pdf"/></head>
+<body class="wy-body-for-nav" role="document">
+<div class="wy-grid-for-nav">
+<nav class="wy-nav-side stickynav" data-toggle="wy-nav-shift">
+<div class="wy-side-scroll">
+<div class="wy-side-nav-search">
+<a class="icon icon-home" href=".."> CrewPackXP</a>
+</div>
+<div aria-label="main navigation" class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Aircraft</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal current" href="./">Hot Start CL-650</a>
+<ul class="current">
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../757/">Flight Factor 757/767</a>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">About</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../changelog/">Changelog</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../license/">License</a>
+</li>
+</ul>
+</div>
+</div>
+</nav>
+<section class="wy-nav-content-wrap" data-toggle="wy-nav-shift">
+<nav aria-label="top navigation" class="wy-nav-top" role="navigation">
+<i class="fa fa-bars" data-toggle="wy-nav-top"></i>
+<a href="..">CrewPackXP</a>
+</nav>
+<div class="wy-nav-content">
+<div class="rst-content">
+<div aria-label="breadcrumbs navigation" role="navigation">
+<ul class="wy-breadcrumbs">
+<li><a href="..">Docs</a> »</li>
+<li>Aircraft »</li>
+<li>Hot Start CL-650</li>
+<li class="wy-breadcrumbs-aside">
+</li>
+</ul>
+<hr/>
+</div>
+<div role="main">
+<div class="section">
+<h1 id="hot-start-challenger-650">Hot Start Challenger 650</h1>
+<ul>
+<li>Takeoff calls by both crew based on the Speed entries on the EFIS with automatic engagement of FLCH at 1,000 ft AGL. 
+Important to Note:<ul>
+<li>Thurst values require CDU 3 to be on the thrust ref page for departure, the script will make an attempt to select
+  the page during takeoff or default to 90% N1.</li>
+<li>Flex takeoff is only supported if full thrust takeoff is armed first with 'N1 TO' shown on the ATS screen. This
+  is required for the script to determine it is taking off and not landing as it is the only engine mode that can be read by dataref. Flex takeoff 'thrust set' call will then be based on 85% N1. A pop up will appear in top left of screen to confirm Takeoff has been armed once 'N1 TO' has occoured.</li>
+<li>Calls can be reset after a rejected takeoff by coming to a stop and setting the park brake.
+<img alt="alt text" src="https://github.com/N1K340/CrewPackXP/blob/main/src/Screenshots/CL650_TON1.jpg?raw=true"/></li>
+</ul>
+</li>
+<li>Localiser and Glide Slope Calls if the APPR mode is armed.</li>
+<li>Landing reverse calls</li>
+<li>1'000 ft to go on altitude captures.</li>
+<li>FO can now preflight the aircraft if selected in the settings. All pins, covers and main gear chocks will be removed, door opened and interior lights turned on. The FO will attempt to start the APU and perform the flight compartment checks. APU faults will require manual intervention to clear.</li>
+</ul>
+</div>
+</div>
+<footer>
+<div aria-label="footer navigation" class="rst-footer-buttons" role="navigation">
+<a class="btn btn-neutral float-right" href="../757/" title="Flight Factor 757/767">Next <span class="icon icon-circle-arrow-right"></span></a>
+<a class="btn btn-neutral" href=".." title="Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+</div>
+<hr/>
+<div role="contentinfo">
+<!-- Copyright etc -->
+</div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+</div>
+</div>
+</section>
+</div>
+<div aria-label="versions" class="rst-versions" role="note">
+<span class="rst-current-version" data-toggle="rst-current-version">
+<span><a href=".." style="color: #fcfcfc">« Previous</a></span>
+<span><a href="../757/" style="color: #fcfcfc">Next »</a></span>
+</span>
+</div>
+<script>var base_url = '..';</script>
+<script defer="" src="../js/theme_extra.js"></script>
+<script defer="" src="../js/theme.js"></script>
+<script defer="">
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+</body>
+</html>
