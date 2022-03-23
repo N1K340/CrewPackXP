@@ -88,7 +88,8 @@
         "CPXP_REV1ACT",
         "CPXP_REV2ACT",
         "PXP_REV1",
-        "PXP_REV2"
+        "PXP_REV2",
+        "command_once"
     ],
     "Lua.diagnostics.disable": [
         "undefined-doc-name"
