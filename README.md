@@ -69,7 +69,7 @@ Bug reports, please include the x-plane log.txt file in the main x-plane folder 
 Use of this code is approved for repurposing into other freeware projects, please acknowledge credits for the adaptation.
 
 ## Acknowledgements
-Carreras Nicholas - Luna INI Parser (LIP)
+Carreras Nicholas - Luna INI Parser (LIP)  
 'Togfox' - FSE HUD
 
 ## Current Script Versions
