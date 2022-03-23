@@ -1,7 +1,7 @@
 # CrewPackXP
 
-![](https://img.shields.io/badge/X--Plane-11.50%2B-blue) ![](https://img.shields.io/badge/FlyWithLUA-2.7%2B-blue)  
-![](https://img.shields.io/badge/Aircraft-FF%20757-blue) ![](https://img.shields.io/badge/Aircraft-FF%20767-blue) ![](https://img.shields.io/badge/Aircraft-HS%20650-blue)  
+<p style="text-align: center;">![](https://img.shields.io/badge/X--Plane-11.50%2B-blue) ![](https://img.shields.io/badge/FlyWithLUA-2.7%2B-blue)</p>
+<p style="text-align: center;">!![](https://img.shields.io/badge/Aircraft-FF%20757-blue) ![](https://img.shields.io/badge/Aircraft-FF%20767-blue) ![](https://img.shields.io/badge/Aircraft-HS%20650-blue)</p>
 
 Utility to add crew voices for aircraft in X-Plane 11. This includes basic call outs and in some cases assistance from the PNF in high workload phases of flight. Settings can be adjusted to enable or dissable the whole plugin, or just certain features of each aircraft. 
 
