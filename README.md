@@ -69,13 +69,13 @@ Bug reports, please include the x-plane log.txt file in the main x-plane folder 
 Use of this code is approved for repurposing into other freeware projects, please acknowledge credits for the adaptation.
 
 ## Acknowledgements
-Carreras Nicholas - [Luna INI Parser (LIP)] (https://github.com/Dynodzzo/Lua_INI_Parser)  
-'Togfox' - [FSE HUD] (https://forums.x-plane.org/index.php?/files/file/53617-fse-hud/)
+Carreras Nicholas - [Luna INI Parser (LIP)](https://github.com/Dynodzzo/Lua_INI_Parser)  
+'Togfox' - [FSE HUD](https://forums.x-plane.org/index.php?/files/file/53617-fse-hud/)
 
 ## Current Script Versions
 - Flight Factor 767 - v1.0.1  
 - Hot Start CL650 - v1.1
 
 ## Alternate Sources
-[X-Plane.org] (https://forums.x-plane.org/index.php?/files/file/79042-crewpackxp-crew-callouts/)  
-[X-Pilot.com] (https://forums.x-pilot.com/files/file/1404-crewpackxp-crew-callouts/)
+[X-Plane.org](https://forums.x-plane.org/index.php?/files/file/79042-crewpackxp-crew-callouts/)  
+[X-Pilot.com](https://forums.x-pilot.com/files/file/1404-crewpackxp-crew-callouts/)
