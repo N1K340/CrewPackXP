@@ -3,8 +3,8 @@
 ## v1.__
 
 ### v1.4 - March 2022
-**Bug Fixes:
-- FF757 bug preventing 757-200 from loading in CPXP
+  Bug Fixes:
+  - FF757 bug preventing 757-200 from loading in CPXP
 
 **Features:
 - Status HUD been added to the left side of the screen for ease of access to settings and FO commands
