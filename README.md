@@ -67,6 +67,7 @@ Use of this code is approved for repurposing into other freeware projects, pleas
 ## Acknowledgements
 Carreras Nicholas - [Luna INI Parser (LIP)](https://github.com/Dynodzzo/Lua_INI_Parser)  
 'Togfox' - [FSE HUD](https://forums.x-plane.org/index.php?/files/file/53617-fse-hud/)
+'X-Friese' - [FlyWithLUA Platform](https://forums.x-plane.org/index.php?/files/file/38445-flywithlua-ng-next-generation-edition-for-x-plane-11-win-lin-mac/)
 
 ## Current Script Versions
 - Flight Factor 767 - v1.0.1  
