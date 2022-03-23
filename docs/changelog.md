@@ -1,7 +1,5 @@
 # Changelog
 
-## v1.__
-
 ### v1.4 - March 2022
   Bug Fixes:
   - FF757 bug preventing 757-200 from loading in CPXP
@@ -26,8 +24,6 @@
 - Rewritten core components to make it expandable for other aircraft. Initial release of Flight Factor 757 and Hot Start Challenger 650
 
 ***
-## v0.__
-
 ### v0.6
 - Added settings window accesible via: plugins > FlyWithLua > Macros > 767 Crew Pack Settings.
 
