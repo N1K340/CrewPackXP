@@ -12,9 +12,15 @@ v0.1 - Initial Release for 757-200 only.
 v1.0 - Enabled all 757/767 variants. 757-200 is only tested aircraft.
 v1.0.1 - Changed code for init of aircraft
 
+Bug fixes:
+   - 757-200 not initialising
+
+Enhancements:
+   - Added status HUD
+
 --]]
 local coded_aircraft = {
-   ["757-200_xp11"] = true,
+   ["757-200_xp11.acf"] = true,
    ["757-300_xp11.acf"] = true,
    ["757-c32_xp11.acf"] = true,
    ["757-RF_xp11.acf"] = true,
@@ -27,10 +33,14 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
 
    --------
    -- Initialisation Variables
-   local cpxpVersion = "FF 767 v1.0"
+   local cpxpVersion = "CrewPack XP : FF 767 v1.0"
    local cpxpInitDelay = 15
    local cpxpStartTime = 0
    dataref("cpxp_SIM_TIME", "sim/time/total_running_time_sec")
+
+   -- Settings Window Position
+   local intHudXStart = 15 -- Moves Settings HUD left and right, 0 being far left of screen
+   local intHudYStart = 475 -- Moves Settings HUD up and down, 0 being bottom of screen
 
    -- dependencies
    local LIP = require("LIP")
@@ -76,7 +86,7 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
    local cpxpLeftStart = false
    local cpxpRightStart = false
    --  local rightBaro = nil
-   local cpxpShowSettingsWindow = true
+   local cpxpShowSettingsWindow = false
    local cpxpFoPreflight = false
    local cpxpGseOnBeacon = false
    --  local syncAlt = false
@@ -259,10 +269,13 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
          dataref("IAS", "757Avionics/adc1/outIas")
       end
       if (XPLMFindDataRef("757Avionics/fms/v1") ~= nil) then
-         dataref("V1", "757Avionics/fms/v1")
+         dataref("cpxpV1", "757Avionics/fms/v1")
       end
       if (XPLMFindDataRef("757Avionics/fms/vr") ~= nil) then
-         dataref("VR", "757Avionics/fms/vr")
+         dataref("cpxpVR", "757Avionics/fms/vr")
+      end
+      if (XPLMFindDataRef("757Avionics/fms/v2") ~= nil) then
+         dataref("cpxpV2", "757Avionics/fms/v2")
       end
       if (XPLMFindDataRef("757Avionics/adc1/outVs") ~= nil) then
          dataref("VSI", "757Avionics/adc1/outVs")
@@ -706,18 +719,18 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
       end
 
       -- V1
-      if cpxpToCalloutMode and IAS > V1 - 3 and cpxpPlaySeq == 1 and cpxpCalloutTimer >= 2 then
+      if cpxpToCalloutMode and IAS > cpxpV1 - 3 and cpxpPlaySeq == 1 and cpxpCalloutTimer >= 2 then
          play_sound(cpxpV1_snd)
          cpxpCalloutTimer = 0
-         print("CrewPackXP: V1 of " .. math.floor(V1) .. " Played at " .. math.floor(IAS) .. " kts")
+         print("CrewPackXP: V1 of " .. math.floor(cpxpV1) .. " Played at " .. math.floor(IAS) .. " kts")
          cpxpPlaySeq = 2
       end
 
       -- VR
-      if cpxpToCalloutMode and IAS > VR - 3 and cpxpPlaySeq == 2 and cpxpCalloutTimer >= 2 then
+      if cpxpToCalloutMode and IAS > cpxpVR - 3 and cpxpPlaySeq == 2 and cpxpCalloutTimer >= 2 then
          play_sound(cpxpVR_snd)
          cpxpCalloutTimer = 0
-         print("CrewPackXP: VR of " .. math.floor(VR) .. " Played at " .. math.floor(IAS) .. " kts")
+         print("CrewPackXP: VR of " .. math.floor(cpxpVR) .. " Played at " .. math.floor(IAS) .. " kts")
          cpxpPlaySeq = 3
       end
 
@@ -737,14 +750,14 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
       if not cpxpReady then
          return
       end
-      if not cpxpInvalidVSpeed and cpxpToCalloutMode and IAS > 100 and V1 < 100 then
-         print("CrewPackXP: V1 Speed invalid value " .. math.floor(V1))
+      if not cpxpInvalidVSpeed and cpxpToCalloutMode and IAS > 100 and cpxpV1 < 100 then
+         print("CrewPackXP: V1 Speed invalid value " .. math.floor(cpxpV1))
          cpxpInvalidVSpeed = true
          -- cpxpMsgStr = "CrewPackXP: Invalid V-Speeds detected"
          -- cpxpBubbleTimer = 0
       end
-      if not cpxpInvalidVSpeed and cpxpToCalloutMode and IAS > 100 and VR < 100 then
-         print("CrewPackXP: VR Speed invalid value " .. math.floor(VR))
+      if not cpxpInvalidVSpeed and cpxpToCalloutMode and IAS > 100 and cpxpVR < 100 then
+         print("CrewPackXP: VR Speed invalid value " .. math.floor(cpxpVR))
          cpxpInvalidVSpeed = true
          -- cpxpMsgStr = "CrewPackXP: Invalid V-Speeds detected"
          -- cpxpBubbleTimer = 0
@@ -1463,4 +1476,252 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
    "",
    ""
    )
+
+       --[[ Draw Settings side window
+
+    The HUD section of code is a reapplication of the FSE Hud written by Togfox.
+    Used with permission for freware as per licence https://forums.x-plane.org/index.php?/files/file/53617-fse-hud/
+
+    ]]
+
+    local fltTransparency = 0.25		--alpha value for the boxes
+    local fltCurrentTransparency = fltTransparency		--use this to fade the gui in and out
+    local fltTextVanishingPoint = 0.75	-- this is the transparency value where text needs to 'hide'
+    local intButtonHeight = 30			--the clickable 'panels' are called buttons
+    local intButtonWidth = 140			--the clickable 'panels' are called buttons
+    local intHeadingHeight = 30
+    local intFrameBorderSize = 5
+
+    function tfCPXP_DrawOutsidePanel()
+        --Draws the overall box
+        local x1 = intHudXStart
+        local y1 = intHudYStart
+        local x2 = x1 + intFrameBorderSize + intButtonWidth + intButtonWidth + intFrameBorderSize
+        local y2 = y1 + intFrameBorderSize + intButtonHeight + intButtonHeight + intHeadingHeight + intFrameBorderSize
+        
+        graphics.set_color(1, 1, 1, fltCurrentTransparency) --white
+        graphics.draw_rectangle(x1,y1,x2,y2)
+    end
+
+    function tfCPXP_DrawInsidePanel()
+        --Draws the inside panel
+        local x1 = intHudXStart + intFrameBorderSize
+        local y1 = intHudYStart + intFrameBorderSize
+        local x2 = x1 + intButtonWidth + intButtonWidth
+        local y2 = y1 + intButtonHeight + intButtonHeight + intHeadingHeight
+    
+        graphics.set_color(1, 1, 1, fltCurrentTransparency) --white
+        graphics.draw_rectangle(x1,y1,x2,y2)
+    end
+
+    function tfCPXP_DrawHeadingPanel()
+        --Draws the heading panel and text at the top of the inside panel
+        local x1 = intHudXStart + intFrameBorderSize
+        local y1 = intHudYStart + intFrameBorderSize + intButtonHeight + intButtonHeight
+        local x2 = x1 + intButtonWidth + intButtonWidth
+        local y2 = y1 + intHeadingHeight
+        
+        local fltStringTransparency = fltCurrentTransparency/fltTransparency	-- change the RGB of the text based on expected fade level
+        if fltStringTransparency > fltTextVanishingPoint then	-- this stops drawing text when the transparency gets too low.
+            graphics.draw_string((x1 + (intButtonWidth * 0.50)),(y1 + (intButtonHeight * 0.5)), cpxpVersion, 0, 0, 0)
+        end
+        graphics.set_color(1, 1, 1, fltCurrentTransparency) --white
+        graphics.draw_rectangle(x1,y1,x2,y2)	
+    end
+
+    function tfCPXP_DrawStatusPanel()
+        local x1 = intHudXStart + intFrameBorderSize
+        local y1 = intHudYStart + intFrameBorderSize
+        local x2 = x1 + intButtonWidth + intButtonWidth
+        local y2 = y1 + intButtonHeight
+
+        if cpxpReady then
+            local fltStringTransparency = fltCurrentTransparency/fltTransparency	-- change the RGB of the text based on expected fade level
+            if fltStringTransparency > fltTextVanishingPoint then	-- this stops drawing text when the transparency gets too low.
+                local cpxptomodestate = nil
+                local cpxpVspeedsstr = nil
+                if cpxpToCalloutMode == true then
+                    cpxptomodestate = 'Armed'
+                else
+                    cpxptomodestate = 'Not Armed'
+                end
+                local cpxpToStatus = "To Mode is: " .. cpxptomodestate
+                if cpxpV1 > 0 then
+                    cpxpVspeedsstr = "Current Vspeeds: V1 " .. cpxpV1 .. ", VR " .. cpxpVR.. ", V2 " .. cpxpV2
+                else
+                    cpxpVspeedsstr = "Current Vspeeds: V1 'nil', VR 'nil', V2 'nil'"
+                end
+                graphics.draw_string(x1 + (intButtonWidth * 0.05),y1 + (intButtonHeight * 0.6),cpxpToStatus, 0, 0, 0)
+                graphics.draw_string(x1 + (intButtonWidth * 0.05), y1 + (intButtonHeight * 0.2), cpxpVspeedsstr, 0, 0, 0)	
+            end
+        end
+            
+        graphics.set_color(1, 1, 1, fltCurrentTransparency) --white
+        graphics.draw_rectangle(x1,y1,x2,y2)
+    end
+
+    function tfCPXP_DrawAlphaState()
+	-- FO preflight and Packup Options enabled
+	
+	--There are two buttons side by side in this state
+	local x1 = intHudXStart + intFrameBorderSize
+	local y1 = intHudYStart + intFrameBorderSize + intButtonHeight
+	local x2 = x1 + intButtonWidth
+	local y2 = y1 + intButtonHeight
+	
+	local fltStringTransparency = fltCurrentTransparency/fltTransparency	-- change the RGB of the text based on expected fade level
+	if fltStringTransparency > fltTextVanishingPoint then	-- this stops drawing text when the transparency gets too low.
+		graphics.draw_string(x1 + (intButtonWidth * 0.15), y1 + (intButtonHeight * 0.4), "Ask FO to Preflight", 0, 0, 0)
+	end
+	graphics.set_color(0, 1, 0, fltCurrentTransparency) --white
+	graphics.draw_rectangle(x1,y1,x2,y2)	
+	
+	--draw button outline
+	local fltStringTransparency = (fltCurrentTransparency/fltTransparency) * 0.5	-- change the line transparency. 0.5 is zero transparency
+	graphics.set_color(0,0,0,fltStringTransparency)	--black
+	graphics.draw_line(x1,y1,x2,y1)
+	graphics.draw_line(x2,y1,x2,y2)
+	graphics.draw_line(x2,y2,x1,y2)
+	graphics.draw_line(x1,y2,x1,y1)
+	
+	--Draw the second button
+	x1 = x2
+	--y1 = y1		--y1 doesn't change value
+	x2 = x1 + intButtonWidth
+	y2 = y1 + intButtonHeight	
+	
+	local fltStringTransparency = fltCurrentTransparency/fltTransparency	-- change the RGB of the text based on expected fade level
+	if fltStringTransparency > fltTextVanishingPoint then	-- this stops drawing text when the transparency gets too low.
+		graphics.draw_string(x1 + (intButtonWidth * 0.1), y1 + (intButtonHeight * 0.4), "Ask FO to Packup", 0, 0, 0)
+	end
+	graphics.set_color( 0, 1, 0, fltCurrentTransparency) --green
+	graphics.draw_rectangle(x1,y1,x2,y2)
+
+	--draw button outline
+	local fltStringTransparency = (fltCurrentTransparency/fltTransparency) * 0.5	-- change the line transparency. 0.5 is zero transparency
+	graphics.set_color(0,0,0,fltStringTransparency)	--black
+	graphics.draw_line(x1,y1,x2,y1)
+	graphics.draw_line(x2,y1,x2,y2)
+	graphics.draw_line(x2,y2,x1,y2)
+	graphics.draw_line(x1,y2,x1,y1)	
+
+	
+    end
+
+    function tfCPXP_DrawBetaState()
+        -- Inflight options greyed out
+        local x1 = intHudXStart + intFrameBorderSize
+        local y1 = intHudYStart + intFrameBorderSize + intButtonHeight
+        local x2 = x1 + intButtonWidth + intButtonWidth
+        local y2 = y1 + intButtonHeight
+        
+        local fltStringTransparency = fltCurrentTransparency/fltTransparency	-- change the RGB of the text based on expected fade level
+        if fltStringTransparency > fltTextVanishingPoint then	-- this stops drawing text when the transparency gets too low.
+            graphics.draw_string(x1 + (intButtonWidth * 0.15), y1 + (intButtonHeight * 0.4), "Detected in flight", 0, 0, 0)
+        end
+        graphics.set_color( 4, 1, 4, fltCurrentTransparency) -- greyed out
+        graphics.draw_rectangle(x1,y1,x2,y2)
+        
+        --draw button outline
+        local fltStringTransparency = (fltCurrentTransparency/fltTransparency) * 0.5	-- change the line transparency. 0.5 is zero transparency
+        graphics.set_color(0,0,0,fltStringTransparency)	--black
+        graphics.draw_line(x1,y1,x2,y1)
+        graphics.draw_line(x2,y1,x2,y2)
+        graphics.draw_line(x2,y2,x1,y2)
+        graphics.draw_line(x1,y2,x1,y1)
+    end
+    
+    function tfCPXP_DrawCharlieState()
+        -- Not initialised
+        local x1 = intHudXStart + intFrameBorderSize
+        local y1 = intHudYStart + intFrameBorderSize + intButtonHeight
+        local x2 = x1 + intButtonWidth + intButtonWidth
+        local y2 = y1 + intButtonHeight
+
+        local fltStringTransparency = fltCurrentTransparency/fltTransparency	-- change the RGB of the text based on expected fade level
+        if fltStringTransparency > fltTextVanishingPoint then	-- this stops drawing text when the transparency gets too low.
+            graphics.draw_string(x1 + (intButtonWidth * 0.15), y1 + (intButtonHeight * 0.4), cpxpMsgStr, 0, 0, 0)
+        end
+    end
+
+    function tfCPXP_DrawButtons()
+        -- If on ground with engines off allow FO to preflight or packup
+        if not cpxpReady then
+            tfCPXP_DrawCharlieState()
+        elseif cpxpBEACON == 0 and cpxpWEIGHT_ON_WHEELS == 1 then
+            tfCPXP_DrawAlphaState()
+        else
+            tfCPXP_DrawBetaState()
+        end
+    end
+
+    function tfCPXP_Draw()
+        tfCPXP_DrawOutsidePanel()
+        tfCPXP_DrawInsidePanel()
+        tfCPXP_DrawHeadingPanel()
+        tfCPXP_DrawStatusPanel()
+        tfCPXP_DrawButtons()	
+    end	
+
+
+
+    function tfCPXP_DrawThings()
+        XPLMSetGraphicsState(0,0,0,1,1,0,0)
+        
+        --check for mouse over before drawing
+        local x1 = intHudXStart
+        local y1 = intHudYStart
+        local x2 = x1 + intFrameBorderSize + intButtonWidth + intButtonWidth + intFrameBorderSize
+        local y2 = y1 + intFrameBorderSize + intButtonHeight + intButtonHeight + intHeadingHeight + intFrameBorderSize	
+        if (MOUSE_X < x1 or MOUSE_X > x2 or MOUSE_Y < y1 or MOUSE_Y > y2) then
+            --don't draw - fade out
+            fltCurrentTransparency = fltCurrentTransparency - 0.010
+            if fltCurrentTransparency < 0 then
+                fltCurrentTransparency = 0
+            end
+            tfCPXP_Draw()	
+        else
+            fltCurrentTransparency = fltCurrentTransparency +0.025
+            if fltCurrentTransparency > fltTransparency then
+                fltCurrentTransparency = fltTransparency
+            end
+            
+            tfCPXP_Draw()			
+    
+        end
+    end	
+
+    function tfCPXP_MouseClick()
+    -- Trigger mouse clicks
+        local x1 = intHudXStart + intFrameBorderSize
+        local y1 = intHudYStart + intFrameBorderSize + intButtonHeight
+        local x2 = x1 + intButtonWidth
+        local y2 = y1 + intButtonHeight
+        -- left button
+        if MOUSE_X >= x1 and MOUSE_X <= x2 and MOUSE_Y >= y1 and MOUSE_Y < y2 then
+            if cpxpBEACON == 0 and cpxpWEIGHT_ON_WHEELS == 1 then
+               cpxpCockpitSetup = false
+               cpxpFoPreflight = true
+               cpxpHorsePlayed = true
+               CPXPCockpitSetup()
+               CPXPShutDown()
+            end
+        end
+        -- Header settigns trigger
+        local x1 = intHudXStart + intFrameBorderSize + (intButtonWidth / 3)
+        local y1 = intHudYStart + intFrameBorderSize + intButtonHeight + intButtonHeight
+        local x2 = x1 + (intButtonWidth * 1.5)
+        local y2 = y1 + intHeadingHeight
+        if MOUSE_X >= x1 and MOUSE_X <= x2 and MOUSE_Y >= y1 and MOUSE_Y < y2 then
+            ToggleCrewPackXPSettings()
+        end
+
+    end
+
+    do_every_draw("tfCPXP_DrawThings()")
+    do_on_mouse_click("tfCPXP_MouseClick()")
+
+    -- end of Togfox code
+
+
 end -- Master End

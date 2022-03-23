@@ -9,7 +9,7 @@ v1.1.1 - Changed method for determining if aircraft is known
 --]]
 
 local coded_aircraft = {
-   ["757-200_xp11"] = true,
+   ["757-200_xp11.acf"] = true,
    ["757-300_xp11.acf"] = true,
    ["757-c32_xp11.acf"] = true,
    ["757-RF_xp11.acf"] = true,
