@@ -93,7 +93,7 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
    local cpxp2Green_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/HS650/pnf_RevGreen.wav")
    local cpxpRevUnsafe_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/HS650/pnf_RevUnsafe.wav")
 
-    function cpxpSetGain()
+    function CPXPSetGain()
         set_sound_gain(cpxpStart1, cpxpSoundVol)
         set_sound_gain(cpxpStart2, cpxpSoundVol)
         set_sound_gain(cpxpStart3, cpxpSoundVol)
@@ -882,9 +882,9 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
             cpxpGearUpSelectedPlay = false
             cpxpGearDnSelectedPlay = true
             cpxpGearDnIndPlay = false
-            cpxpPosRatePlayed = false
             cpxpFLCHPress = false
             cpxpFLCHPlay = false
+            cpxpClimbThrustPressed = false
            -- cpxpTogaEvent = false
            -- cpxpTogaMsg = false
            -- set("1-sim/lights/landingN/switch", 1)
@@ -1378,7 +1378,7 @@ end
             cpxpLocgsCalls = cpxpCrewPackXPSettings.CrewPackXP.cpxpLocgsCalls
             cpxpFoPreflight = cpxpCrewPackXPSettings.CrewPackXP.cpxpFoPreflight
             print("CrewPackXP: Settings Loaded")
-            cpxpSetGain()
+            CPXPSetGain()
         else
             print("CPXP: No settings file found, using defaults")
         end
@@ -1404,7 +1404,7 @@ end
         print("CrewPackXP: Settings Saved")
         cpxpBubbleTimer = 0
         cpxpMsgStr = "CrewPackXP settings saved"
-        cpxpSetGain()
+        CPXPSetGain()
         SaveCrewPack767Settings(cpxpCrewPackXPSettings)
     end
 
