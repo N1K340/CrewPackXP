@@ -5,12 +5,19 @@
     Captain - Will
     FO - Rodney
 
-    Changelog:
-    v0.1 - Initial Protoyping
-    v0.2 - Corrected typo on line 853
-    v0.3 - Added missing sounds for reverse on landing.
-    v1.0 - Release candidate
-    v1.1 - Corrected thrust ref logic after HS 1.4.1 update.
+    Copyright (C) 2022  N1K340
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License version 3 as published by
+    the Free Software Foundation.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 ]]
 
 if AIRCRAFT_FILENAME == "CL650.acf" then
@@ -25,6 +32,10 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
     local LIP = require("LIP")
     require "graphics"
     
+    -- Settings Window Position
+    local intHudXStart = 15 -- Moves Settings HUD left and right, 0 being far left of screen
+    local intHudYStart = 375 -- Moves Settings HUD up and down, 0 being bottom of screen
+
     -- Var
     local cpxpBubbleTimer = 0
     local cpxpMsgStr = ""
@@ -1417,4 +1428,232 @@ end
         ""
     )
     --]]
+
+    --[[ Draw Settings side window
+
+    The HUD section of code is a reapplication of the FSE Hud written by Togfox.
+    Used with permission for freware as per licence https://forums.x-plane.org/index.php?/files/file/53617-fse-hud/
+
+    ]]
+
+    local fltTransparency = 0.30		--alpha value for the boxes
+    local fltCurrentTransparency = fltTransparency		--use this to fade the gui in and out
+    local fltTextVanishingPoint = 0.75	-- this is the transparency value where text needs to 'hide'
+    local intButtonHeight = 30			--the clickable 'panels' are called buttons
+    local intButtonWidth = 140			--the clickable 'panels' are called buttons
+    local intHeadingHeight = 20
+    local intFrameBorderSize = 5
+
+    function tfFSE_DrawOutsidePanel()
+        --Draws the overall box
+        local x1 = intHudXStart
+        local y1 = intHudYStart
+        local x2 = x1 + intFrameBorderSize + intButtonWidth + intButtonWidth + intFrameBorderSize
+        local y2 = y1 + intFrameBorderSize + intButtonHeight + intButtonHeight + intHeadingHeight + intFrameBorderSize
+        
+        graphics.set_color(1, 1, 1, fltCurrentTransparency) --white
+        graphics.draw_rectangle(x1,y1,x2,y2)
+    end
+
+    function tfFSE_DrawInsidePanel()
+        --Draws the inside panel
+        local x1 = intHudXStart + intFrameBorderSize
+        local y1 = intHudYStart + intFrameBorderSize
+        local x2 = x1 + intButtonWidth + intButtonWidth
+        local y2 = y1 + intButtonHeight + intButtonHeight + intHeadingHeight
+    
+        graphics.set_color(1, 1, 1, fltCurrentTransparency) --white
+        graphics.draw_rectangle(x1,y1,x2,y2)
+    end
+
+    function tfFSE_DrawHeadingPanel()
+        --Draws the heading panel and text at the top of the inside panel
+        local x1 = intHudXStart + intFrameBorderSize
+        local y1 = intHudYStart + intFrameBorderSize + intButtonHeight + intButtonHeight
+        local x2 = x1 + intButtonWidth + intButtonWidth
+        local y2 = y1 + intHeadingHeight
+        
+        local fltStringTransparency = fltCurrentTransparency/fltTransparency	-- change the RGB of the text based on expected fade level
+        if fltStringTransparency > fltTextVanishingPoint then	-- this stops drawing text when the transparency gets too low.
+            graphics.draw_string((x1 + (intButtonWidth * 0.70)),(y1 + (intButtonHeight * 0.25)), cpxpVersion, 1 * fltStringTransparency,1 * fltStringTransparency,1 * fltStringTransparency)
+        end
+        graphics.set_color(1, 1, 1, fltCurrentTransparency) --white
+        graphics.draw_rectangle(x1,y1,x2,y2)	
+    end
+
+    function tfFSE_DrawStatusPanel()
+        local x1 = intHudXStart + intFrameBorderSize
+        local y1 = intHudYStart + intFrameBorderSize
+        local x2 = x1 + intButtonWidth + intButtonWidth
+        local y2 = y1 + intButtonHeight
+
+        local fltStringTransparency = fltCurrentTransparency/fltTransparency	-- change the RGB of the text based on expected fade level
+        if fltStringTransparency > fltTextVanishingPoint then	-- this stops drawing text when the transparency gets too low.
+            local cpxptomodestate = nil
+            if cpxpToCalloutMode == true then
+                cpxptomodestate = 'Armed'
+            else
+                cpxptomodestate = 'Not Armed'
+            end
+            local cpxpToStatus = "To Mode is: " .. cpxptomodestate
+            local cpxpVspeedsstr = "Current Vspeeds: V1 " .. cpxpV1 .. ", VR " .. cpxpVR.. ", V2 " .. cpxpV2
+            graphics.draw_string(x1 + (intButtonWidth * 0.05),y1 + (intButtonHeight * 0.6),cpxpToStatus, 1 * fltStringTransparency, 1 * fltStringTransparency, 1 * fltStringTransparency)
+            graphics.draw_string(x1 + (intButtonWidth * 0.05), y1 + (intButtonHeight * 0.2), cpxpVspeedsstr, 1 * fltStringTransparency, 1 * fltStringTransparency, 1 * fltStringTransparency)	
+        end
+        
+        graphics.set_color(1, 1, 1, fltCurrentTransparency) --white
+        graphics.draw_rectangle(x1,y1,x2,y2)
+    end
+
+    function tfFSE_DrawAlphaState()
+	-- FO preflight and Packup Options enabled
+	
+	--There are two buttons side by side in this state
+	local x1 = intHudXStart + intFrameBorderSize
+	local y1 = intHudYStart + intFrameBorderSize + intButtonHeight
+	local x2 = x1 + intButtonWidth
+	local y2 = y1 + intButtonHeight
+	
+	local fltStringTransparency = fltCurrentTransparency/fltTransparency	-- change the RGB of the text based on expected fade level
+	if fltStringTransparency > fltTextVanishingPoint then	-- this stops drawing text when the transparency gets too low.
+		graphics.draw_string(x1 + (intButtonWidth * 0.15), y1 + (intButtonHeight * 0.4), "Ask FO to Preflight", 1 * fltStringTransparency, 1 * fltStringTransparency, 1 * fltStringTransparency)
+	end
+	graphics.set_color(0, 1, 0, fltCurrentTransparency) --white
+	graphics.draw_rectangle(x1,y1,x2,y2)	
+	
+	--draw button outline
+	local fltStringTransparency = (fltCurrentTransparency/fltTransparency) * 0.5	-- change the line transparency. 0.5 is zero transparency
+	graphics.set_color(0,0,0,fltStringTransparency)	--black
+	graphics.draw_line(x1,y1,x2,y1)
+	graphics.draw_line(x2,y1,x2,y2)
+	graphics.draw_line(x2,y2,x1,y2)
+	graphics.draw_line(x1,y2,x1,y1)
+	
+	--Draw the second button
+	x1 = x2
+	--y1 = y1		--y1 doesn't change value
+	x2 = x1 + intButtonWidth
+	y2 = y1 + intButtonHeight	
+	
+	local fltStringTransparency = fltCurrentTransparency/fltTransparency	-- change the RGB of the text based on expected fade level
+	if fltStringTransparency > fltTextVanishingPoint then	-- this stops drawing text when the transparency gets too low.
+		graphics.draw_string(x1 + (intButtonWidth * 0.1), y1 + (intButtonHeight * 0.4), "Ask FO to Packup", 1 * fltStringTransparency, 1 * fltStringTransparency, 1 * fltStringTransparency)
+	end
+	graphics.set_color( 0, 1, 0, fltCurrentTransparency) --green
+	graphics.draw_rectangle(x1,y1,x2,y2)
+
+	--draw button outline
+	local fltStringTransparency = (fltCurrentTransparency/fltTransparency) * 0.5	-- change the line transparency. 0.5 is zero transparency
+	graphics.set_color(0,0,0,fltStringTransparency)	--black
+	graphics.draw_line(x1,y1,x2,y1)
+	graphics.draw_line(x2,y1,x2,y2)
+	graphics.draw_line(x2,y2,x1,y2)
+	graphics.draw_line(x1,y2,x1,y1)	
+
+	
+    end
+
+    function tfFSE_DrawBetaState()
+        -- Inflight options greyed out
+        local x1 = intHudXStart + intFrameBorderSize
+        local y1 = intHudYStart + intFrameBorderSize + intButtonHeight
+        local x2 = x1 + intButtonWidth + intButtonWidth
+        local y2 = y1 + intButtonHeight
+        
+        local fltStringTransparency = fltCurrentTransparency/fltTransparency	-- change the RGB of the text based on expected fade level
+        if fltStringTransparency > fltTextVanishingPoint then	-- this stops drawing text when the transparency gets too low.
+            graphics.draw_string(x1 + (intButtonWidth * 0.15), y1 + (intButtonHeight * 0.4), "Detected in flight", 1 * fltStringTransparency, 1 * fltStringTransparency, 1 * fltStringTransparency)
+        end
+        graphics.set_color( 4, 1, 4, fltCurrentTransparency) -- greyed out
+        graphics.draw_rectangle(x1,y1,x2,y2)
+        
+        --draw button outline
+        local fltStringTransparency = (fltCurrentTransparency/fltTransparency) * 0.5	-- change the line transparency. 0.5 is zero transparency
+        graphics.set_color(0,0,0,fltStringTransparency)	--black
+        graphics.draw_line(x1,y1,x2,y1)
+        graphics.draw_line(x2,y1,x2,y2)
+        graphics.draw_line(x2,y2,x1,y2)
+        graphics.draw_line(x1,y2,x1,y1)
+    end
+
+    function tfFSE_DrawButtons()
+        -- If on ground with engines off allow FO to preflight or packup
+        if cpxpBEACON == 0 and cpxpWEIGHT_ON_WHEELS == 1 then
+            tfFSE_DrawAlphaState()
+        else
+            tfFSE_DrawBetaState()
+        end
+    end
+
+    function tfFSE_Draw()
+        tfFSE_DrawOutsidePanel()
+        tfFSE_DrawInsidePanel()
+        tfFSE_DrawHeadingPanel()
+        tfFSE_DrawStatusPanel()
+        tfFSE_DrawButtons()	
+    end	
+
+    function tfFSE_DrawThings()
+        XPLMSetGraphicsState(0,0,0,1,1,0,0)
+        
+        -- if bolShowHotSpot == 1 then
+        --     tfFSE_DrawCorner()
+        -- end
+        
+        --check for mouse over before drawing
+        local x1 = intHudXStart
+        local y1 = intHudYStart
+        local x2 = x1 + intFrameBorderSize + intButtonWidth + intButtonWidth + intFrameBorderSize
+        local y2 = y1 + intFrameBorderSize + intButtonHeight + intButtonHeight + intHeadingHeight + intFrameBorderSize	
+        if (MOUSE_X < x1 or MOUSE_X > x2 or MOUSE_Y < y1 or MOUSE_Y > y2) then
+            --don't draw - fade out
+            fltCurrentTransparency = fltCurrentTransparency - 0.010
+            if fltCurrentTransparency < 0 then
+                fltCurrentTransparency = 0
+            end
+            tfFSE_Draw()	
+        else
+            fltCurrentTransparency = fltCurrentTransparency +0.025
+            if fltCurrentTransparency > fltTransparency then
+                fltCurrentTransparency = fltTransparency
+            end
+            
+            tfFSE_Draw()			
+    
+        end
+    end	
+
+    function tfFSE_MouseClick()
+    -- Trigger mouse clicks
+        local x1 = intHudXStart + intFrameBorderSize
+        local y1 = intHudYStart + intFrameBorderSize + intButtonHeight
+        local x2 = x1 + intButtonWidth + intButtonWidth
+        local y2 = y1 + intButtonHeight
+        -- left button
+        if MOUSE_X >= x1 and MOUSE_X <= x2 and MOUSE_Y >= y1 and MOUSE_Y < y2 then
+            if cpxpBEACON == 0 and cpxpWEIGHT_ON_WHEELS == 1 then
+                cpxpFoPre_Basics = false
+                cpxpFoPre_ApuOnline = false
+                cpxpFoPre_AfterPower = false
+                cpxpFoPre_CDU1 = false
+                cpxpFoPre_CDU2 = false
+                cpxpFoPre_CDU3 = false
+                cpxpFoPre_CDU1S = false
+                cpxpFoPre_CDU2S = false
+                cpxpFoPre_CDU3S = false
+                cpxpFoPre_CDUS = false
+                cpxpFoPre_ECS = false
+                cpxpFoPreflighComplete = false
+                cpxpFoDoor = false
+                cpxpFoPreflight = true
+                CPXPFoPreflight()
+                CPXPFoDoor()
+            end
+        end
+    end
+
+    do_every_draw("tfFSE_DrawThings()")
+    do_on_mouse_click("tfFSE_MouseClick()")
+
+
 end -- Master end

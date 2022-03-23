@@ -89,7 +89,13 @@
         "CPXP_REV2ACT",
         "PXP_REV1",
         "PXP_REV2",
-        "command_once"
+        "command_once",
+        "graphics",
+        "XPLMSetGraphicsState",
+        "MOUSE_X",
+        "MOUSE_Y",
+        "cpxpBEACON",
+        "do_on_mouse_click"
     ],
     "Lua.diagnostics.disable": [
         "undefined-doc-name"
