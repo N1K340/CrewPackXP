@@ -3,6 +3,7 @@
 ### v1.4 - March 2022
   Bug Fixes:
   - FF757 bug preventing 757-200 from loading in CPXP
+  - CL650 wouldn't engage climb thrust on subseqent departures
 
 **Features:
 - Status HUD been added to the left side of the screen for ease of access to settings and FO commands
