@@ -10,8 +10,7 @@ This includes basic call outs and in some cases automated assistance from the PN
 Settings can be adjusted to enable or dissable the whole plugin, or just certain features of each aircraft. 
 
 
-Installation
-============
+## Installation
 
 Copy the Scripts and Modules folders into the main folder of FlyWithLUA: 
 X-Plane 11 > Resources > plugins > FlyWithLua
@@ -21,8 +20,8 @@ If sucesfull the First Officer should announce his entery the cockpit roughly 15
 Settings can be accessed within the sim by navigating too:
 Plugins > FlyWithLua > FlyWithLua Macros > Crew Pack Settings
 
-Prerequisite
-============
+## Prerequisite
+
 This plugin uses the FlyWithLUA plugin to interface with X-Plane.
 It is available freely from the .org 
 
@@ -34,8 +33,8 @@ https://github.com/Dynodzzo/Lua_INI_Parser
 
 This is a common plugin, it may already exist in your modules folder causing a prompt to overwrite.
 
-Aircraft Config notes:
-============
+## Aircraft Config notes:
+
 Flight Factor 757:
 * Automatically selects the EHSI to map mode and displays 10 nm range with TFC on initialisaiton. If engines are shutdown the GPU will be brought online.
 * Full takeoff calls by both crew, based on the FMS speed entreies, automatic VNAV engagement if not already armed at the acceleration height in FMS takeoff ref page 2.
@@ -59,11 +58,7 @@ Important to Note:
 * 1'000 ft to go on altitude captures.
 * FO can now preflight the aircraft if selected in the settings. All pins, covers and main gear chocks will be removed, door opened and interior lights turned on. The FO will attempt to start the APU and perform the flight compartment checks. APU faults will require manual intervention to clear.
 
-
-
-
-Disclaimer / Feedback
-=====================
+## Disclaimer / Feedback
 
 This package is to be distributed as Freeware only.
 Installation and use of this package is at your own risk. 
@@ -71,35 +66,18 @@ Installation and use of this package is at your own risk.
 This is the first time I have coded a plugin, any feedback is welcome.
 Bug reports, please include the x-plane log.txt file in the main x-plane folder for the flight in question. 
 
-This plugin is still a work in progress, to be considered as public beta. Errors may exist.
+Use of this code is approved for repurposing into other freeware projects, please acknowledge credits for the adaptation.
 
+## Acknowledgements
+Carreras Nicholas - Luna INI Parser (LIP)
+'Togfox' - FSE HUD
 
-
-
-Change Log
-==========
-Main Plugin:
-
-* V0.1 - Initial Beta Release.
-* v0.2 - local variable corrections to TOGA, Speedbrakes and Horseplay.
-* v0.3 - Complete crosscheck and tweak of local variables.
-* v0.4 - VNAV on Takeoff and LOC intercept right of localiser issues fixed.
-* v0.5 - Added logic to cockpit setup / shutdown to connect the GPU (setup brings online), open L1, fwd/aft cargo and brings in belt loaders.
-            N.B. Attempting to disconnect the GPU whilst it is on bus will cause the GPU circuit of the aircraft to fail.
-* v0.5.1 - Finally found chocks dataref. Adjust doors logic per frame. Added beacon on to remove all GSE. Cockpit Setup expanded to FO preflight and  Baro sync.
-* v0.6 - Added settings window accesible via: plugins > FlyWithLua > Macros > 767 Crew Pack Settings.
-* v1.0 - Rewritten core components to make it expandable for other aircraft.
-         Initial release of Flight Factor 757 and Hot Start Challenger 650.
-* v1.1 - Corrected error in HS650 script resulting in LUA stopping
-* v1.2 - Added missing sounds to HS650 Reverse, tweaked FLCH logic. 
-* v1.2.1 - Enabled all 757/767 variants
-* v1.3 - Update for HS650 to restore functions after aircraft 1.4.1 changed
-         thrust ref page and added flex to. Different technique to initialise scripts.
+## Current Script Versions
 
 Current Aircraft Scripts:
 - Flight Factor 767 - v1.0.1
 - Hot Start CL650 - v1.1
 
-Alternate Sources<br>
-X-Plane.org https://forums.x-plane.org/index.php?/files/file/79042-crewpackxp-crew-callouts/<br>
-X_Pilot.com https://forums.x-pilot.com/files/file/1404-crewpackxp-crew-callouts/<br>
+## Alternate Sources
+X-Plane.org https://forums.x-plane.org/index.php?/files/file/79042-crewpackxp-crew-callouts/  
+X_Pilot.com https://forums.x-pilot.com/files/file/1404-crewpackxp-crew-callouts/
