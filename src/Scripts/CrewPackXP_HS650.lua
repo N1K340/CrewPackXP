@@ -32,7 +32,7 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
     local LIP = require("LIP")
     require "graphics"
     
-    -- Settings Window Position
+    -- Status HUD Position
     local intHudXStart = 15 -- Moves Settings HUD left and right, 0 being far left of screen
     local intHudYStart = 475 -- Moves Settings HUD up and down, 0 being bottom of screen
 
