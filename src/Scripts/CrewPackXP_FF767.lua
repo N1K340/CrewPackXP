@@ -7,16 +7,19 @@ FO: Ranald
 Ground Crew: en-AU-B-Male (what a name...)
 Safety: Leslie
 
-Changelog:
-v0.1 - Initial Release for 757-200 only.
-v1.0 - Enabled all 757/767 variants. 757-200 is only tested aircraft.
-v1.0.1 - Changed code for init of aircraft
+Copyright (C) 2022  N1K340
 
-Bug fixes:
-   - 757-200 not initialising
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License version 3 as published by
+the Free Software Foundation.
 
-Enhancements:
-   - Added status HUD
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 
 --]]
 local coded_aircraft = {
@@ -1267,7 +1270,7 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
    function CrewPackXPSettings_contents(CrewPackXPSettings_wnd, x, y)
       local winWidth = imgui.GetWindowWidth()
       local winHeight = imgui.GetWindowHeight()
-      local titleText = "CrewPackXP " .. cpxpVersion
+      local titleText = cpxpVersion
       local titleTextWidth, titileTextHeight = imgui.CalcTextSize(titleText)
 
       imgui.SetCursorPos(winWidth / 2 - titleTextWidth / 2, imgui.GetCursorPosY())
@@ -1398,6 +1401,7 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
 
    function CloseCrewPackXPSettings_wnd()
       if CrewPackXPSettings_wnd then
+         cpxpShowSettingsWindow = false
          float_wnd_destroy(CrewPackXPSettings_wnd)
       end
    end
