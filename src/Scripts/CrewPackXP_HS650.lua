@@ -1192,7 +1192,7 @@ end
     function CrewPackXPSettings_contents(CrewPackXPSettings_wnd, x, y)
         local winWidth = imgui.GetWindowWidth()
         local winHeight = imgui.GetWindowHeight()
-        local titleText = "CrewPackXP " .. cpxpVersion
+        local titleText = cpxpVersion
         local titleTextWidth, titileTextHeight = imgui.CalcTextSize(titleText)
 
         imgui.SetCursorPos(winWidth / 2 - titleTextWidth / 2, imgui.GetCursorPosY())
@@ -1361,6 +1361,7 @@ end
 
     function CloseCrewPackXPSettings_wnd()
         if CrewPackXPSettings_wnd then
+            CloseCrewPackXPSettings_wnd()
             float_wnd_destroy(CrewPackXPSettings_wnd)
         end
     end
