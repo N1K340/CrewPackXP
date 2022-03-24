@@ -1476,7 +1476,7 @@ end
         
         local fltStringTransparency = fltCurrentTransparency/fltTransparency	-- change the RGB of the text based on expected fade level
         if fltStringTransparency > fltTextVanishingPoint then	-- this stops drawing text when the transparency gets too low.
-            graphics.draw_string((x1 + (intButtonWidth * 0.50)),(y1 + (intButtonHeight * 0.5)), cpxpVersion, 0, 0, 0)
+            graphics.draw_string((x1 + (intButtonWidth * 0.25)),(y1 + (intButtonHeight * 0.5)), cpxpVersion, 0, 0, 0)
         end
         graphics.set_color(1, 1, 1, fltCurrentTransparency) --white
         graphics.draw_rectangle(x1,y1,x2,y2)	
