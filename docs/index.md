@@ -39,7 +39,6 @@ Once enabled, the First Officer should announce his entry to the cockpit roughly
 Settings can be accessed within the sim by navigating too:
     > Plugins > FlyWithLua > FlyWithLua Macros > Crew Pack Settings
 
-
 ## Prerequisite
 
 This plugin uses the FlyWithLUA plugin to interface with X-Plane.
