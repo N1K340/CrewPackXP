@@ -41,7 +41,7 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
    local cpxpStartTime = 0
    dataref("cpxp_SIM_TIME", "sim/time/total_running_time_sec")
 
-   -- Settings Window Position
+   -- Status HUD Position
    local intHudXStart = 15 -- Moves Settings HUD left and right, 0 being far left of screen
    local intHudYStart = 475 -- Moves Settings HUD up and down, 0 being bottom of screen
 
