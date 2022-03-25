@@ -372,7 +372,7 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
             set("1-sim/CDU/R/CDUbrtRotary", 0.5)
             set("1-sim/CDU/L/CDUbrtRotary", 0.5)
          end
-         if EFIS_TYPE == 0 then -- New Type 757
+         if EFIS_TYPE == 1 then -- New Type 757
             set("1-sim/ndpanel/1/hsiModeRotary", 2)
             set("1-sim/ndpanel/1/hsiRangeRotary", 1)
             set("1-sim/ndpanel/1/hsiRangeButton", 1)
@@ -382,7 +382,7 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
             --  set("1-sim/inst/HD/L", 0)
             --  set("1-sim/inst/HD/R", 0)
          end
-         if EFIS_TYPE == 1 then
+         if EFIS_TYPE == 0 then
             set("1-sim/ndpanel/1/hsiModeRotary", 4)
             set("1-sim/ndpanel/1/hsiRangeRotary", 1)
             set("1-sim/ndpanel/1/hsiRangeButton", 1)
