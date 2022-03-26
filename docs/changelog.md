@@ -3,11 +3,7 @@
 ### dev branch - TBA
   Bug Fixes:  
   - FF767: 757-200 not loading CrewPackXP aircraft module.  
-  - FF767: FO Preflight additions:  
-  > 1. EEC Switches  
-  > 2. Engine Limiter switches  
-  > 3. Radar Tilt to full up  
-  > 4. Com1 and 2 Audio control on for vatsim  
+  - FF767: FO Preflight additions:  EEC Switches, Engine Limiter Switches, Radar Tilt FUll Up, Left ACP COM 1 & 2 on for Vatsim.  
   - CL650: Wouldn't engage climb thrust on subseqent departures.  
 
   Enhancements:  
