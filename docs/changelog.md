@@ -2,14 +2,14 @@
 
 ### dev branch - TBA
   Bug Fixes:  
-  - FF767: 757-200 not loading CrewPackXP aircraft module.  
-  - FF767: FO Preflight additions:  EEC Switches, Engine Limiter Switches, Radar Tilt FUll Up, Left ACP COM 1 & 2 on for Vatsim.  
-  - CL650: Wouldn't engage climb thrust on subseqent departures.  
+  - FF767: 757-200 not loading CrewPackXP aircraft module.    
+  - FF767: FO Preflight: HSI modes corrected; Addition of - EEC Switches, Engine Limiter Switches, Radar Tilt FUll Up, Left ACP COM 1 & 2 on for Vatsim. [#31](https://github.com/N1K340/CrewPackXP/issues/31)  
+  - CL650: Wouldn't engage climb thrust on subseqent departures.  [#19](https://github.com/N1K340/CrewPackXP/issues/19)  
 
   Enhancements:  
-  - ALL: Status HUD been added to the left side of the screen for ease of access to settings and FO commands.  
-  - ALL: CrewPackXP Sounds will be muted in external view.  
-  - FF767: PA volume increases when the cockpit door is open.  
+  - ALL: Status HUD been added to the left side of the screen for ease of access to settings and FO commands. [#18](https://github.com/N1K340/CrewPackXP/issues/18)    
+  - ALL: CrewPackXP Sounds will be muted in external view. [#21](https://github.com/N1K340/CrewPackXP/issues/21)  
+  - FF767: PA volume increases when the cockpit door is open. [#21](https://github.com/N1K340/CrewPackXP/issues/21)  
 
 ### v1.3
 - Update for HS650 to restore functions after aircraft 1.4.1 changed thrust ref page and added flex to. Different technique to initialise scripts
