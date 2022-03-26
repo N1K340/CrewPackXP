@@ -194,6 +194,7 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
       set_sound_gain(cpxpPax_Seatbelts_snd, cpxpPaVol)
       set_sound_gain(cpxpTaxiInPA_snd, cpxpPaVol)
       set_sound_gain(cpxpCabinSecure_snd, cpxpSoundVol)
+      print("Gain change" .. cpxpPaVol)
    end
 
    -- Generic Datarefs
@@ -333,6 +334,63 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
 
    do_often("CPXPStartSound()")
 
+   -- Adjust sound gain for view points
+   local cpxpCockpitDoor = 0
+   local cpxpExternalView = 0
+
+   -- PA volume with cockpit door open increase by 0.5 to max of 0.9
+   function CPXPSoundDoor()
+      if not cpxpReady then
+         return
+      end
+      
+      if cpxpCockpitDoor ~= get("anim/cabindoor") then
+         cpxpCockpitDoor = get("anim/cabindoor")
+         if cpxpCockpitDoor == 0 then
+            ParseCrewPackXPSettings()
+         elseif cpxpCockpitDoor == 1 then
+            ParseCrewPackXPSettings()
+            if (cpxpPaVol + 0.5) < 1 then
+               cpxpPaVol = cpxpPaVol + 0.5
+            else
+               cpxpPaVol = 0.9
+            end
+            cpxpSetGain()
+         end
+      end
+   end
+
+   -- All sounds muted when moved to external view
+   function CPXPOutsideMute()
+      if not cpxpReady then
+         return
+      end
+
+      if cpxpExternalView ~= get("sim/graphics/view/view_is_external") then
+         cpxpExternalView = get("sim/graphics/view/view_is_external")
+         if cpxpExternalView == 1 then
+            cpxpPaVol = 0.01
+            cpxpSoundVol = 0.01
+            cpxpSetGain()
+         else
+            if get("anim/cabindoor") == 0 then
+               ParseCrewPackXPSettings()
+            elseif get("anim/cabindoor") == 1 then
+               ParseCrewPackXPSettings()
+               if (cpxpPaVol + 0.5) < 1 then
+                  cpxpPaVol = cpxpPaVol + 0.5
+               else
+                  cpxpPaVol = 0.9
+               end
+               cpxpSetGain()
+            end
+         end
+      end
+   end
+
+   do_every_frame("CPXPSoundDoor()")
+   do_every_frame("CPXPOutsideMute()")
+   
    -- Monitor for ADC1 Failure
    function CPXPMonitorADC1()
       if not cpxpReady then
@@ -435,6 +493,7 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
          if cpxpFoPreflight then
             cpxpMsgStr = "CrewPackXP: FO Attempting to setup cockpit"
             cpxpBubbleTimer = 0
+            set("1-sim/cockpitDoor/switch", 0)
             set("anim/1/button", 1)
             set("anim/2/button", 1)
             if PLANE_ICAO == "B763" or PLANE_ICAO == "B762" then
@@ -582,8 +641,7 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
       end
       if cpxpPaTimer < 241 then
          cpxpPaTimer = cpxpPaTimer + 1
-         print("CrewPackXP: Cabin timer " .. cpxpPaTimer)
-         print(math.floor(get("sim/flightmodel2/position/groundspeed")))
+         --print("CrewPackXP: Cabin timer " .. cpxpPaTimer)
       end
       if cpxpFaOnboard then
          if cpxpBEACON == 1 and cpxpWEIGHT_ON_WHEELS == 1 and cpxpENG2_N2 > 10 and cpxpFaPlaySeq == 0 then
@@ -1072,6 +1130,7 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
       cpxpHorsePlayed and
       cpxpBEACON == 0 and not cpxpBeaconSetup
       then
+         set("1-sim/cockpitDoor/switch", 0)
          set("params/stop", 1)
          cpxpBubbleTimer = 0
          cpxpMsgStr = "CrewPackXP: Ground crew attending to aircraft"
@@ -1115,7 +1174,7 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
          cpxpMsgStr = "CrewPackXP: Ground crew closing doors"
          cpxpBubbleTimer = 0
          set("anim/16/button", 0)
-         set("anim/cabindoor", 0)
+         set("1-sim/cockpitDoor/switch", 1)
          cpxpCalloutTimer = 0
          set_array("sim/cockpit2/switches/custom_slider_on", 0, 0)
          set_array("sim/cockpit2/switches/custom_slider_on", 1, 0)
