@@ -8,11 +8,6 @@
 Updated 26/03/2022
 =======
 <br>
-FlyWithLUA utility to add crew voices for aircraft in X-Plane 11. 
-This includes basic call outs and in some cases automated assistance from the PNF. 
-Settings can be adjusted to enable or dissable the whole plugin, or just certain features of each aircraft. 
-
-
 CrewPackXP is a FlyWithLUA utility designed to add some crew communications for aircraft in X-Plane 11. This includes basic call outs, and in some cases assistance from the PNF in high workload phases of flight. Settings can be adjusted to enable or disable the whole plugin, or just certain features of each aircraft.
 
 Flight Factor 757 / 767:  
