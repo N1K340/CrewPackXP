@@ -8,8 +8,8 @@
 Updated 26/03/2022
 =======
 <br>
-CrewPackXP is a FlyWithLUA utility designed to add some crew communications for aircraft in X-Plane 11. This includes basic call outs, and in some cases assistance from the PNF in high workload phases of flight. Settings can be adjusted to enable or disable the whole plugin, or just certain features of each aircraft.
-
+CrewPackXP is a FlyWithLUA utility designed to add some crew communications for aircraft in X-Plane 11. This includes basic call outs, and in some cases assistance from the PNF in high workload phases of flight. Settings can be adjusted to enable or disable the whole plugin, or just certain features of each aircraft.  
+<br>
 Flight Factor 757 / 767:  
     - Virtual FO to preflight aircraft  
     - Takeoff and Landing calls by both crew members  
