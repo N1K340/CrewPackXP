@@ -1,14 +1,14 @@
 # Changelog 
 
 ### dev branch - TBA
-  Bug Fixes:
-  - FF767: 757-200 not loading CrewPackXP aircraft module.
-  - CL650: Wouldn't engage climb thrust on subseqent departures.
+  Bug Fixes:  
+  - FF767: 757-200 not loading CrewPackXP aircraft module.  
+  - CL650: Wouldn't engage climb thrust on subseqent departures.  
 
-  Enhancements:
-  - ALL: Status HUD been added to the left side of the screen for ease of access to settings and FO commands.
-  - ALL: CrewPackXP Sounds will be muted in external view.
-  - FF767: PA volume increases when the cockpit door is open.
+  Enhancements:  
+  - ALL: Status HUD been added to the left side of the screen for ease of access to settings and FO commands.  
+  - ALL: CrewPackXP Sounds will be muted in external view.  
+  - FF767: PA volume increases when the cockpit door is open.  
 
 ### v1.3
 - Update for HS650 to restore functions after aircraft 1.4.1 changed thrust ref page and added flex to. Different technique to initialise scripts
