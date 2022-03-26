@@ -27,7 +27,7 @@ Hot Start Challenger 650:
 <http://crewpackxp.readthedocs.io/>
 
 ## Changelog  
-New features and bug fixes listed in [change log](changelog.md).
+New features and bug fixes listed in [change log](docs/changelog.md).
 
 ## Installation
 
