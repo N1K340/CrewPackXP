@@ -65,8 +65,8 @@ Carreras Nicholas - [Luna INI Parser (LIP)](https://github.com/Dynodzzo/Lua_INI_
 'X-Friese' - [FlyWithLUA Plugin](https://forums.x-plane.org/index.php?/files/file/38445-flywithlua-ng-next-generation-edition-for-x-plane-11-win-lin-mac/)
 
 ## Current Script Versions
-- Flight Factor 767 - v1.0.1  
-- Hot Start CL650 - v1.1
+- Flight Factor 767 - dev  
+- Hot Start CL650 - dev
 
 ## Alternate Sources
 [X-Plane.org](https://forums.x-plane.org/index.php?/files/file/79042-crewpackxp-crew-callouts/)  
