@@ -39,7 +39,7 @@ Once enabled, the First Officer should announce his entry to the cockpit roughly
 Settings can be accessed within the sim by navigating too:
     > Plugins > FlyWithLua > FlyWithLua Macros > Crew Pack Settings
 
-
+=======
 ## Prerequisite
 
 This plugin uses the FlyWithLUA plugin to interface with X-Plane.
@@ -58,6 +58,8 @@ This package is to be distributed as Freeware only under the GPL v3 license.
 
 This is the first time I have coded a plugin, any feedback is welcome.
 Bug reports, please include the x-plane log.txt file in the main x-plane folder for the flight in question. 
+
+Use of this code is approved for repurposing into other freeware projects, please acknowledge credits for the adaptation.
 
 ## Acknowledgements
 Carreras Nicholas - [Luna INI Parser (LIP)](https://github.com/Dynodzzo/Lua_INI_Parser)  
