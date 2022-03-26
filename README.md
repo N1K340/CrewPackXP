@@ -20,7 +20,7 @@ Hot Start Challenger 650:
     - Virtual FO to preflight aircraft  
     - Takeoff and Landing calls by both crew members  
     
-## Manual
+## User Manual
 Full manual is available at [ReadTheDocs.io](https://crewpackxp.readthedocs.io/en/latest/)
 
 ## Source Code  
