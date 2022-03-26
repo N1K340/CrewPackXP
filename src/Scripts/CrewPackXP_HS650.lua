@@ -227,6 +227,27 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
 
     do_often("CPXPDelayedInit()")
 
+    -- All sounds muted when moved to external view
+    local cpxpExternalView = 0
+
+    function CPXPOutsideMute()
+      if not cpxpReady then
+         return
+      end
+
+      if cpxpExternalView ~= get("sim/graphics/view/view_is_external") then
+         cpxpExternalView = get("sim/graphics/view/view_is_external")
+         if cpxpExternalView == 1 then
+            cpxpSoundVol = 0.01
+            CPXPSetGain()
+         else
+            ParseCrewPackXPSettings()
+         end
+      end
+    end
+
+   do_every_frame("CPXPOutsideMute()")
+
     -- Start Up Sounds
     function CPXPStartSound()
         if not cpxpReady then
