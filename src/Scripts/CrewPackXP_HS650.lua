@@ -1547,7 +1547,7 @@ end
 	if fltStringTransparency > fltTextVanishingPoint then	-- this stops drawing text when the transparency gets too low.
 		graphics.draw_string(x1 + (intButtonWidth * 0.15), y1 + (intButtonHeight * 0.4), "Ask FO to Preflight", 0, 0, 0)
 	end
-	graphics.set_color(0, 1, 0, fltCurrentTransparency) --white
+	graphics.set_color(0.27, 0.51, 0.71, fltCurrentTransparency)
 	graphics.draw_rectangle(x1,y1,x2,y2)	
 	
 	--draw button outline
@@ -1568,7 +1568,7 @@ end
 	if fltStringTransparency > fltTextVanishingPoint then	-- this stops drawing text when the transparency gets too low.
 		graphics.draw_string(x1 + (intButtonWidth * 0.1), y1 + (intButtonHeight * 0.4), "Ask FO to Packup", 0, 0, 0)
 	end
-	graphics.set_color( 0, 1, 0, fltCurrentTransparency) --green
+	graphics.set_color(0.27, 0.51, 0.71, fltCurrentTransparency)
 	graphics.draw_rectangle(x1,y1,x2,y2)
 
 	--draw button outline
