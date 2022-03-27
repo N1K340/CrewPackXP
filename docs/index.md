@@ -5,7 +5,7 @@
     <img src="https://img.shields.io/badge/Aircraft-Flight%20Factor%20757-blue" /> <img src="https://img.shields.io/badge/Aircraft-Flight%20Factor%20767-blue" /> <img src="https://img.shields.io/badge/Aircraft-Hot%20Start%20Challenger-blue" />
 </p>
 
-**Updated 26/03/2022**
+**Updated xx/xx/2022**
 
 CrewPackXP is a FlyWithLUA utility designed to add some crew communications for aircraft in X-Plane 11. This includes basic call outs, and in some cases assistance from the PNF in high workload phases of flight. Settings can be adjusted to enable or disable the whole plugin, or just certain features of each aircraft.  
 
@@ -31,13 +31,13 @@ New features and bug fixes listed in [change log](changelog.md).
 
 ## Installation
 
-Copy the Scripts and Modules folders into the main folder of FlyWithLUA: 
-X-Plane 11 > Resources > plugins > FlyWithLua
+Copy the Scripts and Modules folders into the main folder of FlyWithLUA:  
+> X-Plane 11 > Resources > plugins > FlyWithLua
 
 Once enabled, the First Officer should announce his entry to the cockpit roughly 15 seconds after loading in.
 
-Settings can be accessed within the sim by navigating too:
-    > Plugins > FlyWithLua > FlyWithLua Macros > Crew Pack Settings
+CrewPackXP settings can be accessed via the X-Plane menu bar:  
+> Plugins > FlyWithLua > FlyWithLua Macros > Crew Pack Settings
 
 
 ## Prerequisite
