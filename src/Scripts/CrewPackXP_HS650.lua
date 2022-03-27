@@ -325,7 +325,7 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
         end
         if cpxp_SIM_TIME > (cpxpStartTime + 10) then
             if cpxpFoPreflight and not cpxpFoPreflighComplete then
-                if (get("CL650/overhead/ext_lts/beacon") == 0) then
+                if cpxpBEACON == 0 then
                     cpxpMsgStr = "CrewPackXP: Conducting Preflight"
                     cpxpBubbleTimer = 0
                     if not cpxpFoPre_Basics then
@@ -442,10 +442,10 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
                         -- Pedestal
                         command_once("CL650/pedestal/trim/stab_trim_ch_1")
                         command_once("CL650/pedestal/trim/stab_trim_ch_2")
-                        -- if get("CL650/lamps/pedestal/trim/mach_trim") ~= 0 then
-                        --     set("CL650/pedestal/trim/mach", 1)
-                        --     print("Yes i pressed mach trim")
-                        -- end
+                        if get("CL650/lamps/pedestal/trim/mach_trim") ~= 0 then
+                            set("CL650/pedestal/trim/mach", 1)
+                            print("Yes i pressed mach trim")
+                        end
                         command_once("CL650/pedestal/yd/yd_1")
                         command_once("CL650/pedestal/yd/yd_2")
                         command_once("CL650/pedestal/throttle/ats_disc_L")
@@ -551,7 +551,7 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
             end
         end
     end
-    
+
     
     
     
@@ -559,7 +559,162 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
     do_often("CPXPFoPreflight()")
     do_often("CPXPFoDoor()")
 
-    -- Engine Start Calls
+    -- Fo Securing Checks
+
+    local cpxpApuShutdown = false
+    local cpxpDoorclosed = false
+    local cpxpFoShutDownRun = false
+    local cpxpBasicFoShutDown = false
+    local cpxpDoorSeq = 0
+
+    function CPXPFoShutdown()
+        if not cpxpReady then
+            return
+        end
+        if cpxpBEACON == 0 and cpxpENG1_N2 < 5 and cpxpENG2_N2 < 5 and cpxpFoShutDownRun then
+            cpxpMsgStr = "CrewPackXP: FO is packing it up"
+            cpxpBubbleTimer = 0
+            
+            
+            if not cpxpBasicFoShutDown then
+                set("CL650/overhead/signs/emer_lts", 0)
+                if get("CL650/overhead/elec/ac_dc_util") == 0 then
+                    command_once("CL650/overhead/elec/ac_dc_util")
+                end
+                set("CL650/pedestal/thr_rev/arm_L", 0)
+                set("CL650/pedestal/thr_rev/arm_R", 0)
+                set("CL650/pedestal/gear/nws", 0)
+                set("CL650/overhead/hyd/hyd_1B", 0)
+                set("CL650/overhead/hyd/hyd_3A", 0)
+                set("CL650/overhead/hyd/hyd_3B", 0)
+                set("CL650/overhead/hyd/hyd_2B", 0)
+                set("CL650/overhead/ext_lts/nav", 0)
+                set("CL650/overhead/ext_lts/logo", 0)
+                set("CL650/overhead/elec/apu_gen_value", 0)
+                set("CL650/overhead/apu/start_stop", 0)
+                if get("CL650/overhead/apu/start_stop") ~= 0 then
+                    command_once("CL650/overhead/apu/start_stop")
+                end
+                if get("CL650/overhead/aircond/pack_L") ~= 0 then
+                    command_once("CL650/overhead/aircond/pack_L")
+                end
+                if get("CL650/overhead/aircond/pack_R") ~= 0 then
+                    command_once("CL650/overhead/aircond/pack_R")
+                end
+                if get("CL650/overhead/bleed/10st/apu_lcv") ~= 0 then
+                    command_once("CL650/overhead/bleed/10st/apu_lcv")
+                end
+                if get("CL650/overhead/bleed/10st/isol") ~= 0 then
+                    command_once("CL650/overhead/bleed/10st/isol")
+                end
+                if get("CL650/overhead/apu/pwr_fuel") ~= 0 then
+                    command_once("CL650/overhead/apu/pwr_fuel")
+                end
+
+                set("CL650/fuelpnl/int/sov/l_main_value", 0)
+                set("CL650/fuelpnl/int/sov/tail_value", 0)
+                set("CL650/fuelpnl/int/sov/aux_value", 0)
+                set("CL650/fuelpnl/int/sov/r_main_value", 0)
+                set("CL650/fuelpnl/int/sov/r_main_value", 0)
+                set("CL650/galley_lts/entry_dome", 0)
+                set("CL650/cabin_lts/downwash", 0)
+                set("CL650/lav_lts/dome", 0)
+                set("CL650/bag_lts/dome", 0)
+
+                -- Mains Chocks
+                print("Installing chocks")
+                set_array("CL650/gear/chocks", 0, 1)
+                set_array("CL650/gear/chocks", 1, 1)
+                set_array("CL650/gear/chocks", 2, 1)
+
+                -- Remove covers
+                print("Installing covers")
+                set("CL650/covers/pitot/pilot", 1)
+                set("CL650/covers/pitot/standby", 1)
+                set("CL650/covers/aoa/pilot", 1)
+                set("CL650/covers/ice/pilot", 1)
+                set("CL650/covers/pitot/copilot", 1)
+                set("CL650/covers/ice/copilot", 1)
+                set("CL650/covers/aoa/copilot", 1)
+
+                -- Remove Pins
+                print("Installing pins")
+                set("CL650/gear/pins/left", 1)
+                set("CL650/gear/pins/nose", 1)
+                set("CL650/gear/pins/right", 1)
+
+                -- Open Blinds
+                set("CL650/window/blinds/1R", 0)
+                set("CL650/window/blinds/2R", 0)
+                set("CL650/window/blinds/3R", 0)
+                set("CL650/window/blinds/4R", 0)
+                set("CL650/window/blinds/5R", 0)
+                set("CL650/window/blinds/6R", 0)
+                set("CL650/window/blinds/7R", 0)
+                set("CL650/window/blinds/8R", 0)
+                set("CL650/window/blinds/1L", 0)
+                set("CL650/window/blinds/2L", 0)
+                set("CL650/window/blinds/3L", 0)
+                set("CL650/window/blinds/4L", 0)
+                set("CL650/window/blinds/5L", 0)
+                set("CL650/window/blinds/6L", 0)
+                set("CL650/window/blinds/7L", 0)
+                print("Blinds Closed")
+                print("Basic items complete, waiting on APU")
+                cpxpBasicFoShutDown = true
+            end
+
+            if not cpxpApuShutdown and get("sim/cockpit/engine/APU_N1") == 0 then
+                set("CL650/overhead/elec/batt_master_value", 0)
+                cpxpApuShutdown = true
+                cpxpDoorSeq = 1
+                print("CrewPackXP: APU Shutdown, door should be closing")
+            end
+
+            if not cpxpDoorclosed and cpxpDoorSeq == 2 then
+                print("Door Closed")
+                set("CL650/doors/main/ext_handle_rotate_value", 0)
+                cpxpDoorSeq = 3
+            end
+
+            if not cpxpDoorclosed and cpxpDoorSeq == 3 then
+               set("CL650/doors/main/ext_handle_inout_value", 0) 
+               print("Locking Door")
+               cpxpDoorSeq = 4
+            end
+
+            if cpxpDoorSeq == 4 then
+                cpxpFoShutDownRun = false
+               cpxpApuShutdown = false
+               cpxpDoorclosed = false
+               cpxpBasicFoShutDown = false
+               cpxpDoorSeq = 0
+               print("CrewPackXP: FO has finished shutting down the Challenger")
+            end
+            
+        end
+    end
+    
+    function CPXPcloseTheDoor()
+        if not cpxpReady then
+            return
+        end    
+        if cpxpApuShutdown and cpxpDoorSeq == 1 then
+            if get("CL650/doors/main/door") > 0.002 then
+                set("CL650/doors/main/door_value", 0.0)
+                -- print("Closing Door")
+            elseif get("CL650/doors/main/door") < 0.002 then
+                cpxpDoorSeq = 2
+                print("Next Step")
+            end
+        end
+    end
+
+    do_every_frame("CPXPcloseTheDoor()")
+    do_often("CPXPFoShutdown()")
+
+
+        -- Engine Start Calls
 
     function CPXPEngineStart()
         if not cpxpReady then
@@ -1603,6 +1758,17 @@ end
                 cpxpFoPreflight = true
                 CPXPFoPreflight()
                 CPXPFoDoor()
+            end
+        end
+        --This bit is the right button
+        x1 = x2
+        x2 = x1 + intButtonWidth
+        y2 = y1 + intButtonHeight			
+        if MOUSE_X >= x1 and MOUSE_X <= x2 and MOUSE_Y >= y1 and MOUSE_Y < y2 then
+            print("Right Button")
+            if cpxpBEACON == 0 and cpxpWEIGHT_ON_WHEELS == 1 then
+                cpxpFoShutDownRun = true
+                print("i made it here")
             end
         end
         -- Header settigns trigger

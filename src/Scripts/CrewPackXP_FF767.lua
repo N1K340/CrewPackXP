@@ -154,6 +154,7 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
    local cpxpSeatLand_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/fa_seatsLanding.wav")
    local cpxpPax_Seatbelts_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/fa_paxseatbelt.wav")
    local cpxpTaxiInPA_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/fa_goodbye.wav")
+   local cpxpFoShutdown_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/fo_shutdown.wav")
 
    function cpxpSetGain()
       set_sound_gain(cpxpEightyKts_snd, cpxpSoundVol)
@@ -194,6 +195,7 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
       set_sound_gain(cpxpPax_Seatbelts_snd, cpxpPaVol)
       set_sound_gain(cpxpTaxiInPA_snd, cpxpPaVol)
       set_sound_gain(cpxpCabinSecure_snd, cpxpSoundVol)
+      set_sound_gain(cpxpFoShutdown_snd, cpxpSoundVol)
       print("Gain change" .. cpxpPaVol)
    end
 
@@ -406,6 +408,19 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
    do_often("CPXPMonitorADC1()")
 
    -- Cockpit Setup
+   local B757 = {
+      ["757-200_xp11.acf"] = true,
+      ["757-300_xp11.acf"] = true,
+      ["757-c32_xp11.acf"] = true,
+      ["757-RF_xp11.acf"] = true,
+   }
+
+   local B767 = {
+      ["767-200ER_xp11.acf"] = true,
+      ["767-300ER_xp11.acf"] = true,
+      ["767-F_xp11.acf"] = true,
+   }
+
    function CPXPCockpitSetup()
       if not cpxpReady then
          return
@@ -496,10 +511,26 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
             set("1-sim/cockpitDoor/switch", 0)
             set("anim/1/button", 1)
             set("anim/2/button", 1)
-            if PLANE_ICAO == "B763" or PLANE_ICAO == "B762" then
+
+            if B767[AIRCRAFT_FILENAME] then
                set("anim/3/button", 1)
                set("anim/4/button", 1)
+
+               set("1-sim/hyd/airSwitch", 0)
+               set("anim/8/button", 1)
+               set("anim/11/button", 11)
+               set("anim/9/button", 0)
+               set("anim/10/button", 0)
+               
             end
+
+            if B757[AIRCRAFT_FILENAME] then
+               set("anim/12/button", 1)
+               set("anim/9/button", 0)
+               set("anim/10/button", 0)
+               set("anim/13/button", 1)
+            end
+
             set("1-sim/irs/cdu/dsplSel", 1)
             set("1-sim/irs/1/modeSel", 2)
             set("1-sim/irs/2/modeSel", 2)
@@ -595,6 +626,80 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
    end
 
    do_sometimes("CPXPSyncBaro()")
+
+   -- FO Shutdown Procedure
+   local cpxpFoShutdownRun = false
+
+
+   function CPXPFoShutdown()
+      if not cpxpReady then
+         return
+      end
+      if cpxpFoShutdownRun and cpxpWEIGHT_ON_WHEELS == 1 and cpxpBEACON == 0 and cpxpENG1_N2 < 20 and cpxpENG2_N2 < 20 then
+         cpxpMsgStr = "CrewPackXP: FO powering it down"
+         cpxpBubbleTimer = 0
+         print("Shutting it down")
+         -- Shutdown Checklist Items
+         set("anim/41/button", 0)
+         set("anim/42/button", 0)
+         set("sim/cockpit/switches/fasten_seat_belts", 0)
+
+         --Hydr
+         if B757[AIRCRAFT_FILENAME] then
+            set("anim/12/button", 0)
+            set("anim/9/button", 0)
+            set("anim/10/button", 0)
+            set("anim/13/button", 0)
+         end
+
+         if B767[AIRCRAFT_FILENAME] then
+            set("1-sim/hyd/airSwitch", 0)
+            set("anim/8/button", 0)
+            set("anim/9/button", 0)
+            set("anim/10/button", 0)
+            set("anim/11/button", 0)
+         end
+         
+         -- Fuel
+         set("anim/32/button", 0)
+         set("anim/33/button", 0)
+         set("anim/34/button", 0)
+         set("anim/35/button", 0)
+         set("anim/36/button", 0)
+         set("anim/37/button", 0)
+         set("anim/38/button", 0)
+         set("anim/39/button", 0)
+
+         set("anim/44/button", 0)
+         set("anim/59/button", 1)
+         set("1-sim/AP/fd1Switcher", 1)
+         set("1-sim/AP/fd2Switcher", 1)
+         set("anim/rhotery/35", 1)
+
+         -- Secure
+         set("anim/rhotery/3", 0)
+         set("anim/rhotery/4", 0)
+         set("anim/rhotery/5", 0)
+         set("1-sim/emer/lightsCover", 1)
+         set("1-sim/emer/lights", 0)
+         set("anim/47/button", 0)
+         set("anim/48/button", 0)
+         set("anim/49/button", 0)
+         set("anim/50/button", 0)
+         set("1-sim/cond/leftPackSelector", 0)
+         set("1-sim/cond/rightPackSelector", 0)
+         set("1-sim/engine/APUStartSelector", 0)
+         if get("sim/cockpit/engine/APU_N1") < 25 then
+            set("anim/16/button", 0)
+            set("1-sim/electrical/stbyPowerSelector", 0)
+            set("1-sim/electrical/batteryCover", 1)
+            set("anim/14/button", 0)
+            cpxpFoShutdownRun = false
+         end  
+      end 
+   end
+
+   do_often("CPXPFoShutdown()")
 
    -- Engine Start Calls
 
@@ -1775,7 +1880,19 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
                CPXPCockpitSetup()
                CPXPShutDown()
             end
-        end
+         end
+         --This bit is the right button
+         x1 = x2
+         x2 = x1 + intButtonWidth
+         y2 = y1 + intButtonHeight			
+         if MOUSE_X >= x1 and MOUSE_X <= x2 and MOUSE_Y >= y1 and MOUSE_Y < y2 then
+            print("Right Button")
+            if cpxpBEACON == 0 and cpxpWEIGHT_ON_WHEELS == 1 then
+               cpxpFoShutdownRun = true
+               print("i made it here")
+            end
+         end
+
         -- Header settigns trigger
         local x1 = intHudXStart + intFrameBorderSize + (intButtonWidth / 3)
         local y1 = intHudYStart + intFrameBorderSize + intButtonHeight + intButtonHeight
