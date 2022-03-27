@@ -1204,7 +1204,7 @@ end
     -- Create Settings window
     function ShowCrewPackXPSettings_wnd()
         ParseCrewPackXPSettings()
-        CrewPackXPSettings_wnd = float_wnd_create(450, 450, 0, true)
+        CrewPackXPSettings_wnd = float_wnd_create(450, 280, 0, true)
         float_wnd_set_title(CrewPackXPSettings_wnd, "CrewPackXP Settings")
         float_wnd_set_imgui_builder(CrewPackXPSettings_wnd, "CrewPackXPSettings_contents")
         float_wnd_set_onclose(CrewPackXPSettings_wnd, "CloseCrewPackXPSettings_wnd")
@@ -1240,136 +1240,49 @@ end
 
         imgui.SetCursorPos(20, imgui.GetCursorPosY())
         if imgui.BeginCombo("Engine Start Call", "", imgui.constant.ComboFlags.NoPreview) then
-        if imgui.Selectable("Left / Right", cpxpEngStartType == 1) then
-            cpxpEngStartType = 1
-            SaveCrewPackXPData()
-            print("CrewPackXP: Engine start call set to Left / Right")
-        end
-        if imgui.Selectable("1 / 2", cpxpEngStartType == 2) then
-            cpxpEngStartType = 2
-            SaveCrewPackXPData()
-            print("CrewPackXP: Engine start call set to 1 / 2")
-        end
-       imgui.EndCombo()
-    end
-    imgui.SetCursorPos(20, imgui.GetCursorPosY())
-    local changed, newVal = imgui.Checkbox("Play Localiser and Glideslop calls", cpxpLocgsCalls)
-    if changed then
-       cpxpLocgsCalls = newVal
-       SaveCrewPackXPData()
-       print("CrewPackXP: LOC / GS Call logic set to " .. tostring(syncAlt))
-    end
-    imgui.SetCursorPos(20, imgui.GetCursorPosY())
-    local changed, newVal = imgui.Checkbox("Automate FLCH at 400ft on TO", cpxpFLCH)
-    if changed then
-       cpxpFLCH = newVal
-       SaveCrewPackXPData()
-       print("CrewPackXP: FLCH press at 400ft set to " .. tostring(syncAlt))
-    end
-    imgui.SetCursorPos(20, imgui.GetCursorPosY())
-    local changed, newVal = imgui.Checkbox("FO Automatically Performs Preflight", cpxpFoPreflight)
-    if changed then
-       cpxpFoPreflight = newVal
-       SaveCrewPackXPData()
-       print("CrewPackXP: FO PreScan logic set to " .. tostring(cpxpFoPreflight))
-    end
-    
-    --[[
-  
-        imgui.SetCursorPos(20, imgui.GetCursorPosY())
-        local changed, newVal = imgui.Checkbox("Crew Pack FA Onboard?", cpxpFaOnboard)
-        if changed then
-            cpxpFaOnboard = newVal
-            SaveCrewPackXPData()
-           print("CrewPackXP: Start message logic set to " .. tostring(cpxpStartMsg))
+            if imgui.Selectable("Left / Right", cpxpEngStartType == 1) then
+                cpxpEngStartType = 1
+                SaveCrewPackXPData()
+                print("CrewPackXP: Engine start call set to Left / Right")
+            end
+            if imgui.Selectable("1 / 2", cpxpEngStartType == 2) then
+                cpxpEngStartType = 2
+                SaveCrewPackXPData()
+                print("CrewPackXP: Engine start call set to 1 / 2")
+            end
+            imgui.EndCombo()
         end
 
+        imgui.SetCursorPos(20, imgui.GetCursorPosY())
+        local changed, newVal = imgui.Checkbox("Play Localiser and Glideslop calls", cpxpLocgsCalls)
+        if changed then
+            cpxpLocgsCalls = newVal
+            SaveCrewPackXPData()
+            print("CrewPackXP: LOC / GS Call logic set to " .. tostring(syncAlt))
+        end
+        imgui.SetCursorPos(20, imgui.GetCursorPosY())
+        local changed, newVal = imgui.Checkbox("Automate FLCH at 400ft on TO", cpxpFLCH)
+        if changed then
+            cpxpFLCH = newVal
+            SaveCrewPackXPData()
+            print("CrewPackXP: FLCH press at 400ft set to " .. tostring(syncAlt))
+        end
+        imgui.SetCursorPos(20, imgui.GetCursorPosY())
+        local changed, newVal = imgui.Checkbox("FO Automatically Performs Preflight", cpxpFoPreflight)
+        if changed then
+            cpxpFoPreflight = newVal
+            SaveCrewPackXPData()
+            print("CrewPackXP: FO PreScan logic set to " .. tostring(cpxpFoPreflight))
+        end
         imgui.TextUnformatted("")
-        imgui.SetCursorPos(75, imgui.GetCursorPosY())
-        local changed, newVal1 = imgui.SliderFloat("PA Volume", (cpxpPaVol * 100), 1, 100, "%.0f")
-        if changed then
-            cpxpPaVol = (newVal1 / 100)
-            set_sound_gain(Output_snd, cpxpPaVol)
-            play_sound(Output_snd)
-            SaveCrewPackXPData()
-            print("767CrewPacks: Volume set to " .. (cpxpPaVol * 100) .. " %")
-        end
-        
-        imgui.SetCursorPos(20, imgui.GetCursorPosY())
-        local changed, newVal = imgui.Checkbox("Supress default flight attendant from pestering", cpxpDefaultFA)
-        if changed then
-            cpxpDefaultFA = newVal
-            SaveCrewPackXPData()
-            print("CrewPackXP: Default FA logic set to " .. tostring(cpxpFoPreflight))
-        end
-        imgui.SetCursorPos(20, imgui.GetCursorPosY())
-        local changed, newVal = imgui.Checkbox("FO automation on go around", cpxpGaAutomation)
-        if changed then
-            cpxpGaAutomation = newVal
-            SaveCrewPackXPData()
-            print("CrewPackXP: Go Around automation logic set to " .. tostring(cpxpGaAutomation))
-        end
-        imgui.SetCursorPos(20, imgui.GetCursorPosY())
-        local changed, newVal = imgui.Checkbox("Chocks, Doors and belt loaders tied to Beacon on/off", cpxpGseOnBeacon)
-        if changed then
-            cpxpGseOnBeacon = newVal
-            SaveCrewPackXPData()
-            print("CrewPackXP: GSE on beacon set to " .. tostring(cpxpGseOnBeacon))
-        end
-        
-        imgui.SetCursorPos(20, imgui.GetCursorPosY())
-        local changed, newVal = imgui.Checkbox("Auto sync Cpt and FO Altimiters", syncAlt)
-        if changed then
-            syncAlt = newVal
-            SaveCrewPackXPData()
-            print("CrewPackXP: Altimiter Sync logic set to " .. tostring(syncAlt))
-    end
-    imgui.SetCursorPos(20, imgui.GetCursorPosY())
-    imgui.TextUnformatted("Auto power connections: ")
-    imgui.SetCursorPos(20, imgui.GetCursorPosY())
-    local changed, newVal = imgui.Checkbox("GPU on bay", cpxpGpuConnect)
-    if changed then
-       cpxpGpuConnect = newVal
-       SaveCrewPackXPData()
-       print("CrewPackXP: GPU Power on ground")
-    end
-    imgui.SameLine()
-    local changed, newVal = imgui.Checkbox("APU smart start", cpxpApuConnect)
-    if changed then
-       cpxpApuConnect = newVal
-       SaveCrewPackXPData()
-       print("CrewPackXP: APU started on ground")
-    end --]]
-        imgui.TextUnformatted("")
-        imgui.SetCursorPos(75, imgui.GetCursorPosY())
+        imgui.SetCursorPos(30, imgui.GetCursorPosY())
         local changed, newVal = imgui.SliderFloat("Crew Volume", (cpxpSoundVol * 100), 1, 100, "%.0f")
         if changed then
             cpxpSoundVol = (newVal / 100)
             set_sound_gain(Output_snd, cpxpSoundVol)
             play_sound(Output_snd)
             SaveCrewPackXPData()
-            print("767CrewPacks: Volume set to " .. (cpxpSoundVol * 100) .. " %")
-        end
-        imgui.Separator()
-        imgui.TextUnformatted("")
-        imgui.SetCursorPos(150, imgui.GetCursorPosY())
-        if imgui.Button("Ask FO to Preflight") then
-            cpxpFoPre_Basics = false
-            cpxpFoPre_ApuOnline = false
-            cpxpFoPre_AfterPower = false
-            cpxpFoPre_CDU1 = false
-            cpxpFoPre_CDU2 = false
-            cpxpFoPre_CDU3 = false
-            cpxpFoPre_CDU1S = false
-            cpxpFoPre_CDU2S = false
-            cpxpFoPre_CDU3S = false
-            cpxpFoPre_CDUS = false
-            cpxpFoPre_ECS = false
-            cpxpFoPreflighComplete = false
-            cpxpFoDoor = false
-            cpxpFoPreflight = true
-            CPXPFoPreflight()
-            CPXPFoDoor()
+            print("CrewPackXP: Volume set to " .. (cpxpSoundVol * 100) .. " %")
         end
 
         imgui.Separator()
@@ -1382,10 +1295,10 @@ end
 
     function CloseCrewPackXPSettings_wnd()
         if CrewPackXPSettings_wnd then
-            CloseCrewPackXPSettings_wnd()
-            float_wnd_destroy(CrewPackXPSettings_wnd)
+           cpxpShowSettingsWindow = false
+           float_wnd_destroy(CrewPackXPSettings_wnd)
         end
-    end
+     end
 
     function ToggleCrewPackXPSettings()
         if not cpxpShowSettingsWindow then
