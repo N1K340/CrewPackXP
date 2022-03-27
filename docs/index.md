@@ -64,7 +64,8 @@ Bug reports, please include the x-plane log.txt file in the main x-plane folder 
 ## Acknowledgements
 Carreras Nicholas - [Luna INI Parser (LIP)](https://github.com/Dynodzzo/Lua_INI_Parser)  
 'Togfox' - [FSE HUD](https://forums.x-plane.org/index.php?/files/file/53617-fse-hud/)  
-'X-Friese' - [FlyWithLUA Plugin](https://forums.x-plane.org/index.php?/files/file/38445-flywithlua-ng-next-generation-edition-for-x-plane-11-win-lin-mac/)
+'X-Friese' - [FlyWithLUA Plugin](https://forums.x-plane.org/index.php?/files/file/38445-flywithlua-ng-next-generation-edition-for-x-plane-11-win-lin-mac/)  
+'mkultra44' - Documentation proofing  
 
 ## Current Script Versions
 - Flight Factor 767 - dev  
