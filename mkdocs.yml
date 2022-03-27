@@ -1,11 +1,10 @@
 site_name: CrewPackXP
 site_url: https://github.com/N1K340/CrewPackXP
+theme: readthedocs
 nav:
   - Home: index.md
+  - Changelog: changelog.md
+  - License: license.md
   - Aircraft:
     - Hot Start CL-650: CL650.md
     - Flight Factor 757/767: 757.md
-  - About:
-    - Changelog: changelog.md
-    - License: license.md
-theme: readthedocs

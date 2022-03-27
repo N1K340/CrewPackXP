@@ -34,6 +34,8 @@ New features and bug fixes listed in [change log](changelog.md).
 Copy the Scripts and Modules folders into the main folder of FlyWithLUA:  
 > X-Plane 11 > Resources > plugins > FlyWithLua
 
+![install](imgs/CrewPack_Install.gif)
+
 Once enabled, the First Officer should announce his entry to the cockpit roughly 15 seconds after loading in.
 
 CrewPackXP settings can be accessed via the X-Plane menu bar:  
