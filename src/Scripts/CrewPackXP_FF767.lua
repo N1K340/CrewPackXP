@@ -635,7 +635,7 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
       if not cpxpReady then
          return
       end
-      if cpxpFoShutdownRun and cpxpWEIGHT_ON_WHEELS == 1 and cpxpBEACON == 0 and cpxpENG1_N2 < 20 and cpxpENG2_N2 < 20 then
+      if cpxpFoShutdownRun and cpxpWEIGHT_ON_WHEELS == 1 and cpxpBEACON == 0 and cpxpENG1_N2 < 5 and cpxpENG2_N2 < 5 then
          cpxpMsgStr = "CrewPackXP: FO powering it down"
          cpxpBubbleTimer = 0
          print("Shutting it down")
