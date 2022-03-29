@@ -5,21 +5,21 @@
     <img src="https://img.shields.io/badge/Aircraft-Flight%20Factor%20757-blue" /> <img src="https://img.shields.io/badge/Aircraft-Flight%20Factor%20767-blue" /> <img src="https://img.shields.io/badge/Aircraft-Hot%20Start%20Challenger-blue" />
 </p>
 
-**Updated 26/03/2022**
+**Updated xx/xx/2022**
 
 CrewPackXP is a FlyWithLUA utility designed to add some crew communications for aircraft in X-Plane 11. This includes basic call outs, and in some cases assistance from the PNF in high workload phases of flight. Settings can be adjusted to enable or disable the whole plugin, or just certain features of each aircraft.  
 
 Flight Factor 757 / 767:  
-    - Virtual FO to preflight aircraft  
-    - Takeoff and Landing calls by both crew members  
-    - Flight Attendant PA's  
-    - Ground Crew positioning of equipment  
-    - Virtual FO assistance with go-around procedure  
+- Virtual FO to preflight aircraft  
+- Takeoff and Landing calls by both crew members  
+- Flight Attendant PA's  
+- Ground Crew positioning of equipment  
+- Virtual FO assistance with go-around procedure  
 
 Hot Start Challenger 650:  
     - Virtual FO to preflight aircraft  
     - Takeoff and Landing calls by both crew members  
-    
+
 ## Source Code  
 <https://github.com/N1K340/CrewPackXP/tree/main/src>
 
@@ -27,17 +27,19 @@ Hot Start Challenger 650:
 <http://crewpackxp.readthedocs.io/>
 
 ## Changelog  
-New features and bug fixes listed in [change log](https://crewpackxp.readthedocs.io/en/latest/changelog/).
+New features and bug fixes listed in [change log](changelog.md).
 
 ## Installation
 
-Copy the Scripts and Modules folders into the main folder of FlyWithLUA: 
-X-Plane 11 > Resources > plugins > FlyWithLua
+Copy the Scripts and Modules folders into the main folder of FlyWithLUA:  
+> X-Plane 11 > Resources > plugins > FlyWithLua
+
+![install](docs/imgs/CrewPack_Install.gif)
 
 Once enabled, the First Officer should announce his entry to the cockpit roughly 15 seconds after loading in.
 
-Settings can be accessed within the sim by navigating too:
-    > Plugins > FlyWithLua > FlyWithLua Macros > Crew Pack Settings
+CrewPackXP settings can be accessed via the X-Plane menu bar:  
+> Plugins > FlyWithLua > FlyWithLua Macros > Crew Pack Settings
 
 
 ## Prerequisite
@@ -65,8 +67,8 @@ Carreras Nicholas - [Luna INI Parser (LIP)](https://github.com/Dynodzzo/Lua_INI_
 'X-Friese' - [FlyWithLUA Plugin](https://forums.x-plane.org/index.php?/files/file/38445-flywithlua-ng-next-generation-edition-for-x-plane-11-win-lin-mac/)
 
 ## Current Script Versions
-- Flight Factor 767 - v1.0.1  
-- Hot Start CL650 - v1.1
+- Flight Factor 767 - dev  
+- Hot Start CL650 - dev
 
 ## Alternate Sources
 [X-Plane.org](https://forums.x-plane.org/index.php?/files/file/79042-crewpackxp-crew-callouts/)  
