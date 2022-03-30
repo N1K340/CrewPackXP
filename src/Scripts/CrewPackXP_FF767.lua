@@ -1140,6 +1140,9 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
    do_often("CPXPLocGsAlive()")
 
    -- Landing Roll / Speedbrakes - Reset by: Gear Up
+   local cpxpFOAfterLand = true
+   local cpxpFOLandFlow = true
+
    function CPXPLanding()
       if not cpxpReady then
          return
@@ -1166,6 +1169,16 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
          cpxpApuStart = true
          cpxpMsgStr = "CrewPackXP: Starting APU"
          cpxpBubbleTimer = 0
+      end
+      if cpxpWEIGHT_ON_WHEELS == 1 and cpxpFlightOccoured and cpxpFOAfterLand and not cpxpFOLandFlow and IAS <= 30 then
+         set("1-sim/WX/tiltRotary",1)
+         set("1-sim/WX/tiltRotary", 0)
+         set("1-sim/ndpanel/1/hsiWxr", 0)
+         set("1-sim/ndpanel/2/hsiWxr", 0)
+         set("1-sim/WX/modeSwitcher", 0)
+         set("anim/rhotery/25", 0)
+         set("sim/flightmodel/controls/flaprqst", 0)
+         set("anim/rhotery/35", 3)
       end
    end
 
@@ -1431,7 +1444,7 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
    -- Create Settings window
    function ShowCrewPackXPSettings_wnd()
       ParseCrewPackXPSettings()
-      CrewPackXPSettings_wnd = float_wnd_create(450, 450, 0, true)
+      CrewPackXPSettings_wnd = float_wnd_create(450, 480, 0, true)
       float_wnd_set_title(CrewPackXPSettings_wnd, "CrewPackXP Settings")
       float_wnd_set_imgui_builder(CrewPackXPSettings_wnd, "CrewPackXPSettings_contents")
       float_wnd_set_onclose(CrewPackXPSettings_wnd, "CloseCrewPackXPSettings_wnd")
@@ -1442,10 +1455,10 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
       local winHeight = imgui.GetWindowHeight()
       local titleText = cpxpVersion
       local titleTextWidth, titileTextHeight = imgui.CalcTextSize(titleText)
-
+      
       imgui.SetCursorPos(winWidth / 2 - titleTextWidth / 2, imgui.GetCursorPosY())
       imgui.TextUnformatted(titleText)
-
+      
       imgui.Separator()
       imgui.TextUnformatted("")
       imgui.SetCursorPos(20, imgui.GetCursorPosY())
@@ -1456,6 +1469,20 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
          print("CrewPackXP: Plugin turned on" .. tostring(cpxpMaster))
       end
       imgui.SetCursorPos(20, imgui.GetCursorPosY())
+      local changed, newVal = imgui.Checkbox("Play corny sound bite on loading", cpxpStartMsg)
+      if changed then
+         cpxpStartMsg = newVal
+         SaveCrewPackXPData()
+         print("CrewPackXP: Start message logic set to " .. tostring(cpxpStartMsg))
+      end
+      imgui.SetCursorPos(20, imgui.GetCursorPosY())
+      local changed, newVal = imgui.Checkbox("Supress default flight attendant from pestering", cpxpDefaultFA)
+      if changed then
+         cpxpDefaultFA = newVal
+         SaveCrewPackXPData()
+         print("CrewPackXP: Default FA logic set to " .. tostring(cpxpFoPreflight))
+      end
+      imgui.SetCursorPos(20, imgui.GetCursorPosY())
       local changed, newVal = imgui.Checkbox("Crew Pack FA Onboard?", cpxpFaOnboard)
       if changed then
          cpxpFaOnboard = newVal
@@ -1463,11 +1490,18 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
          print("CrewPackXP: Start message logic set to " .. tostring(cpxpStartMsg))
       end
       imgui.SetCursorPos(20, imgui.GetCursorPosY())
-      local changed, newVal = imgui.Checkbox("Play corny sound bite on loading", cpxpStartMsg)
-      if changed then
-         cpxpStartMsg = newVal
-         SaveCrewPackXPData()
-         print("CrewPackXP: Start message logic set to " .. tostring(cpxpStartMsg))
+      if imgui.BeginCombo("Engine Start Call", "", imgui.constant.ComboFlags.NoPreview) then
+         if imgui.Selectable("Left / Right", cpxpEngStartType == 1) then
+            cpxpEngStartType = 1
+            SaveCrewPackXPData()
+            print("CrewPackXP: Engine start call set to Left / Right")
+         end
+         if imgui.Selectable("Engine 1 / 2", cpxpEngStartType == 2) then
+            cpxpEngStartType = 2
+            SaveCrewPackXPData()
+            print("CrewPackXP: Engine start call set to 1 / 2")
+         end
+         imgui.EndCombo()
       end
       imgui.SetCursorPos(20, imgui.GetCursorPosY())
       local changed, newVal = imgui.Checkbox("Play Localiser and Glideslop calls", cpxpLocgsCalls)
@@ -1484,11 +1518,11 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
          print("CrewPackXP: FO PreScan logic set to " .. tostring(cpxpFoPreflight))
       end
       imgui.SetCursorPos(20, imgui.GetCursorPosY())
-      local changed, newVal = imgui.Checkbox("Supress default flight attendant from pestering", cpxpDefaultFA)
+      local changed, newVal = imgui.Checkbox("FO Afterlanding Scan flow", cpxpFOAfterLand)
       if changed then
-         cpxpDefaultFA = newVal
+         cpxpFOAfterLand = newVal
          SaveCrewPackXPData()
-         print("CrewPackXP: Default FA logic set to " .. tostring(cpxpFoPreflight))
+         print("CrewPackXP: FO Afterlanding scan flow set to " .. tostring(cpxpFOAfterLand))
       end
       imgui.SetCursorPos(20, imgui.GetCursorPosY())
       local changed, newVal = imgui.Checkbox("FO automation on go around", cpxpGaAutomation)
@@ -1503,20 +1537,6 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
          cpxpGseOnBeacon = newVal
          SaveCrewPackXPData()
          print("CrewPackXP: GSE on beacon set to " .. tostring(cpxpGseOnBeacon))
-      end
-      imgui.SetCursorPos(20, imgui.GetCursorPosY())
-      if imgui.BeginCombo("Engine Start Call", "", imgui.constant.ComboFlags.NoPreview) then
-         if imgui.Selectable("Left / Right", cpxpEngStartType == 1) then
-            cpxpEngStartType = 1
-            SaveCrewPackXPData()
-            print("CrewPackXP: Engine start call set to Left / Right")
-         end
-         if imgui.Selectable("Engine 1 / 2", cpxpEngStartType == 2) then
-            cpxpEngStartType = 2
-            SaveCrewPackXPData()
-            print("CrewPackXP: Engine start call set to 1 / 2")
-         end
-         imgui.EndCombo()
       end
       imgui.SetCursorPos(20, imgui.GetCursorPosY())
       local changed, newVal = imgui.Checkbox("Auto sync Cpt and FO Altimiters", syncAlt)
@@ -1605,6 +1625,7 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
          cpxpDefaultFA = cpxpCrewPackXPSettings.CrewPack767.cpxpDefaultFA
          cpxpFaOnboard = cpxpCrewPackXPSettings.CrewPack767.cpxpFaOnboard
          cpxpEngStartType = cpxpCrewPackXPSettings.CrewPack767.cpxpEngStartType
+         cpxpFOAfterLand = cpxpCrewPackXPSettings.CrewPack767.cpxpFOAfterLand
          print("CrewPackXP: Settings Loaded")
          cpxpSetGain()
       else
@@ -1633,6 +1654,8 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
             cpxpFaOnboard = cpxpFaOnboard,
             cpxpPaVol = cpxpPaVol,
             cpxpEngStartType = cpxpEngStartType,
+            cpxpFOAfterLand = cpxpFOAfterLand,
+
          }
       }
       print("CrewPackXP: Settings Saved")
