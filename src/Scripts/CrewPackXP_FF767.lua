@@ -984,6 +984,7 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
          cpxpGearDownPlayed = false
          cpxpFlightOccoured = true
          cpxpApuStart = false
+	 cpxpFOLandFlow = false
          cpxpSpdBrkNotPlayed = false
          cpxpSpdBrkPlayed = false
          cpxpSixtyPlayed = false
