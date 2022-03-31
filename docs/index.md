@@ -5,7 +5,7 @@
     <img src="https://img.shields.io/badge/Aircraft-Flight%20Factor%20757-blue" /> <img src="https://img.shields.io/badge/Aircraft-Flight%20Factor%20767-blue" /> <img src="https://img.shields.io/badge/Aircraft-Hot%20Start%20Challenger-blue" />
 </p>
 
-**Updated xx/xx/2022**
+**Updated 01/04/2022**
 
 CrewPackXP is a FlyWithLUA utility designed to add some crew communications for aircraft in X-Plane 11. This includes basic callouts, and in some cases assistance from the PNF in high workload phases of flight. Settings can be adjusted to enable or disable the whole plugin, or just certain features of each aircraft.  
 
@@ -68,8 +68,8 @@ Carreras Nicholas - [Luna INI Parser (LIP)](https://github.com/Dynodzzo/Lua_INI_
 'mkultra44' - Documentation proofing  
 
 ## Current Script Versions
-- Flight Factor 767 - dev  
-- Hot Start CL650 - dev
+- Flight Factor 767 - 1.4  
+- Hot Start CL650 - 1.4
 
 ## Alternate Sources
 [X-Plane.org](https://forums.x-plane.org/index.php?/files/file/79042-crewpackxp-crew-callouts/)  

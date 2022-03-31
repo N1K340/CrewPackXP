@@ -36,7 +36,7 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
 
    --------
    -- Initialisation Variables
-   local cpxpVersion = "CrewPack XP : FF 767 v1.0"
+   local cpxpVersion = "CrewPack XP : FF 767 v1.4"
    local cpxpInitDelay = 15
    local cpxpStartTime = 0
    dataref("cpxp_SIM_TIME", "sim/time/total_running_time_sec")
