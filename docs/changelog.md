@@ -4,7 +4,6 @@
 ###### Bug Fixes  
 - FF767 757-200 not loading CrewPackXP aircraft module.    
 - FF767 FO Preflight: HSI modes corrected; Addition of - EEC Switches, Engine Limiter Switches, Radar Tilt FUll Up, Left ACP COM 1 & 2 on for Vatsim. [#31](https://github.com/N1K340/CrewPackXP/issues/31)  
-- FF767 Logic in FO pre-flight to set EFIS to map mode was inverse for modern EFIS upgrade. [#31](https://github.com/N1K340/CrewPackXP/issues/31)  
 - HS650 Wouldn't engage climb thrust on subseqent departures.  [#19](https://github.com/N1K340/CrewPackXP/issues/19)  
 
 ###### Enhancements:
