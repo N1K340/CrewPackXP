@@ -113,6 +113,8 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
    local cpxpSeatsLandingPlayed = true
    local cpxpPaxSeatBeltsPlayed = true
    local cpxpFaTaxiInPaPlayed = true
+   local cpxpFOAfterLand = true
+   local cpxpFOLandFlow = true
 
    -- Sound Files
    local cpxpEightyKts_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/FF767/pnf_pf_80kts.wav")
@@ -984,7 +986,7 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
          cpxpGearDownPlayed = false
          cpxpFlightOccoured = true
          cpxpApuStart = false
-	 cpxpFOLandFlow = false
+         cpxpFOLandFlow = false
          cpxpSpdBrkNotPlayed = false
          cpxpSpdBrkPlayed = false
          cpxpSixtyPlayed = false
@@ -1141,8 +1143,6 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
    do_often("CPXPLocGsAlive()")
 
    -- Landing Roll / Speedbrakes - Reset by: Gear Up
-   local cpxpFOAfterLand = true
-   local cpxpFOLandFlow = true
 
    function CPXPLanding()
       if not cpxpReady then
@@ -1172,6 +1172,8 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
          cpxpBubbleTimer = 0
       end
       if cpxpWEIGHT_ON_WHEELS == 1 and cpxpFlightOccoured and cpxpFOAfterLand and not cpxpFOLandFlow and IAS <= 30 then
+         cpxpMsgStr = "CrewPackXP: FO After Ladning Flow"
+         cpxpBubbleTimer = 0
          set("1-sim/WX/tiltRotary",1)
          set("1-sim/WX/tiltRotary", 0)
          set("1-sim/ndpanel/1/hsiWxr", 0)
@@ -1180,6 +1182,7 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
          set("anim/rhotery/25", 0)
          set("sim/flightmodel/controls/flaprqst", 0)
          set("anim/rhotery/35", 3)
+         cpxpFOLandFlow = true
       end
    end
 
