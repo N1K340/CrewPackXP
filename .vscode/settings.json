@@ -88,7 +88,27 @@
         "CPXP_REV1ACT",
         "CPXP_REV2ACT",
         "PXP_REV1",
-        "PXP_REV2"
+        "PXP_REV2",
+        "command_once",
+        "graphics",
+        "XPLMSetGraphicsState",
+        "MOUSE_X",
+        "MOUSE_Y",
+        "cpxpBEACON",
+        "do_on_mouse_click",
+        "cpxpBELTS_SIGN",
+        "cpxpENGINE_MODE",
+        "cpxpV1",
+        "cpxpVR",
+        "cpxpVNAV_ENGAGED_LT",
+        "cpxpVNAV_BUTTON",
+        "cpxpGEAR_HANDLE",
+        "cpxpSPEED_BRAKE",
+        "cpxpPARK_BRAKE",
+        "cpxpTOGA_BUTTON",
+        "cpxpLNAV_BUTTON",
+        "cpxpFLCH_BUTTON",
+        "cpxpV2"
     ],
     "Lua.diagnostics.disable": [
         "undefined-doc-name"

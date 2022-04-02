@@ -5,17 +5,24 @@
     Captain - Will
     FO - Rodney
 
-    Changelog:
-    v0.1 - Initial Protoyping
-    v0.2 - Corrected typo on line 853
-    v0.3 - Added missing sounds for reverse on landing.
-    v1.0 - Release candidate
-    v1.1 - Corrected thrust ref logic after HS 1.4.1 update.
+    Copyright (C) 2022  N1K340
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License version 3 as published by
+    the Free Software Foundation.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/gpl-3.0.html>.
 ]]
 
 if AIRCRAFT_FILENAME == "CL650.acf" then
     -- Initiialisation Variables
-    local cpxpVersion = "Hot Start CL-650 v1.1"
+    local cpxpVersion = "CrewPack XP : Hot Start CL-650 v1.4"
 
     local cpxpInitDelay = 10
     local cpxpStartTime = 0
@@ -25,6 +32,10 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
     local LIP = require("LIP")
     require "graphics"
     
+    -- Status HUD Position
+    local intHudXStart = 15 -- Moves Settings HUD left and right, 0 being far left of screen
+    local intHudYStart = 475 -- Moves Settings HUD up and down, 0 being bottom of screen
+
     -- Var
     local cpxpBubbleTimer = 0
     local cpxpMsgStr = ""
@@ -37,7 +48,7 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
     local cpxpFlightOccoured = false
     
     local cpxpCrewPackXPSettings = {}
-    local cpxpShowSettingsWindow = true
+    local cpxpShowSettingsWindow = false
     local cpxpMaster = true
     local cpxpStartMsg = true
     local cpxpPaVol = 0.3
@@ -93,7 +104,7 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
    local cpxp2Green_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/HS650/pnf_RevGreen.wav")
    local cpxpRevUnsafe_snd = load_WAV_file(SCRIPT_DIRECTORY .. "CrewPackXP/Sounds/HS650/pnf_RevUnsafe.wav")
 
-    function cpxpSetGain()
+    function CPXPSetGain()
         set_sound_gain(cpxpStart1, cpxpSoundVol)
         set_sound_gain(cpxpStart2, cpxpSoundVol)
         set_sound_gain(cpxpStart3, cpxpSoundVol)
@@ -216,6 +227,27 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
 
     do_often("CPXPDelayedInit()")
 
+    -- All sounds muted when moved to external view
+    local cpxpExternalView = 0
+
+    function CPXPOutsideMute()
+      if not cpxpReady then
+         return
+      end
+
+      if cpxpExternalView ~= get("sim/graphics/view/view_is_external") then
+         cpxpExternalView = get("sim/graphics/view/view_is_external")
+         if cpxpExternalView == 1 then
+            cpxpSoundVol = 0.01
+            CPXPSetGain()
+         else
+            ParseCrewPackXPSettings()
+         end
+      end
+    end
+
+   do_every_frame("CPXPOutsideMute()")
+
     -- Start Up Sounds
     function CPXPStartSound()
         if not cpxpReady then
@@ -293,7 +325,7 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
         end
         if cpxp_SIM_TIME > (cpxpStartTime + 10) then
             if cpxpFoPreflight and not cpxpFoPreflighComplete then
-                if (get("CL650/overhead/ext_lts/beacon") == 0) then
+                if cpxpBEACON == 0 then
                     cpxpMsgStr = "CrewPackXP: Conducting Preflight"
                     cpxpBubbleTimer = 0
                     if not cpxpFoPre_Basics then
@@ -410,10 +442,10 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
                         -- Pedestal
                         command_once("CL650/pedestal/trim/stab_trim_ch_1")
                         command_once("CL650/pedestal/trim/stab_trim_ch_2")
-                        -- if get("CL650/lamps/pedestal/trim/mach_trim") ~= 0 then
-                        --     set("CL650/pedestal/trim/mach", 1)
-                        --     print("Yes i pressed mach trim")
-                        -- end
+                        if get("CL650/lamps/pedestal/trim/mach_trim") ~= 0 then
+                            set("CL650/pedestal/trim/mach", 1)
+                            print("Yes i pressed mach trim")
+                        end
                         command_once("CL650/pedestal/yd/yd_1")
                         command_once("CL650/pedestal/yd/yd_2")
                         command_once("CL650/pedestal/throttle/ats_disc_L")
@@ -519,7 +551,7 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
             end
         end
     end
-    
+
     
     
     
@@ -527,7 +559,162 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
     do_often("CPXPFoPreflight()")
     do_often("CPXPFoDoor()")
 
-    -- Engine Start Calls
+    -- Fo Securing Checks
+
+    local cpxpApuShutdown = false
+    local cpxpDoorclosed = false
+    local cpxpFoShutDownRun = false
+    local cpxpBasicFoShutDown = false
+    local cpxpDoorSeq = 0
+
+    function CPXPFoShutdown()
+        if not cpxpReady then
+            return
+        end
+        if cpxpBEACON == 0 and cpxpENG1_N2 < 5 and cpxpENG2_N2 < 5 and cpxpFoShutDownRun then
+            cpxpMsgStr = "CrewPackXP: FO is packing it up"
+            cpxpBubbleTimer = 0
+            
+            
+            if not cpxpBasicFoShutDown then
+                set("CL650/overhead/signs/emer_lts", 0)
+                if get("CL650/overhead/elec/ac_dc_util") == 0 then
+                    command_once("CL650/overhead/elec/ac_dc_util")
+                end
+                set("CL650/pedestal/thr_rev/arm_L", 0)
+                set("CL650/pedestal/thr_rev/arm_R", 0)
+                set("CL650/pedestal/gear/nws", 0)
+                set("CL650/overhead/hyd/hyd_1B", 0)
+                set("CL650/overhead/hyd/hyd_3A", 0)
+                set("CL650/overhead/hyd/hyd_3B", 0)
+                set("CL650/overhead/hyd/hyd_2B", 0)
+                set("CL650/overhead/ext_lts/nav", 0)
+                set("CL650/overhead/ext_lts/logo", 0)
+                set("CL650/overhead/elec/apu_gen_value", 0)
+                set("CL650/overhead/apu/start_stop", 0)
+                if get("CL650/overhead/apu/start_stop") ~= 0 then
+                    command_once("CL650/overhead/apu/start_stop")
+                end
+                if get("CL650/overhead/aircond/pack_L") ~= 0 then
+                    command_once("CL650/overhead/aircond/pack_L")
+                end
+                if get("CL650/overhead/aircond/pack_R") ~= 0 then
+                    command_once("CL650/overhead/aircond/pack_R")
+                end
+                if get("CL650/overhead/bleed/10st/apu_lcv") ~= 0 then
+                    command_once("CL650/overhead/bleed/10st/apu_lcv")
+                end
+                if get("CL650/overhead/bleed/10st/isol") ~= 0 then
+                    command_once("CL650/overhead/bleed/10st/isol")
+                end
+                if get("CL650/overhead/apu/pwr_fuel") ~= 0 then
+                    command_once("CL650/overhead/apu/pwr_fuel")
+                end
+
+                set("CL650/fuelpnl/int/sov/l_main_value", 0)
+                set("CL650/fuelpnl/int/sov/tail_value", 0)
+                set("CL650/fuelpnl/int/sov/aux_value", 0)
+                set("CL650/fuelpnl/int/sov/r_main_value", 0)
+                set("CL650/fuelpnl/int/sov/r_main_value", 0)
+                set("CL650/galley_lts/entry_dome", 0)
+                set("CL650/cabin_lts/downwash", 0)
+                set("CL650/lav_lts/dome", 0)
+                set("CL650/bag_lts/dome", 0)
+
+                -- Mains Chocks
+                print("Installing chocks")
+                set_array("CL650/gear/chocks", 0, 1)
+                set_array("CL650/gear/chocks", 1, 1)
+                set_array("CL650/gear/chocks", 2, 1)
+
+                -- Remove covers
+                print("Installing covers")
+                set("CL650/covers/pitot/pilot", 1)
+                set("CL650/covers/pitot/standby", 1)
+                set("CL650/covers/aoa/pilot", 1)
+                set("CL650/covers/ice/pilot", 1)
+                set("CL650/covers/pitot/copilot", 1)
+                set("CL650/covers/ice/copilot", 1)
+                set("CL650/covers/aoa/copilot", 1)
+
+                -- Remove Pins
+                print("Installing pins")
+                set("CL650/gear/pins/left", 1)
+                set("CL650/gear/pins/nose", 1)
+                set("CL650/gear/pins/right", 1)
+
+                -- Open Blinds
+                set("CL650/window/blinds/1R", 0)
+                set("CL650/window/blinds/2R", 0)
+                set("CL650/window/blinds/3R", 0)
+                set("CL650/window/blinds/4R", 0)
+                set("CL650/window/blinds/5R", 0)
+                set("CL650/window/blinds/6R", 0)
+                set("CL650/window/blinds/7R", 0)
+                set("CL650/window/blinds/8R", 0)
+                set("CL650/window/blinds/1L", 0)
+                set("CL650/window/blinds/2L", 0)
+                set("CL650/window/blinds/3L", 0)
+                set("CL650/window/blinds/4L", 0)
+                set("CL650/window/blinds/5L", 0)
+                set("CL650/window/blinds/6L", 0)
+                set("CL650/window/blinds/7L", 0)
+                print("Blinds Closed")
+                print("Basic items complete, waiting on APU")
+                cpxpBasicFoShutDown = true
+            end
+
+            if not cpxpApuShutdown and get("sim/cockpit/engine/APU_N1") == 0 then
+                set("CL650/overhead/elec/batt_master_value", 0)
+                cpxpApuShutdown = true
+                cpxpDoorSeq = 1
+                print("CrewPackXP: APU Shutdown, door should be closing")
+            end
+
+            if not cpxpDoorclosed and cpxpDoorSeq == 2 then
+                print("Door Closed")
+                set("CL650/doors/main/ext_handle_rotate_value", 0)
+                cpxpDoorSeq = 3
+            end
+
+            if not cpxpDoorclosed and cpxpDoorSeq == 3 then
+               set("CL650/doors/main/ext_handle_inout_value", 0) 
+               print("Locking Door")
+               cpxpDoorSeq = 4
+            end
+
+            if cpxpDoorSeq == 4 then
+                cpxpFoShutDownRun = false
+               cpxpApuShutdown = false
+               cpxpDoorclosed = false
+               cpxpBasicFoShutDown = false
+               cpxpDoorSeq = 0
+               print("CrewPackXP: FO has finished shutting down the Challenger")
+            end
+            
+        end
+    end
+    
+    function CPXPcloseTheDoor()
+        if not cpxpReady then
+            return
+        end    
+        if cpxpApuShutdown and cpxpDoorSeq == 1 then
+            if get("CL650/doors/main/door") > 0.002 then
+                set("CL650/doors/main/door_value", 0.0)
+                -- print("Closing Door")
+            elseif get("CL650/doors/main/door") < 0.002 then
+                cpxpDoorSeq = 2
+                print("Next Step")
+            end
+        end
+    end
+
+    do_every_frame("CPXPcloseTheDoor()")
+    do_often("CPXPFoShutdown()")
+
+
+        -- Engine Start Calls
 
     function CPXPEngineStart()
         if not cpxpReady then
@@ -882,9 +1069,9 @@ if AIRCRAFT_FILENAME == "CL650.acf" then
             cpxpGearUpSelectedPlay = false
             cpxpGearDnSelectedPlay = true
             cpxpGearDnIndPlay = false
-            cpxpPosRatePlayed = false
             cpxpFLCHPress = false
             cpxpFLCHPlay = false
+            cpxpClimbThrustPressed = false
            -- cpxpTogaEvent = false
            -- cpxpTogaMsg = false
            -- set("1-sim/lights/landingN/switch", 1)
@@ -1172,7 +1359,7 @@ end
     -- Create Settings window
     function ShowCrewPackXPSettings_wnd()
         ParseCrewPackXPSettings()
-        CrewPackXPSettings_wnd = float_wnd_create(450, 450, 0, true)
+        CrewPackXPSettings_wnd = float_wnd_create(450, 280, 0, true)
         float_wnd_set_title(CrewPackXPSettings_wnd, "CrewPackXP Settings")
         float_wnd_set_imgui_builder(CrewPackXPSettings_wnd, "CrewPackXPSettings_contents")
         float_wnd_set_onclose(CrewPackXPSettings_wnd, "CloseCrewPackXPSettings_wnd")
@@ -1181,7 +1368,7 @@ end
     function CrewPackXPSettings_contents(CrewPackXPSettings_wnd, x, y)
         local winWidth = imgui.GetWindowWidth()
         local winHeight = imgui.GetWindowHeight()
-        local titleText = "CrewPackXP " .. cpxpVersion
+        local titleText = cpxpVersion
         local titleTextWidth, titileTextHeight = imgui.CalcTextSize(titleText)
 
         imgui.SetCursorPos(winWidth / 2 - titleTextWidth / 2, imgui.GetCursorPosY())
@@ -1208,136 +1395,49 @@ end
 
         imgui.SetCursorPos(20, imgui.GetCursorPosY())
         if imgui.BeginCombo("Engine Start Call", "", imgui.constant.ComboFlags.NoPreview) then
-        if imgui.Selectable("Left / Right", cpxpEngStartType == 1) then
-            cpxpEngStartType = 1
-            SaveCrewPackXPData()
-            print("CrewPackXP: Engine start call set to Left / Right")
-        end
-        if imgui.Selectable("1 / 2", cpxpEngStartType == 2) then
-            cpxpEngStartType = 2
-            SaveCrewPackXPData()
-            print("CrewPackXP: Engine start call set to 1 / 2")
-        end
-       imgui.EndCombo()
-    end
-    imgui.SetCursorPos(20, imgui.GetCursorPosY())
-    local changed, newVal = imgui.Checkbox("Play Localiser and Glideslop calls", cpxpLocgsCalls)
-    if changed then
-       cpxpLocgsCalls = newVal
-       SaveCrewPackXPData()
-       print("CrewPackXP: LOC / GS Call logic set to " .. tostring(syncAlt))
-    end
-    imgui.SetCursorPos(20, imgui.GetCursorPosY())
-    local changed, newVal = imgui.Checkbox("Automate FLCH at 400ft on TO", cpxpFLCH)
-    if changed then
-       cpxpFLCH = newVal
-       SaveCrewPackXPData()
-       print("CrewPackXP: FLCH press at 400ft set to " .. tostring(syncAlt))
-    end
-    imgui.SetCursorPos(20, imgui.GetCursorPosY())
-    local changed, newVal = imgui.Checkbox("FO Performs Preflight Scan Flow", cpxpFoPreflight)
-    if changed then
-       cpxpFoPreflight = newVal
-       SaveCrewPackXPData()
-       print("CrewPackXP: FO PreScan logic set to " .. tostring(cpxpFoPreflight))
-    end
-    
-    --[[
-  
-        imgui.SetCursorPos(20, imgui.GetCursorPosY())
-        local changed, newVal = imgui.Checkbox("Crew Pack FA Onboard?", cpxpFaOnboard)
-        if changed then
-            cpxpFaOnboard = newVal
-            SaveCrewPackXPData()
-           print("CrewPackXP: Start message logic set to " .. tostring(cpxpStartMsg))
+            if imgui.Selectable("Left / Right", cpxpEngStartType == 1) then
+                cpxpEngStartType = 1
+                SaveCrewPackXPData()
+                print("CrewPackXP: Engine start call set to Left / Right")
+            end
+            if imgui.Selectable("1 / 2", cpxpEngStartType == 2) then
+                cpxpEngStartType = 2
+                SaveCrewPackXPData()
+                print("CrewPackXP: Engine start call set to 1 / 2")
+            end
+            imgui.EndCombo()
         end
 
+        imgui.SetCursorPos(20, imgui.GetCursorPosY())
+        local changed, newVal = imgui.Checkbox("Play Localiser and Glideslop calls", cpxpLocgsCalls)
+        if changed then
+            cpxpLocgsCalls = newVal
+            SaveCrewPackXPData()
+            print("CrewPackXP: LOC / GS Call logic set to " .. tostring(syncAlt))
+        end
+        imgui.SetCursorPos(20, imgui.GetCursorPosY())
+        local changed, newVal = imgui.Checkbox("Automate FLCH at 400ft on TO", cpxpFLCH)
+        if changed then
+            cpxpFLCH = newVal
+            SaveCrewPackXPData()
+            print("CrewPackXP: FLCH press at 400ft set to " .. tostring(syncAlt))
+        end
+        imgui.SetCursorPos(20, imgui.GetCursorPosY())
+        local changed, newVal = imgui.Checkbox("FO Automatically Performs Preflight", cpxpFoPreflight)
+        if changed then
+            cpxpFoPreflight = newVal
+            SaveCrewPackXPData()
+            print("CrewPackXP: FO PreScan logic set to " .. tostring(cpxpFoPreflight))
+        end
         imgui.TextUnformatted("")
-        imgui.SetCursorPos(75, imgui.GetCursorPosY())
-        local changed, newVal1 = imgui.SliderFloat("PA Volume", (cpxpPaVol * 100), 1, 100, "%.0f")
-        if changed then
-            cpxpPaVol = (newVal1 / 100)
-            set_sound_gain(Output_snd, cpxpPaVol)
-            play_sound(Output_snd)
-            SaveCrewPackXPData()
-            print("767CrewPacks: Volume set to " .. (cpxpPaVol * 100) .. " %")
-        end
-        
-        imgui.SetCursorPos(20, imgui.GetCursorPosY())
-        local changed, newVal = imgui.Checkbox("Supress default flight attendant from pestering", cpxpDefaultFA)
-        if changed then
-            cpxpDefaultFA = newVal
-            SaveCrewPackXPData()
-            print("CrewPackXP: Default FA logic set to " .. tostring(cpxpFoPreflight))
-        end
-        imgui.SetCursorPos(20, imgui.GetCursorPosY())
-        local changed, newVal = imgui.Checkbox("FO automation on go around", cpxpGaAutomation)
-        if changed then
-            cpxpGaAutomation = newVal
-            SaveCrewPackXPData()
-            print("CrewPackXP: Go Around automation logic set to " .. tostring(cpxpGaAutomation))
-        end
-        imgui.SetCursorPos(20, imgui.GetCursorPosY())
-        local changed, newVal = imgui.Checkbox("Chocks, Doors and belt loaders tied to Beacon on/off", cpxpGseOnBeacon)
-        if changed then
-            cpxpGseOnBeacon = newVal
-            SaveCrewPackXPData()
-            print("CrewPackXP: GSE on beacon set to " .. tostring(cpxpGseOnBeacon))
-        end
-        
-        imgui.SetCursorPos(20, imgui.GetCursorPosY())
-        local changed, newVal = imgui.Checkbox("Auto sync Cpt and FO Altimiters", syncAlt)
-        if changed then
-            syncAlt = newVal
-            SaveCrewPackXPData()
-            print("CrewPackXP: Altimiter Sync logic set to " .. tostring(syncAlt))
-    end
-    imgui.SetCursorPos(20, imgui.GetCursorPosY())
-    imgui.TextUnformatted("Auto power connections: ")
-    imgui.SetCursorPos(20, imgui.GetCursorPosY())
-    local changed, newVal = imgui.Checkbox("GPU on bay", cpxpGpuConnect)
-    if changed then
-       cpxpGpuConnect = newVal
-       SaveCrewPackXPData()
-       print("CrewPackXP: GPU Power on ground")
-    end
-    imgui.SameLine()
-    local changed, newVal = imgui.Checkbox("APU smart start", cpxpApuConnect)
-    if changed then
-       cpxpApuConnect = newVal
-       SaveCrewPackXPData()
-       print("CrewPackXP: APU started on ground")
-    end --]]
-        imgui.TextUnformatted("")
-        imgui.SetCursorPos(75, imgui.GetCursorPosY())
+        imgui.SetCursorPos(30, imgui.GetCursorPosY())
         local changed, newVal = imgui.SliderFloat("Crew Volume", (cpxpSoundVol * 100), 1, 100, "%.0f")
         if changed then
             cpxpSoundVol = (newVal / 100)
             set_sound_gain(Output_snd, cpxpSoundVol)
             play_sound(Output_snd)
             SaveCrewPackXPData()
-            print("767CrewPacks: Volume set to " .. (cpxpSoundVol * 100) .. " %")
-        end
-        imgui.Separator()
-        imgui.TextUnformatted("")
-        imgui.SetCursorPos(150, imgui.GetCursorPosY())
-        if imgui.Button("Ask FO to Preflight") then
-            cpxpFoPre_Basics = false
-            cpxpFoPre_ApuOnline = false
-            cpxpFoPre_AfterPower = false
-            cpxpFoPre_CDU1 = false
-            cpxpFoPre_CDU2 = false
-            cpxpFoPre_CDU3 = false
-            cpxpFoPre_CDU1S = false
-            cpxpFoPre_CDU2S = false
-            cpxpFoPre_CDU3S = false
-            cpxpFoPre_CDUS = false
-            cpxpFoPre_ECS = false
-            cpxpFoPreflighComplete = false
-            cpxpFoDoor = false
-            cpxpFoPreflight = true
-            CPXPFoPreflight()
-            CPXPFoDoor()
+            print("CrewPackXP: Volume set to " .. (cpxpSoundVol * 100) .. " %")
         end
 
         imgui.Separator()
@@ -1350,9 +1450,10 @@ end
 
     function CloseCrewPackXPSettings_wnd()
         if CrewPackXPSettings_wnd then
-            float_wnd_destroy(CrewPackXPSettings_wnd)
+           cpxpShowSettingsWindow = false
+           float_wnd_destroy(CrewPackXPSettings_wnd)
         end
-    end
+     end
 
     function ToggleCrewPackXPSettings()
         if not cpxpShowSettingsWindow then
@@ -1378,7 +1479,7 @@ end
             cpxpLocgsCalls = cpxpCrewPackXPSettings.CrewPackXP.cpxpLocgsCalls
             cpxpFoPreflight = cpxpCrewPackXPSettings.CrewPackXP.cpxpFoPreflight
             print("CrewPackXP: Settings Loaded")
-            cpxpSetGain()
+            CPXPSetGain()
         else
             print("CPXP: No settings file found, using defaults")
         end
@@ -1404,7 +1505,7 @@ end
         print("CrewPackXP: Settings Saved")
         cpxpBubbleTimer = 0
         cpxpMsgStr = "CrewPackXP settings saved"
-        cpxpSetGain()
+        CPXPSetGain()
         SaveCrewPack767Settings(cpxpCrewPackXPSettings)
     end
 
@@ -1417,4 +1518,273 @@ end
         ""
     )
     --]]
+
+    --[[ Draw Settings side window
+
+    The HUD section of code is a reapplication of the FSE Hud written by Togfox.
+    Used with permission for freware as per licence https://forums.x-plane.org/index.php?/files/file/53617-fse-hud/
+
+    ]]
+
+    local fltTransparency = 0.25		--alpha value for the boxes
+    local fltCurrentTransparency = fltTransparency		--use this to fade the gui in and out
+    local fltTextVanishingPoint = 0.75	-- this is the transparency value where text needs to 'hide'
+    local intButtonHeight = 30			--the clickable 'panels' are called buttons
+    local intButtonWidth = 140			--the clickable 'panels' are called buttons
+    local intHeadingHeight = 30
+    local intFrameBorderSize = 5
+
+    function tfCPXP_DrawOutsidePanel()
+        --Draws the overall box
+        local x1 = intHudXStart
+        local y1 = intHudYStart
+        local x2 = x1 + intFrameBorderSize + intButtonWidth + intButtonWidth + intFrameBorderSize
+        local y2 = y1 + intFrameBorderSize + intButtonHeight + intButtonHeight + intHeadingHeight + intFrameBorderSize
+        
+        graphics.set_color(1, 1, 1, fltCurrentTransparency) --white
+        graphics.draw_rectangle(x1,y1,x2,y2)
+    end
+
+    function tfCPXP_DrawInsidePanel()
+        --Draws the inside panel
+        local x1 = intHudXStart + intFrameBorderSize
+        local y1 = intHudYStart + intFrameBorderSize
+        local x2 = x1 + intButtonWidth + intButtonWidth
+        local y2 = y1 + intButtonHeight + intButtonHeight + intHeadingHeight
+    
+        graphics.set_color(1, 1, 1, fltCurrentTransparency) --white
+        graphics.draw_rectangle(x1,y1,x2,y2)
+    end
+
+    function tfCPXP_DrawHeadingPanel()
+        --Draws the heading panel and text at the top of the inside panel
+        local x1 = intHudXStart + intFrameBorderSize
+        local y1 = intHudYStart + intFrameBorderSize + intButtonHeight + intButtonHeight
+        local x2 = x1 + intButtonWidth + intButtonWidth
+        local y2 = y1 + intHeadingHeight
+        
+        local fltStringTransparency = fltCurrentTransparency/fltTransparency	-- change the RGB of the text based on expected fade level
+        if fltStringTransparency > fltTextVanishingPoint then	-- this stops drawing text when the transparency gets too low.
+            graphics.draw_string((x1 + (intButtonWidth * 0.25)),(y1 + (intButtonHeight * 0.5)), cpxpVersion, 0, 0, 0)
+        end
+        graphics.set_color(1, 1, 1, fltCurrentTransparency) --white
+        graphics.draw_rectangle(x1,y1,x2,y2)	
+    end
+
+    function tfCPXP_DrawStatusPanel()
+        local x1 = intHudXStart + intFrameBorderSize
+        local y1 = intHudYStart + intFrameBorderSize
+        local x2 = x1 + intButtonWidth + intButtonWidth
+        local y2 = y1 + intButtonHeight
+
+        if cpxpReady then
+            local fltStringTransparency = fltCurrentTransparency/fltTransparency	-- change the RGB of the text based on expected fade level
+            if fltStringTransparency > fltTextVanishingPoint then	-- this stops drawing text when the transparency gets too low.
+                local cpxptomodestate = nil
+                local cpxpVspeedsstr = nil
+                if cpxpToCalloutMode == true then
+                    cpxptomodestate = 'Armed'
+                else
+                    cpxptomodestate = 'Not Armed'
+                end
+                local cpxpToStatus = "To Mode is: " .. cpxptomodestate
+                if cpxpV1 > 0 then
+                    cpxpVspeedsstr = "Current Vspeeds: V1 " .. cpxpV1 .. ", VR " .. cpxpVR.. ", V2 " .. cpxpV2
+                else
+                    cpxpVspeedsstr = "Current Vspeeds: V1 'nil', VR 'nil', V2 'nil'"
+                end
+                graphics.draw_string(x1 + (intButtonWidth * 0.05),y1 + (intButtonHeight * 0.6),cpxpToStatus, 0, 0, 0)
+                graphics.draw_string(x1 + (intButtonWidth * 0.05), y1 + (intButtonHeight * 0.2), cpxpVspeedsstr, 0, 0, 0)	
+            end
+        end
+            
+        graphics.set_color(1, 1, 1, fltCurrentTransparency) --white
+        graphics.draw_rectangle(x1,y1,x2,y2)
+    end
+
+    function tfCPXP_DrawAlphaState()
+	-- FO preflight and Packup Options enabled
+	
+	--There are two buttons side by side in this state
+	local x1 = intHudXStart + intFrameBorderSize
+	local y1 = intHudYStart + intFrameBorderSize + intButtonHeight
+	local x2 = x1 + intButtonWidth
+	local y2 = y1 + intButtonHeight
+	
+	local fltStringTransparency = fltCurrentTransparency/fltTransparency	-- change the RGB of the text based on expected fade level
+	if fltStringTransparency > fltTextVanishingPoint then	-- this stops drawing text when the transparency gets too low.
+		graphics.draw_string(x1 + (intButtonWidth * 0.15), y1 + (intButtonHeight * 0.4), "Ask FO to Preflight", 0, 0, 0)
+	end
+	graphics.set_color(0.27, 0.51, 0.71, fltCurrentTransparency)
+	graphics.draw_rectangle(x1,y1,x2,y2)	
+	
+	--draw button outline
+	local fltStringTransparency = (fltCurrentTransparency/fltTransparency) * 0.5	-- change the line transparency. 0.5 is zero transparency
+	graphics.set_color(0,0,0,fltStringTransparency)	--black
+	graphics.draw_line(x1,y1,x2,y1)
+	graphics.draw_line(x2,y1,x2,y2)
+	graphics.draw_line(x2,y2,x1,y2)
+	graphics.draw_line(x1,y2,x1,y1)
+	
+	--Draw the second button
+	x1 = x2
+	--y1 = y1		--y1 doesn't change value
+	x2 = x1 + intButtonWidth
+	y2 = y1 + intButtonHeight	
+	
+	local fltStringTransparency = fltCurrentTransparency/fltTransparency	-- change the RGB of the text based on expected fade level
+	if fltStringTransparency > fltTextVanishingPoint then	-- this stops drawing text when the transparency gets too low.
+		graphics.draw_string(x1 + (intButtonWidth * 0.1), y1 + (intButtonHeight * 0.4), "Ask FO to Packup", 0, 0, 0)
+	end
+	graphics.set_color(0.27, 0.51, 0.71, fltCurrentTransparency)
+	graphics.draw_rectangle(x1,y1,x2,y2)
+
+	--draw button outline
+	local fltStringTransparency = (fltCurrentTransparency/fltTransparency) * 0.5	-- change the line transparency. 0.5 is zero transparency
+	graphics.set_color(0,0,0,fltStringTransparency)	--black
+	graphics.draw_line(x1,y1,x2,y1)
+	graphics.draw_line(x2,y1,x2,y2)
+	graphics.draw_line(x2,y2,x1,y2)
+	graphics.draw_line(x1,y2,x1,y1)	
+
+	
+    end
+
+    function tfCPXP_DrawBetaState()
+        -- Inflight options greyed out
+        local x1 = intHudXStart + intFrameBorderSize
+        local y1 = intHudYStart + intFrameBorderSize + intButtonHeight
+        local x2 = x1 + intButtonWidth + intButtonWidth
+        local y2 = y1 + intButtonHeight
+        
+        local fltStringTransparency = fltCurrentTransparency/fltTransparency	-- change the RGB of the text based on expected fade level
+        if fltStringTransparency > fltTextVanishingPoint then	-- this stops drawing text when the transparency gets too low.
+            graphics.draw_string(x1 + (intButtonWidth * 0.15), y1 + (intButtonHeight * 0.4), "Detected in flight", 0, 0, 0)
+        end
+        graphics.set_color( 4, 1, 4, fltCurrentTransparency) -- greyed out
+        graphics.draw_rectangle(x1,y1,x2,y2)
+        
+        --draw button outline
+        local fltStringTransparency = (fltCurrentTransparency/fltTransparency) * 0.5	-- change the line transparency. 0.5 is zero transparency
+        graphics.set_color(0,0,0,fltStringTransparency)	--black
+        graphics.draw_line(x1,y1,x2,y1)
+        graphics.draw_line(x2,y1,x2,y2)
+        graphics.draw_line(x2,y2,x1,y2)
+        graphics.draw_line(x1,y2,x1,y1)
+    end
+    
+    function tfCPXP_DrawCharlieState()
+        -- Not initialised
+        local x1 = intHudXStart + intFrameBorderSize
+        local y1 = intHudYStart + intFrameBorderSize + intButtonHeight
+        local x2 = x1 + intButtonWidth + intButtonWidth
+        local y2 = y1 + intButtonHeight
+
+        local fltStringTransparency = fltCurrentTransparency/fltTransparency	-- change the RGB of the text based on expected fade level
+        if fltStringTransparency > fltTextVanishingPoint then	-- this stops drawing text when the transparency gets too low.
+            graphics.draw_string(x1 + (intButtonWidth * 0.15), y1 + (intButtonHeight * 0.4), cpxpMsgStr, 0, 0, 0)
+        end
+    end
+
+    function tfCPXP_DrawButtons()
+        -- If on ground with engines off allow FO to preflight or packup
+        if not cpxpReady then
+            tfCPXP_DrawCharlieState()
+        elseif cpxpBEACON == 0 and cpxpWEIGHT_ON_WHEELS == 1 then
+            tfCPXP_DrawAlphaState()
+        else
+            tfCPXP_DrawBetaState()
+        end
+    end
+
+    function tfCPXP_Draw()
+        tfCPXP_DrawOutsidePanel()
+        tfCPXP_DrawInsidePanel()
+        tfCPXP_DrawHeadingPanel()
+        tfCPXP_DrawStatusPanel()
+        tfCPXP_DrawButtons()	
+    end	
+
+
+
+    function tfCPXP_DrawThings()
+        XPLMSetGraphicsState(0,0,0,1,1,0,0)
+        
+        --check for mouse over before drawing
+        local x1 = intHudXStart
+        local y1 = intHudYStart
+        local x2 = x1 + intFrameBorderSize + intButtonWidth + intButtonWidth + intFrameBorderSize
+        local y2 = y1 + intFrameBorderSize + intButtonHeight + intButtonHeight + intHeadingHeight + intFrameBorderSize	
+        if (MOUSE_X < x1 or MOUSE_X > x2 or MOUSE_Y < y1 or MOUSE_Y > y2) then
+            --don't draw - fade out
+            fltCurrentTransparency = fltCurrentTransparency - 0.010
+            if fltCurrentTransparency < 0 then
+                fltCurrentTransparency = 0
+            end
+            tfCPXP_Draw()	
+        else
+            fltCurrentTransparency = fltCurrentTransparency +0.025
+            if fltCurrentTransparency > fltTransparency then
+                fltCurrentTransparency = fltTransparency
+            end
+            
+            tfCPXP_Draw()			
+    
+        end
+    end	
+
+    function tfCPXP_MouseClick()
+    -- Trigger mouse clicks
+        local x1 = intHudXStart + intFrameBorderSize
+        local y1 = intHudYStart + intFrameBorderSize + intButtonHeight
+        local x2 = x1 + intButtonWidth
+        local y2 = y1 + intButtonHeight
+        -- left button
+        if MOUSE_X >= x1 and MOUSE_X <= x2 and MOUSE_Y >= y1 and MOUSE_Y < y2 then
+            if cpxpBEACON == 0 and cpxpWEIGHT_ON_WHEELS == 1 then
+                cpxpFoPre_Basics = false
+                cpxpFoPre_ApuOnline = false
+                cpxpFoPre_AfterPower = false
+                cpxpFoPre_CDU1 = false
+                cpxpFoPre_CDU2 = false
+                cpxpFoPre_CDU3 = false
+                cpxpFoPre_CDU1S = false
+                cpxpFoPre_CDU2S = false
+                cpxpFoPre_CDU3S = false
+                cpxpFoPre_CDUS = false
+                cpxpFoPre_ECS = false
+                cpxpFoPreflighComplete = false
+                cpxpFoDoor = false
+                cpxpFoPreflight = true
+                CPXPFoPreflight()
+                CPXPFoDoor()
+            end
+        end
+        --This bit is the right button
+        x1 = x2
+        x2 = x1 + intButtonWidth
+        y2 = y1 + intButtonHeight			
+        if MOUSE_X >= x1 and MOUSE_X <= x2 and MOUSE_Y >= y1 and MOUSE_Y < y2 then
+            print("Right Button")
+            if cpxpBEACON == 0 and cpxpWEIGHT_ON_WHEELS == 1 then
+                cpxpFoShutDownRun = true
+                print("i made it here")
+            end
+        end
+        -- Header settigns trigger
+        local x1 = intHudXStart + intFrameBorderSize + (intButtonWidth / 3)
+        local y1 = intHudYStart + intFrameBorderSize + intButtonHeight + intButtonHeight
+        local x2 = x1 + (intButtonWidth * 1.5)
+        local y2 = y1 + intHeadingHeight
+        if MOUSE_X >= x1 and MOUSE_X <= x2 and MOUSE_Y >= y1 and MOUSE_Y < y2 then
+            ToggleCrewPackXPSettings()
+        end
+
+    end
+
+    do_every_draw("tfCPXP_DrawThings()")
+    do_on_mouse_click("tfCPXP_MouseClick()")
+
+    -- end of Togfox code
+
 end -- Master end

@@ -1,48 +1,76 @@
-# CrewPackXP
+<p align="center"> 
+    <img src="imgs/CrewPack_XP.png"/> <br>
+    <br>
+    <img src="https://img.shields.io/badge/X--Plane-11.50%2B-blue"/> <img src="https://img.shields.io/badge/FlyWithLUA-2.7%2B-blue" /> <br> 
+    <img src="https://img.shields.io/badge/Aircraft-Flight%20Factor%20757-blue" /> <img src="https://img.shields.io/badge/Aircraft-Flight%20Factor%20767-blue" /> <img src="https://img.shields.io/badge/Aircraft-Hot%20Start%20Challenger-blue" />
+</p>
 
-Updated 19/03/2022
+**Updated 01/04/2022**
 
-This is a utility to add crew voices for aircraft in X-Plane 11. This includes basic call outs and in some cases assistance from the PNF in high workload phases of flight. Settings can be adjusted to enable or dissable the whole plugin, or just certain features of each aircraft.
+CrewPackXP is a FlyWithLUA utility designed to add some crew communications for aircraft in X-Plane 11. This includes basic callouts, and in some cases assistance from the PNF in high workload phases of flight. Settings can be adjusted to enable or disable the whole plugin, or just certain features of each aircraft.  
 
-### Source Code  
+##### Flight Factor 757 / 767:  
+- Virtual FO to pre-flight aircraft  
+- Take-off and Landing calls by both crew members  
+- Flight Attendant PA's  
+- Ground Crew positioning of equipment  
+- Virtual FO assistance with go-around procedure  
+
+##### Hot Start Challenger 650:  
+- Virtual FO to pre-flight aircraft  
+- Take-off and Landing calls by both crew members  
+
+## Source Code  
 <https://github.com/N1K340/CrewPackXP/tree/main/src>
 
-### Documentation  
+## Documentation  
 <http://crewpackxp.readthedocs.io/>
 
-### Changelog  
-New features and bug fixes listed in [change log](changelog.md).
+## Changelog  
+New features and bug fixes are listed in [change log](changelog.md).
 
-### Installation
+## Installation
+
+Copy the Scripts and Modules folders into the main folder of FlyWithLUA:  
+> X-Plane 11 > Resources > plugins > FlyWithLua
+
+![install](imgs/CrewPack_Install.gif)
+
+Once enabled, the First Officer should announce his entry to the cockpit roughly 15 seconds after loading in.
+
+CrewPackXP settings can be accessed via the X-Plane menu bar:  
+> Plugins > FlyWithLua > FlyWithLua Macros > Crew Pack Settings
 
 
-Copy the Scripts and Modules folders into the main folder of FlyWithLUA: 
-X-Plane 11 > Resources > plugins > FlyWithLua
-
-If sucesfull the First Officer should announce his entery the cockpit roughly 15 seconds after loading in.
-
-Settings can be accessed within the sim by navigating too:
-Plugins > FlyWithLua > FlyWithLua Macros > Crew Pack Settings
-
-### Prerequisite
+## Prerequisite
 
 This plugin uses the FlyWithLUA plugin to interface with X-Plane.
-It is available freely from the .org 
+It is available freely from [X-Plane.org](https://forums.x-plane.org/index.php?/files/file/38445-flywithlua-ng-next-generation-edition-for-x-plane-11-win-lin-mac/)
 
-https://forums.x-plane.org/index.php?/files/file/38445-flywithlua-ng-next-generation-edition-for-x-plane-11-win-lin-mac/
+Luna INI Parser (LIP) is included as an additional plugin module for use with FlyWithLua. This module allows for the saving and reading of settings data within LUA. It has been included in this package under the MIT Licence offered by creator Carreras Nicholas.
 
+This is a common plugin; it may already exist in your modules folder causing a prompt to overwrite.
 
-Luna INI Parser (LIP) is included as an additional plugin module for use with FlyWithLua. This module allows for the saving and reading of settings data within LUA. It has been included in this package under the MIT Licence offered by creater Carreras Nicholas.
-https://github.com/Dynodzzo/Lua_INI_Parser
+## Usage
+The CrewPackXP functions run autonomously based on in sim events, provided the aircraft is enabled within the CrewPackXP settings. Refer to each aircraft's entry in the manual for details on settings and features available.
 
-This is a common plugin, it may already exist in your modules folder causing a prompt to overwrite.
+## Disclaimer / Feedback
 
-### Disclaimer / Feedback
-
-This package is to be distributed as Freeware only.
-Installation and use of this package is at your own risk. 
+This package is to be distributed as Freeware only under the GPL v3 license.
 
 This is the first time I have coded a plugin, any feedback is welcome.
 Bug reports, please include the x-plane log.txt file in the main x-plane folder for the flight in question. 
 
-This plugin is still a work in progress, to be considered as public beta. Errors may exist.
+## Acknowledgements
+Carreras Nicholas - [Luna INI Parser (LIP)](https://github.com/Dynodzzo/Lua_INI_Parser)  
+'Togfox' - [FSE HUD](https://forums.x-plane.org/index.php?/files/file/53617-fse-hud/)  
+'X-Friese' - [FlyWithLUA Plugin](https://forums.x-plane.org/index.php?/files/file/38445-flywithlua-ng-next-generation-edition-for-x-plane-11-win-lin-mac/)  
+'mkultra44' - Documentation proofing  
+
+## Current Script Versions
+- Flight Factor 767 - 1.4  
+- Hot Start CL650 - 1.4
+
+## Alternate Sources
+[X-Plane.org](https://forums.x-plane.org/index.php?/files/file/79042-crewpackxp-crew-callouts/)  
+[X-Pilot.com](https://forums.x-pilot.com/files/file/1404-crewpackxp-crew-callouts/)
