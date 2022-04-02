@@ -1175,7 +1175,6 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
          cpxpMsgStr = "CrewPackXP: FO After Ladning Flow"
          cpxpBubbleTimer = 0
          set("1-sim/WX/tiltRotary",1)
-         set("1-sim/WX/tiltRotary", 0)
          set("1-sim/ndpanel/1/hsiWxr", 0)
          set("1-sim/ndpanel/2/hsiWxr", 0)
          set("1-sim/WX/modeSwitcher", 0)
