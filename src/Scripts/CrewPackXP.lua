@@ -23,7 +23,7 @@ if not coded_aircraft[AIRCRAFT_FILENAME] then
    
    --------
    -- Initialisation Variables
-   local cpxpVersion = "CPXP_UKN: v1.1.1"
+   local cpxpVersion = "CPXP_UKN: v1.4"
   
   
    require "graphics"

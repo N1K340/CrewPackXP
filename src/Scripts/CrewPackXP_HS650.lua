@@ -22,7 +22,7 @@
 
 if AIRCRAFT_FILENAME == "CL650.acf" then
     -- Initiialisation Variables
-    local cpxpVersion = "CrewPack XP : Hot Start CL-650 v1.1"
+    local cpxpVersion = "CrewPack XP : Hot Start CL-650 v1.4"
 
     local cpxpInitDelay = 10
     local cpxpStartTime = 0
