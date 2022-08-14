@@ -1278,6 +1278,9 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
             set_array("sim/cockpit2/switches/custom_slider_on", 6, 1)
             set_array("sim/cockpit2/switches/custom_slider_on", 7, 1)
             set_array("sim/cockpit2/switches/custom_slider_on", 0, 1)
+            if (XPLMFindDataRef("prep/loader") ~= nil) then
+               set("prep/loader", 1)
+               set_array("sim/cockpit2/switches/custom_slider_on", 2, 1)
          end
          set("anim/cabindoor", 1)
          set("params/LSU", 1)
@@ -1315,6 +1318,8 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
          set("params/gate", 0)
          set("params/stop", 0)
          set("params/fuel_truck", 0)
+         if (XPLMFindDataRef("prep/loader") ~= nil) then
+            set("prep/loader", 0)
          cpxpGpuDisconnect = true
          cpxpBeaconSetup = false
       end

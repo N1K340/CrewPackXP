@@ -5,7 +5,7 @@
 - FF767 ACP radio selection was set with Com 1 and 2 muted, will now be on full volume.
 
 ###### Enhancements:
-
+- FF767 Freigter aircraft will now open the main cargo door and position palet loader automatically with other GSE.
 
 
 ### v1.4 - 01/04/2022
