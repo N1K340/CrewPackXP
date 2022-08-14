@@ -1,7 +1,15 @@
 # Changelog 
 
+### v1.5 - TBA
+###### Bug Fixes:
+- FF767 ACP radio selection was set with Com 1 and 2 muted, will now be on full volume.
+
+###### Enhancements:
+
+
+
 ### v1.4 - 01/04/2022
-###### Bug Fixes  
+###### Bug Fixes:  
 - FF767 757-200 not loading CrewPackXP aircraft module.    
 - FF767 FO Preflight: HSI modes corrected; Addition of - EEC Switches, Engine Limiter Switches, Radar Tilt FUll Up, Left ACP COM 1 & 2 on for Vatsim. [#31](https://github.com/N1K340/CrewPackXP/issues/31)  
 - HS650 Wouldn't engage climb thrust on subseqent departures.  [#19](https://github.com/N1K340/CrewPackXP/issues/19)  

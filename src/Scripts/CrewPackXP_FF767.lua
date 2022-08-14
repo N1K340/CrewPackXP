@@ -32,7 +32,7 @@ local coded_aircraft = {
    ["767-F_xp11.acf"] = true,
 }
 
-if coded_aircraft[AIRCRAFT_FILENAME] then 
+if coded_aircraft[AIRCRAFT_FILENAME] then
 
    --------
    -- Initialisation Variables
@@ -267,7 +267,8 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
       end
       if (cpxp_SIM_TIME < cpxpStartTime) then
          print(
-         "CrewPackXP: Init Delay " .. math.floor(cpxp_SIM_TIME) .. " waiting for " .. math.floor(cpxpStartTime) .. " --"
+            "CrewPackXP: Init Delay " ..
+            math.floor(cpxp_SIM_TIME) .. " waiting for " .. math.floor(cpxpStartTime) .. " --"
          )
          cpxpMsgStr = "CrewPackXP Loading in " .. math.floor(cpxpStartTime - cpxp_SIM_TIME) .. " seconds"
          return
@@ -331,7 +332,7 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
             cpxpStart4,
          }
          math.randomseed(os.time())
-         play_sound(soundFile[math.random(1,4)])
+         play_sound(soundFile[math.random(1, 4)])
          cpxpStartPlayed = true
       end
    end
@@ -347,7 +348,7 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
       if not cpxpReady then
          return
       end
-      
+
       if cpxpCockpitDoor ~= get("anim/cabindoor") then
          cpxpCockpitDoor = get("anim/cabindoor")
          if cpxpCockpitDoor == 0 then
@@ -394,7 +395,7 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
 
    do_every_frame("CPXPSoundDoor()")
    do_every_frame("CPXPOutsideMute()")
-   
+
    -- Monitor for ADC1 Failure
    function CPXPMonitorADC1()
       if not cpxpReady then
@@ -490,8 +491,8 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
             set("1-sim/WX/tiltRotary", 1)
             set("1-sim/vor1/isAuto", 1)
             set("1-sim/vor1/isAuto", 2)
-            set("1-sim/mic_sel/1/1/volume_button", 1)
-            set("1-sim/mic_sel/1/3/volume_button", 1)
+            set("1-sim/mic_sel/1/1/volume_button", 0)
+            set("1-sim/mic_sel/1/3/volume_button", 0)
             set("1-sim/mic_sel/1/1/volume", 1)
             set("1-sim/mic_sel/1/3/volume", 1)
          end
@@ -499,11 +500,11 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
          print("CrewPackXP: Attempting basic setup")
          -- blinds
          for i = 1, 90, 1 do
-            local ref = "anim/blind/L/"..i
+            local ref = "anim/blind/L/" .. i
             set(ref, 0)
          end
          for i = 1, 90, 1 do
-            local ref = "anim/blind/R/"..i
+            local ref = "anim/blind/R/" .. i
             set(ref, 0)
          end
          -- FO Preflight
@@ -523,7 +524,7 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
                set("anim/11/button", 11)
                set("anim/9/button", 0)
                set("anim/10/button", 0)
-               
+
             end
 
             if B757[AIRCRAFT_FILENAME] then
@@ -588,14 +589,15 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
             set("757Avionics/CDU/init_ref", 1)
             set("757Avionics/CDU2/prog", 1)
             set(
-            "sim/cockpit/misc/barometer_setting",
-            (math.floor((tonumber(get("sim/weather/barometer_sealevel_inhg"))) * 100) / 100)
+               "sim/cockpit/misc/barometer_setting",
+               (math.floor((tonumber(get("sim/weather/barometer_sealevel_inhg"))) * 100) / 100)
             )
             set(
-            "sim/cockpit/misc/barometer_setting2",
-            (math.floor((tonumber(get("sim/weather/barometer_sealevel_inhg"))) * 100) / 100)
+               "sim/cockpit/misc/barometer_setting2",
+               (math.floor((tonumber(get("sim/weather/barometer_sealevel_inhg"))) * 100) / 100)
             )
-            set("1-sim/press/landingAltitudeSelector", ((math.ceil(get("sim/cockpit2/gauges/indicators/altitude_ft_pilot") / 10))/100) - 2)
+            set("1-sim/press/landingAltitudeSelector",
+               ((math.ceil(get("sim/cockpit2/gauges/indicators/altitude_ft_pilot") / 10)) / 100) - 2)
          else
             print("FO Preflight inhibited by settings")
             cpxpMsgStr = "CrewPackXP: FO Preflight inhibited by settings"
@@ -661,7 +663,7 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
             set("anim/10/button", 0)
             set("anim/11/button", 0)
          end
-         
+
          -- Fuel
          set("anim/32/button", 0)
          set("anim/33/button", 0)
@@ -697,8 +699,8 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
             set("1-sim/electrical/batteryCover", 1)
             set("anim/14/button", 0)
             cpxpFoShutdownRun = false
-         end  
-      end 
+         end
+      end
    end
 
    do_often("CPXPFoShutdown()")
@@ -757,11 +759,12 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
             cpxpFaPlaySeq = 1
             print("CrewPackXP: Playing FA welcome PA - Engine Start")
          end
-         if cpxpBEACON == 1 and cpxpWEIGHT_ON_WHEELS == 1 and (math.floor(get("sim/flightmodel2/position/groundspeed"))) ~= 0 and cpxpFaPlaySeq == 0 then
+         if cpxpBEACON == 1 and cpxpWEIGHT_ON_WHEELS == 1 and
+             (math.floor(get("sim/flightmodel2/position/groundspeed"))) ~= 0 and cpxpFaPlaySeq == 0 then
             cpxpPaTimer = 150
             play_sound(cpxpFA_Welcome_snd)
             cpxpFaPlaySeq = 1
-            print("CrewPackXP: Playing FA welcome PA, GS "..(math.floor(get("sim/flightmodel2/position/groundspeed"))))
+            print("CrewPackXP: Playing FA welcome PA, GS " .. (math.floor(get("sim/flightmodel2/position/groundspeed"))))
          end
          if cpxpBEACON == 1 and cpxpWEIGHT_ON_WHEELS == 1 and cpxpFaPlaySeq == 1 and cpxpPaTimer == 241 then
             cpxpPaTimer = 0
@@ -780,11 +783,11 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
             print("CrewPackXP: Played FO TOD PA")
             cpxpTodPaPlayed = true
             for i = 1, 90, 1 do
-               local ref = "anim/blind/L/"..i
+               local ref = "anim/blind/L/" .. i
                set(ref, 0)
             end
             for i = 1, 90, 1 do
-               local ref = "anim/blind/R/"..i
+               local ref = "anim/blind/R/" .. i
                set(ref, 0)
             end
          end
@@ -793,14 +796,14 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
             print("CrewPackXP: Seatbelts selected on during descent")
             cpxpPaxSeatBeltsPlayed = true
          end
-         if cpxpGearDownPlayed and cpxpCalloutTimer >=2 and not cpxpSeatsLandingPlayed then
+         if cpxpGearDownPlayed and cpxpCalloutTimer >= 2 and not cpxpSeatsLandingPlayed then
             play_sound(cpxpSeatLand_snd)
             for i = 1, 90, 1 do
-               local ref = "anim/blind/L/"..i
+               local ref = "anim/blind/L/" .. i
                set(ref, 0)
             end
             for i = 1, 90, 1 do
-               local ref = "anim/blind/R/"..i
+               local ref = "anim/blind/R/" .. i
                set(ref, 0)
             end
             print("CrewPackXP: Played seats for landing")
@@ -809,11 +812,11 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
          if cpxpWEIGHT_ON_WHEELS == 1 and cpxpFlightOccoured and not cpxpFaTaxiInPaPlayed and IAS <= 30 then
             play_sound(cpxpTaxiInPA_snd)
             for i = 1, 90, 1 do
-               local ref = "anim/blind/L/"..i
+               local ref = "anim/blind/L/" .. i
                set(ref, 0)
             end
             for i = 1, 90, 1 do
-               local ref = "anim/blind/R/"..i
+               local ref = "anim/blind/R/" .. i
                set(ref, 0)
             end
             print("CrewPackXP: After landing PA")
@@ -967,7 +970,7 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
          cpxpVnavPlayed = true
          cpxpVnavPressed = true
          cpxpToCalloutMode = false
-         print("CrewPackXP: VNAV at ".. math.floor(cpxpAGL / 0.3048) .. ", " .. FMS_ACCEL_HT .. " accel height")
+         print("CrewPackXP: VNAV at " .. math.floor(cpxpAGL / 0.3048) .. ", " .. FMS_ACCEL_HT .. " accel height")
          print("CrewPackXP: TO Mode off")
       end
    end
@@ -1087,8 +1090,9 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
       end
       -- Loc Capture Right of localiser (CDI Left) Reset by: Full scale LOC deflection
       if cpxpLocgsCalls then
-         if  cpxpWEIGHT_ON_WHEELS == 0 and cpxpLOC_RECEIVED == 1 and cpxpLOC_DEVIATION > -1.95 and cpxpLOC_DEVIATION <= 0 and not cpxpLocPlayed and not cpxpTogaEvent and not cpxpToCalloutMode then
-            if cpxpGS_RECEIVED == 1 and cpxpGS_DEVIATION > -1.95 and cpxpGS_DEVIATION < 1  then
+         if cpxpWEIGHT_ON_WHEELS == 0 and cpxpLOC_RECEIVED == 1 and cpxpLOC_DEVIATION > -1.95 and cpxpLOC_DEVIATION <= 0
+             and not cpxpLocPlayed and not cpxpTogaEvent and not cpxpToCalloutMode then
+            if cpxpGS_RECEIVED == 1 and cpxpGS_DEVIATION > -1.95 and cpxpGS_DEVIATION < 1 then
                play_sound(cpxpLOCGScap_snd)
                print("CrewPackXP: LOC and GS Active")
                cpxpCalloutTimer = 0
@@ -1109,8 +1113,9 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
             cpxpGsPlayed = false
          end
          -- Loc Capture Left of localiser (CDI Right)
-         if cpxpWEIGHT_ON_WHEELS == 0 and cpxpLOC_RECEIVED == 1 and cpxpLOC_DEVIATION < 1.95 and cpxpLOC_DEVIATION >= 0 and not cpxpLocPlayed and not cpxpTogaEvent and not cpxpToCalloutMode then
-            if cpxpGS_RECEIVED == 1 and cpxpGS_DEVIATION > -1.95 and cpxpGS_DEVIATION < 1  then
+         if cpxpWEIGHT_ON_WHEELS == 0 and cpxpLOC_RECEIVED == 1 and cpxpLOC_DEVIATION < 1.95 and cpxpLOC_DEVIATION >= 0
+             and not cpxpLocPlayed and not cpxpTogaEvent and not cpxpToCalloutMode then
+            if cpxpGS_RECEIVED == 1 and cpxpGS_DEVIATION > -1.95 and cpxpGS_DEVIATION < 1 then
                play_sound(cpxpLOCGScap_snd)
                print("CrewPackXP: LOC and GS Active")
                cpxpCalloutTimer = 0
@@ -1131,8 +1136,8 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
             print("CrewPackXP: Reset GS Alive Logic")
          end
          -- GS
-         if
-         cpxpWEIGHT_ON_WHEELS == 0 and  cpxpGS_RECEIVED == 1 and cpxpGS_DEVIATION > -1.95 and cpxpGS_DEVIATION < 1 and cpxpLocPlayed and not cpxpGsPlayed and cpxpCalloutTimer >= 2 and not cpxpTogaEvent and not cpxpToCalloutMode then
+         if cpxpWEIGHT_ON_WHEELS == 0 and cpxpGS_RECEIVED == 1 and cpxpGS_DEVIATION > -1.95 and cpxpGS_DEVIATION < 1 and
+             cpxpLocPlayed and not cpxpGsPlayed and cpxpCalloutTimer >= 2 and not cpxpTogaEvent and not cpxpToCalloutMode then
             play_sound(cpxpGScap_snd)
             print("CrewPackXP: GS Alive")
             cpxpGsPlayed = true
@@ -1174,7 +1179,7 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
       if cpxpWEIGHT_ON_WHEELS == 1 and cpxpFlightOccoured and cpxpFOAfterLand and not cpxpFOLandFlow and IAS <= 30 then
          cpxpMsgStr = "CrewPackXP: FO After Ladning Flow"
          cpxpBubbleTimer = 0
-         set("1-sim/WX/tiltRotary",1)
+         set("1-sim/WX/tiltRotary", 1)
          set("1-sim/ndpanel/1/hsiWxr", 0)
          set("1-sim/ndpanel/2/hsiWxr", 0)
          set("1-sim/WX/modeSwitcher", 0)
@@ -1232,9 +1237,9 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
          return
       end
 
-      if
-      cpxpENG1_N2 < 25 and cpxpENG2_N2 < 25 and cpxpBEACON == 0 and cpxpWEIGHT_ON_WHEELS == 1 and cpxpPARK_BRAKE == 1 and cpxpFlightOccoured and
-      not cpxpHorsePlayed
+      if cpxpENG1_N2 < 25 and cpxpENG2_N2 < 25 and cpxpBEACON == 0 and cpxpWEIGHT_ON_WHEELS == 1 and cpxpPARK_BRAKE == 1
+          and cpxpFlightOccoured and
+          not cpxpHorsePlayed
       then
          play_sound(cpxpHorse_snd)
          cpxpHorsePlayed = true
@@ -1245,11 +1250,11 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
          print("CrewPackXP: You Suck")
          print("CrewPackXP: " .. math.floor(cpxpENG1_N2) .. " | " .. math.floor(cpxpENG2_N2))
       end
-      if
-      cpxpGseOnBeacon and cpxpENG1_N2 < 25 and cpxpENG2_N2 < 25 and cpxpWEIGHT_ON_WHEELS == 1 and cpxpPARK_BRAKE == 1 and
-      cpxpCalloutTimer > 3 and
-      cpxpHorsePlayed and
-      cpxpBEACON == 0 and not cpxpBeaconSetup
+      if cpxpGseOnBeacon and cpxpENG1_N2 < 25 and cpxpENG2_N2 < 25 and cpxpWEIGHT_ON_WHEELS == 1 and cpxpPARK_BRAKE == 1
+          and
+          cpxpCalloutTimer > 3 and
+          cpxpHorsePlayed and
+          cpxpBEACON == 0 and not cpxpBeaconSetup
       then
          set("1-sim/cockpitDoor/switch", 0)
          set("params/stop", 1)
@@ -1291,7 +1296,8 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
       if not cpxpReady then
          return
       end
-      if cpxpGseOnBeacon and cpxpBEACON == 1 and cpxpENG1_N2 < 25 and cpxpENG2_N2 < 25 and cpxpHorsePlayed and not cpxpGpuDisconnect then
+      if cpxpGseOnBeacon and cpxpBEACON == 1 and cpxpENG1_N2 < 25 and cpxpENG2_N2 < 25 and cpxpHorsePlayed and
+          not cpxpGpuDisconnect then
          cpxpMsgStr = "CrewPackXP: Ground crew closing doors"
          cpxpBubbleTimer = 0
          set("anim/16/button", 0)
@@ -1347,7 +1353,8 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
    -- Go Around Function - Reset by Toga Trigger, cancels on FMS Accel height
 
    function CPXPGoAround()
-      if cpxpWEIGHT_ON_WHEELS == 0 and cpxpTogaEvent and cpxpENGINE_MODE == 6 and cpxpGaAutomation and not cpxpFlaps20Retracted then
+      if cpxpWEIGHT_ON_WHEELS == 0 and cpxpTogaEvent and cpxpENGINE_MODE == 6 and cpxpGaAutomation and
+          not cpxpFlaps20Retracted then
          if cpxpFlapPos > 0.8 then
             set("sim/flightmodel/controls/flaprqst", 0.66667)
             print("CrewPackXP: Go Around - Flaps 20 selected")
@@ -1358,25 +1365,25 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
          play_sound(cpxpPosRate_snd)
          set("1-sim/cockpit/switches/gear_handle", 0)
          print(
-         "CrewPackXP: Go Around Positive Rate " ..
-         math.floor(cpxpAGL / 0.3048) .. " AGL and " .. math.floor(VSI) .. " ft/min"
+            "CrewPackXP: Go Around Positive Rate " ..
+            math.floor(cpxpAGL / 0.3048) .. " AGL and " .. math.floor(VSI) .. " ft/min"
          )
          print("CrewPackXP: Waiting for accel height of " .. FMS_ACCEL_HT .. " ft")
          cpxpPosRatePlayed = true
       end
-      if
-      cpxpTogaEvent and cpxpGaAutomation and cpxpGEAR_HANDLE == 0 and (cpxpAGL / 0.3048) > 410 and cpxpPosRatePlayed and
-      not cpxpLnavPressed and
-      cpxpLNAV_BUTTON == 0
+      if cpxpTogaEvent and cpxpGaAutomation and cpxpGEAR_HANDLE == 0 and (cpxpAGL / 0.3048) > 410 and cpxpPosRatePlayed
+          and
+          not cpxpLnavPressed and
+          cpxpLNAV_BUTTON == 0
       then
          set("1-sim/AP/lnavButton", 1)
          print("CrewPackXP: Attempting to engage LNAV")
          cpxpLnavPressed = true
       end
-      if
-      cpxpTogaEvent and cpxpGaAutomation and cpxpGEAR_HANDLE == 0 and (cpxpAGL / 0.3048) > 410 and cpxpPosRatePlayed and
-      not cpxpLnavPressed and
-      cpxpLNAV_BUTTON == 1
+      if cpxpTogaEvent and cpxpGaAutomation and cpxpGEAR_HANDLE == 0 and (cpxpAGL / 0.3048) > 410 and cpxpPosRatePlayed
+          and
+          not cpxpLnavPressed and
+          cpxpLNAV_BUTTON == 1
       then
          set("1-sim/AP/lnavButton", 0)
          print("CrewPackXP: Attempting to engage LNAV")
@@ -1388,37 +1395,35 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
          cpxpClbThrustPlayed = true
          print("CrewPackXP: Go Around Climb Thrust " .. FMS_ACCEL_HT)
       end
-      if
-      cpxpTogaEvent and cpxpGaAutomation and (cpxpAGL / 0.3048) > FMS_ACCEL_HT and cpxpClbThrustPlayed and cpxpVNAV_BUTTON == 0 and
-      not cpxpGaVnavPressed
+      if cpxpTogaEvent and cpxpGaAutomation and (cpxpAGL / 0.3048) > FMS_ACCEL_HT and cpxpClbThrustPlayed and
+          cpxpVNAV_BUTTON == 0 and
+          not cpxpGaVnavPressed
       then
          set("1-sim/AP/vnavButton", 1)
          print("CrewPackXP: Attempting VNAV")
          cpxpGaVnavPressed = true
       end
-      if
-      cpxpTogaEvent and cpxpGaAutomation and (cpxpAGL / 0.3048) > FMS_ACCEL_HT and cpxpClbThrustPlayed and cpxpVNAV_BUTTON == 1 and
-      not cpxpGaVnavPressed
+      if cpxpTogaEvent and cpxpGaAutomation and (cpxpAGL / 0.3048) > FMS_ACCEL_HT and cpxpClbThrustPlayed and
+          cpxpVNAV_BUTTON == 1 and
+          not cpxpGaVnavPressed
       then
          set("1-sim/AP/vnavButton", 0)
          print("CrewPackXP: Attempting VNAV")
          cpxpGaVnavPressed = true
       end
-      if
-      cpxpTogaEvent and cpxpGaAutomation and (cpxpAGL / 0.3048) > FMS_ACCEL_HT and cpxpGaVnavPressed and
-      cpxpVNAV_ENGAGED_LT ~= 0.8 and
-      cpxpFLCH_BUTTON == 0 and
-      not cpxpFlchPressed
+      if cpxpTogaEvent and cpxpGaAutomation and (cpxpAGL / 0.3048) > FMS_ACCEL_HT and cpxpGaVnavPressed and
+          cpxpVNAV_ENGAGED_LT ~= 0.8 and
+          cpxpFLCH_BUTTON == 0 and
+          not cpxpFlchPressed
       then
          set("1-sim/AP/flchButton", 1)
          print("CrewPackXP: Negative VNAV " .. cpxpVNAV_ENGAGED_LT .. " , attempting FLCH")
          cpxpFlchPressed = true
       end
-      if
-      cpxpTogaEvent and cpxpGaAutomation and (cpxpAGL / 0.3048) > FMS_ACCEL_HT and cpxpGaVnavPressed and
-      cpxpVNAV_ENGAGED_LT ~= 0.8 and
-      cpxpFLCH_BUTTON == 1 and
-      not cpxpFlchPressed
+      if cpxpTogaEvent and cpxpGaAutomation and (cpxpAGL / 0.3048) > FMS_ACCEL_HT and cpxpGaVnavPressed and
+          cpxpVNAV_ENGAGED_LT ~= 0.8 and
+          cpxpFLCH_BUTTON == 1 and
+          not cpxpFlchPressed
       then
          set("1-sim/AP/flchButton", 0)
          print("CrewPackXP: Negative VNAV " .. cpxpVNAV_ENGAGED_LT .. " , attempting FLCH")
@@ -1458,10 +1463,10 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
       local winHeight = imgui.GetWindowHeight()
       local titleText = cpxpVersion
       local titleTextWidth, titileTextHeight = imgui.CalcTextSize(titleText)
-      
+
       imgui.SetCursorPos(winWidth / 2 - titleTextWidth / 2, imgui.GetCursorPosY())
       imgui.TextUnformatted(titleText)
-      
+
       imgui.Separator()
       imgui.TextUnformatted("")
       imgui.SetCursorPos(20, imgui.GetCursorPosY())
@@ -1610,7 +1615,7 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
    end
 
    function ParseCrewPackXPSettings()
-      local f = io.open(AIRCRAFT_PATH .. "/CrewPackXPSettings.ini","r")
+      local f = io.open(AIRCRAFT_PATH .. "/CrewPackXPSettings.ini", "r")
       if f ~= nil then
          io.close(f)
          cpxpCrewPackXPSettings = LIP.load(AIRCRAFT_PATH .. "/CrewPackXPSettings.ini")
@@ -1670,270 +1675,268 @@ if coded_aircraft[AIRCRAFT_FILENAME] then
 
    add_macro("CrewPackXP Settings", "ShowCrewPackXPSettings_wnd()", "CloseCrewPackXPSettings_wnd()", "deactivate")
    create_command(
-   "FlyWithLua/CrewPackXP/toggle_settings",
-   "Toggle CrewPackXP Settings",
-   "ToggleCrewPackXPSettings()",
-   "",
-   ""
+      "FlyWithLua/CrewPackXP/toggle_settings",
+      "Toggle CrewPackXP Settings",
+      "ToggleCrewPackXPSettings()",
+      "",
+      ""
    )
 
-       --[[ Draw Settings side window
+   --[[ Draw Settings side window
 
     The HUD section of code is a reapplication of the FSE Hud written by Togfox.
     Used with permission for freware as per licence https://forums.x-plane.org/index.php?/files/file/53617-fse-hud/
 
     ]]
 
-    local fltTransparency = 0.25		--alpha value for the boxes
-    local fltCurrentTransparency = fltTransparency		--use this to fade the gui in and out
-    local fltTextVanishingPoint = 0.75	-- this is the transparency value where text needs to 'hide'
-    local intButtonHeight = 30			--the clickable 'panels' are called buttons
-    local intButtonWidth = 140			--the clickable 'panels' are called buttons
-    local intHeadingHeight = 30
-    local intFrameBorderSize = 5
+   local fltTransparency = 0.25 --alpha value for the boxes
+   local fltCurrentTransparency = fltTransparency --use this to fade the gui in and out
+   local fltTextVanishingPoint = 0.75 -- this is the transparency value where text needs to 'hide'
+   local intButtonHeight = 30 --the clickable 'panels' are called buttons
+   local intButtonWidth = 140 --the clickable 'panels' are called buttons
+   local intHeadingHeight = 30
+   local intFrameBorderSize = 5
 
-    function tfCPXP_DrawOutsidePanel()
-        --Draws the overall box
-        local x1 = intHudXStart
-        local y1 = intHudYStart
-        local x2 = x1 + intFrameBorderSize + intButtonWidth + intButtonWidth + intFrameBorderSize
-        local y2 = y1 + intFrameBorderSize + intButtonHeight + intButtonHeight + intHeadingHeight + intFrameBorderSize
-        
-        graphics.set_color(1, 1, 1, fltCurrentTransparency) --white
-        graphics.draw_rectangle(x1,y1,x2,y2)
-    end
+   function tfCPXP_DrawOutsidePanel()
+      --Draws the overall box
+      local x1 = intHudXStart
+      local y1 = intHudYStart
+      local x2 = x1 + intFrameBorderSize + intButtonWidth + intButtonWidth + intFrameBorderSize
+      local y2 = y1 + intFrameBorderSize + intButtonHeight + intButtonHeight + intHeadingHeight + intFrameBorderSize
 
-    function tfCPXP_DrawInsidePanel()
-        --Draws the inside panel
-        local x1 = intHudXStart + intFrameBorderSize
-        local y1 = intHudYStart + intFrameBorderSize
-        local x2 = x1 + intButtonWidth + intButtonWidth
-        local y2 = y1 + intButtonHeight + intButtonHeight + intHeadingHeight
-    
-        graphics.set_color(1, 1, 1, fltCurrentTransparency) --white
-        graphics.draw_rectangle(x1,y1,x2,y2)
-    end
+      graphics.set_color(1, 1, 1, fltCurrentTransparency) --white
+      graphics.draw_rectangle(x1, y1, x2, y2)
+   end
 
-    function tfCPXP_DrawHeadingPanel()
-        --Draws the heading panel and text at the top of the inside panel
-        local x1 = intHudXStart + intFrameBorderSize
-        local y1 = intHudYStart + intFrameBorderSize + intButtonHeight + intButtonHeight
-        local x2 = x1 + intButtonWidth + intButtonWidth
-        local y2 = y1 + intHeadingHeight
-        
-        local fltStringTransparency = fltCurrentTransparency/fltTransparency	-- change the RGB of the text based on expected fade level
-        if fltStringTransparency > fltTextVanishingPoint then	-- this stops drawing text when the transparency gets too low.
-            graphics.draw_string((x1 + (intButtonWidth * 0.50)),(y1 + (intButtonHeight * 0.5)), cpxpVersion, 0, 0, 0)
-        end
-        graphics.set_color(1, 1, 1, fltCurrentTransparency) --white
-        graphics.draw_rectangle(x1,y1,x2,y2)	
-    end
+   function tfCPXP_DrawInsidePanel()
+      --Draws the inside panel
+      local x1 = intHudXStart + intFrameBorderSize
+      local y1 = intHudYStart + intFrameBorderSize
+      local x2 = x1 + intButtonWidth + intButtonWidth
+      local y2 = y1 + intButtonHeight + intButtonHeight + intHeadingHeight
 
-    function tfCPXP_DrawStatusPanel()
-        local x1 = intHudXStart + intFrameBorderSize
-        local y1 = intHudYStart + intFrameBorderSize
-        local x2 = x1 + intButtonWidth + intButtonWidth
-        local y2 = y1 + intButtonHeight
+      graphics.set_color(1, 1, 1, fltCurrentTransparency) --white
+      graphics.draw_rectangle(x1, y1, x2, y2)
+   end
 
-        if cpxpReady then
-            local fltStringTransparency = fltCurrentTransparency/fltTransparency	-- change the RGB of the text based on expected fade level
-            if fltStringTransparency > fltTextVanishingPoint then	-- this stops drawing text when the transparency gets too low.
-                local cpxptomodestate = nil
-                local cpxpVspeedsstr = nil
-                if cpxpToCalloutMode == true then
-                    cpxptomodestate = 'Armed'
-                else
-                    cpxptomodestate = 'Not Armed'
-                end
-                local cpxpToStatus = "To Mode is: " .. cpxptomodestate
-                if cpxpV1 > 0 then
-                    cpxpVspeedsstr = "Current Vspeeds: V1 " .. cpxpV1 .. ", VR " .. cpxpVR.. ", V2 " .. cpxpV2
-                else
-                    cpxpVspeedsstr = "Current Vspeeds: V1 'nil', VR 'nil', V2 'nil'"
-                end
-                graphics.draw_string(x1 + (intButtonWidth * 0.05),y1 + (intButtonHeight * 0.6),cpxpToStatus, 0, 0, 0)
-                graphics.draw_string(x1 + (intButtonWidth * 0.05), y1 + (intButtonHeight * 0.2), cpxpVspeedsstr, 0, 0, 0)	
+   function tfCPXP_DrawHeadingPanel()
+      --Draws the heading panel and text at the top of the inside panel
+      local x1 = intHudXStart + intFrameBorderSize
+      local y1 = intHudYStart + intFrameBorderSize + intButtonHeight + intButtonHeight
+      local x2 = x1 + intButtonWidth + intButtonWidth
+      local y2 = y1 + intHeadingHeight
+
+      local fltStringTransparency = fltCurrentTransparency / fltTransparency -- change the RGB of the text based on expected fade level
+      if fltStringTransparency > fltTextVanishingPoint then -- this stops drawing text when the transparency gets too low.
+         graphics.draw_string((x1 + (intButtonWidth * 0.50)), (y1 + (intButtonHeight * 0.5)), cpxpVersion, 0, 0, 0)
+      end
+      graphics.set_color(1, 1, 1, fltCurrentTransparency) --white
+      graphics.draw_rectangle(x1, y1, x2, y2)
+   end
+
+   function tfCPXP_DrawStatusPanel()
+      local x1 = intHudXStart + intFrameBorderSize
+      local y1 = intHudYStart + intFrameBorderSize
+      local x2 = x1 + intButtonWidth + intButtonWidth
+      local y2 = y1 + intButtonHeight
+
+      if cpxpReady then
+         local fltStringTransparency = fltCurrentTransparency / fltTransparency -- change the RGB of the text based on expected fade level
+         if fltStringTransparency > fltTextVanishingPoint then -- this stops drawing text when the transparency gets too low.
+            local cpxptomodestate = nil
+            local cpxpVspeedsstr = nil
+            if cpxpToCalloutMode == true then
+               cpxptomodestate = 'Armed'
+            else
+               cpxptomodestate = 'Not Armed'
             end
-        end
-            
-        graphics.set_color(1, 1, 1, fltCurrentTransparency) --white
-        graphics.draw_rectangle(x1,y1,x2,y2)
-    end
-
-    function tfCPXP_DrawAlphaState()
-	-- FO preflight and Packup Options enabled
-	
-	--There are two buttons side by side in this state
-	local x1 = intHudXStart + intFrameBorderSize
-	local y1 = intHudYStart + intFrameBorderSize + intButtonHeight
-	local x2 = x1 + intButtonWidth
-	local y2 = y1 + intButtonHeight
-	
-	local fltStringTransparency = fltCurrentTransparency/fltTransparency	-- change the RGB of the text based on expected fade level
-	if fltStringTransparency > fltTextVanishingPoint then	-- this stops drawing text when the transparency gets too low.
-		graphics.draw_string(x1 + (intButtonWidth * 0.15), y1 + (intButtonHeight * 0.4), "Ask FO to Preflight", 0, 0, 0)
-	end
-	graphics.set_color(0.27, 0.51, 0.71, fltCurrentTransparency)
-	graphics.draw_rectangle(x1,y1,x2,y2)	
-	
-	--draw button outline
-	local fltStringTransparency = (fltCurrentTransparency/fltTransparency) * 0.5	-- change the line transparency. 0.5 is zero transparency
-	graphics.set_color(0,0,0,fltStringTransparency)	--black
-	graphics.draw_line(x1,y1,x2,y1)
-	graphics.draw_line(x2,y1,x2,y2)
-	graphics.draw_line(x2,y2,x1,y2)
-	graphics.draw_line(x1,y2,x1,y1)
-	
-	--Draw the second button
-	x1 = x2
-	--y1 = y1		--y1 doesn't change value
-	x2 = x1 + intButtonWidth
-	y2 = y1 + intButtonHeight	
-	
-	local fltStringTransparency = fltCurrentTransparency/fltTransparency	-- change the RGB of the text based on expected fade level
-	if fltStringTransparency > fltTextVanishingPoint then	-- this stops drawing text when the transparency gets too low.
-		graphics.draw_string(x1 + (intButtonWidth * 0.1), y1 + (intButtonHeight * 0.4), "Ask FO to Packup", 0, 0, 0)
-	end
-	graphics.set_color(0.27, 0.51, 0.71, fltCurrentTransparency)
-	graphics.draw_rectangle(x1,y1,x2,y2)
-
-	--draw button outline
-	local fltStringTransparency = (fltCurrentTransparency/fltTransparency) * 0.5	-- change the line transparency. 0.5 is zero transparency
-	graphics.set_color(0,0,0,fltStringTransparency)	--black
-	graphics.draw_line(x1,y1,x2,y1)
-	graphics.draw_line(x2,y1,x2,y2)
-	graphics.draw_line(x2,y2,x1,y2)
-	graphics.draw_line(x1,y2,x1,y1)	
-
-	
-    end
-
-    function tfCPXP_DrawBetaState()
-        -- Inflight options greyed out
-        local x1 = intHudXStart + intFrameBorderSize
-        local y1 = intHudYStart + intFrameBorderSize + intButtonHeight
-        local x2 = x1 + intButtonWidth + intButtonWidth
-        local y2 = y1 + intButtonHeight
-        
-        local fltStringTransparency = fltCurrentTransparency/fltTransparency	-- change the RGB of the text based on expected fade level
-        if fltStringTransparency > fltTextVanishingPoint then	-- this stops drawing text when the transparency gets too low.
-            graphics.draw_string(x1 + (intButtonWidth * 0.15), y1 + (intButtonHeight * 0.4), "Detected in flight", 0, 0, 0)
-        end
-        graphics.set_color( 4, 1, 4, fltCurrentTransparency) -- greyed out
-        graphics.draw_rectangle(x1,y1,x2,y2)
-        
-        --draw button outline
-        local fltStringTransparency = (fltCurrentTransparency/fltTransparency) * 0.5	-- change the line transparency. 0.5 is zero transparency
-        graphics.set_color(0,0,0,fltStringTransparency)	--black
-        graphics.draw_line(x1,y1,x2,y1)
-        graphics.draw_line(x2,y1,x2,y2)
-        graphics.draw_line(x2,y2,x1,y2)
-        graphics.draw_line(x1,y2,x1,y1)
-    end
-    
-    function tfCPXP_DrawCharlieState()
-        -- Not initialised
-        local x1 = intHudXStart + intFrameBorderSize
-        local y1 = intHudYStart + intFrameBorderSize + intButtonHeight
-        local x2 = x1 + intButtonWidth + intButtonWidth
-        local y2 = y1 + intButtonHeight
-
-        local fltStringTransparency = fltCurrentTransparency/fltTransparency	-- change the RGB of the text based on expected fade level
-        if fltStringTransparency > fltTextVanishingPoint then	-- this stops drawing text when the transparency gets too low.
-            graphics.draw_string(x1 + (intButtonWidth * 0.15), y1 + (intButtonHeight * 0.4), cpxpMsgStr, 0, 0, 0)
-        end
-    end
-
-    function tfCPXP_DrawButtons()
-        -- If on ground with engines off allow FO to preflight or packup
-        if not cpxpReady then
-            tfCPXP_DrawCharlieState()
-        elseif cpxpBEACON == 0 and cpxpWEIGHT_ON_WHEELS == 1 then
-            tfCPXP_DrawAlphaState()
-        else
-            tfCPXP_DrawBetaState()
-        end
-    end
-
-    function tfCPXP_Draw()
-        tfCPXP_DrawOutsidePanel()
-        tfCPXP_DrawInsidePanel()
-        tfCPXP_DrawHeadingPanel()
-        tfCPXP_DrawStatusPanel()
-        tfCPXP_DrawButtons()	
-    end	
-
-
-
-    function tfCPXP_DrawThings()
-        XPLMSetGraphicsState(0,0,0,1,1,0,0)
-        
-        --check for mouse over before drawing
-        local x1 = intHudXStart
-        local y1 = intHudYStart
-        local x2 = x1 + intFrameBorderSize + intButtonWidth + intButtonWidth + intFrameBorderSize
-        local y2 = y1 + intFrameBorderSize + intButtonHeight + intButtonHeight + intHeadingHeight + intFrameBorderSize	
-        if (MOUSE_X < x1 or MOUSE_X > x2 or MOUSE_Y < y1 or MOUSE_Y > y2) then
-            --don't draw - fade out
-            fltCurrentTransparency = fltCurrentTransparency - 0.010
-            if fltCurrentTransparency < 0 then
-                fltCurrentTransparency = 0
+            local cpxpToStatus = "To Mode is: " .. cpxptomodestate
+            if cpxpV1 > 0 then
+               cpxpVspeedsstr = "Current Vspeeds: V1 " .. cpxpV1 .. ", VR " .. cpxpVR .. ", V2 " .. cpxpV2
+            else
+               cpxpVspeedsstr = "Current Vspeeds: V1 'nil', VR 'nil', V2 'nil'"
             end
-            tfCPXP_Draw()	
-        else
-            fltCurrentTransparency = fltCurrentTransparency +0.025
-            if fltCurrentTransparency > fltTransparency then
-                fltCurrentTransparency = fltTransparency
-            end
-            
-            tfCPXP_Draw()			
-    
-        end
-    end	
-
-    function tfCPXP_MouseClick()
-    -- Trigger mouse clicks
-        local x1 = intHudXStart + intFrameBorderSize
-        local y1 = intHudYStart + intFrameBorderSize + intButtonHeight
-        local x2 = x1 + intButtonWidth
-        local y2 = y1 + intButtonHeight
-        -- left button
-        if MOUSE_X >= x1 and MOUSE_X <= x2 and MOUSE_Y >= y1 and MOUSE_Y < y2 then
-            if cpxpBEACON == 0 and cpxpWEIGHT_ON_WHEELS == 1 then
-               cpxpCockpitSetup = false
-               cpxpFoPreflight = true
-               cpxpHorsePlayed = true
-               CPXPCockpitSetup()
-               CPXPShutDown()
-            end
+            graphics.draw_string(x1 + (intButtonWidth * 0.05), y1 + (intButtonHeight * 0.6), cpxpToStatus, 0, 0, 0)
+            graphics.draw_string(x1 + (intButtonWidth * 0.05), y1 + (intButtonHeight * 0.2), cpxpVspeedsstr, 0, 0, 0)
          end
-         --This bit is the right button
-         x1 = x2
-         x2 = x1 + intButtonWidth
-         y2 = y1 + intButtonHeight			
-         if MOUSE_X >= x1 and MOUSE_X <= x2 and MOUSE_Y >= y1 and MOUSE_Y < y2 then
-            print("Right Button")
-            if cpxpBEACON == 0 and cpxpWEIGHT_ON_WHEELS == 1 then
-               cpxpFoShutdownRun = true
-               print("i made it here")
-            end
+      end
+
+      graphics.set_color(1, 1, 1, fltCurrentTransparency) --white
+      graphics.draw_rectangle(x1, y1, x2, y2)
+   end
+
+   function tfCPXP_DrawAlphaState()
+      -- FO preflight and Packup Options enabled
+
+      --There are two buttons side by side in this state
+      local x1 = intHudXStart + intFrameBorderSize
+      local y1 = intHudYStart + intFrameBorderSize + intButtonHeight
+      local x2 = x1 + intButtonWidth
+      local y2 = y1 + intButtonHeight
+
+      local fltStringTransparency = fltCurrentTransparency / fltTransparency -- change the RGB of the text based on expected fade level
+      if fltStringTransparency > fltTextVanishingPoint then -- this stops drawing text when the transparency gets too low.
+         graphics.draw_string(x1 + (intButtonWidth * 0.15), y1 + (intButtonHeight * 0.4), "Ask FO to Preflight", 0, 0, 0)
+      end
+      graphics.set_color(0.27, 0.51, 0.71, fltCurrentTransparency)
+      graphics.draw_rectangle(x1, y1, x2, y2)
+
+      --draw button outline
+      local fltStringTransparency = (fltCurrentTransparency / fltTransparency) * 0.5 -- change the line transparency. 0.5 is zero transparency
+      graphics.set_color(0, 0, 0, fltStringTransparency) --black
+      graphics.draw_line(x1, y1, x2, y1)
+      graphics.draw_line(x2, y1, x2, y2)
+      graphics.draw_line(x2, y2, x1, y2)
+      graphics.draw_line(x1, y2, x1, y1)
+
+      --Draw the second button
+      x1 = x2
+      --y1 = y1		--y1 doesn't change value
+      x2 = x1 + intButtonWidth
+      y2 = y1 + intButtonHeight
+
+      local fltStringTransparency = fltCurrentTransparency / fltTransparency -- change the RGB of the text based on expected fade level
+      if fltStringTransparency > fltTextVanishingPoint then -- this stops drawing text when the transparency gets too low.
+         graphics.draw_string(x1 + (intButtonWidth * 0.1), y1 + (intButtonHeight * 0.4), "Ask FO to Packup", 0, 0, 0)
+      end
+      graphics.set_color(0.27, 0.51, 0.71, fltCurrentTransparency)
+      graphics.draw_rectangle(x1, y1, x2, y2)
+
+      --draw button outline
+      local fltStringTransparency = (fltCurrentTransparency / fltTransparency) * 0.5 -- change the line transparency. 0.5 is zero transparency
+      graphics.set_color(0, 0, 0, fltStringTransparency) --black
+      graphics.draw_line(x1, y1, x2, y1)
+      graphics.draw_line(x2, y1, x2, y2)
+      graphics.draw_line(x2, y2, x1, y2)
+      graphics.draw_line(x1, y2, x1, y1)
+
+
+   end
+
+   function tfCPXP_DrawBetaState()
+      -- Inflight options greyed out
+      local x1 = intHudXStart + intFrameBorderSize
+      local y1 = intHudYStart + intFrameBorderSize + intButtonHeight
+      local x2 = x1 + intButtonWidth + intButtonWidth
+      local y2 = y1 + intButtonHeight
+
+      local fltStringTransparency = fltCurrentTransparency / fltTransparency -- change the RGB of the text based on expected fade level
+      if fltStringTransparency > fltTextVanishingPoint then -- this stops drawing text when the transparency gets too low.
+         graphics.draw_string(x1 + (intButtonWidth * 0.15), y1 + (intButtonHeight * 0.4), "Detected in flight", 0, 0, 0)
+      end
+      graphics.set_color(4, 1, 4, fltCurrentTransparency) -- greyed out
+      graphics.draw_rectangle(x1, y1, x2, y2)
+
+      --draw button outline
+      local fltStringTransparency = (fltCurrentTransparency / fltTransparency) * 0.5 -- change the line transparency. 0.5 is zero transparency
+      graphics.set_color(0, 0, 0, fltStringTransparency) --black
+      graphics.draw_line(x1, y1, x2, y1)
+      graphics.draw_line(x2, y1, x2, y2)
+      graphics.draw_line(x2, y2, x1, y2)
+      graphics.draw_line(x1, y2, x1, y1)
+   end
+
+   function tfCPXP_DrawCharlieState()
+      -- Not initialised
+      local x1 = intHudXStart + intFrameBorderSize
+      local y1 = intHudYStart + intFrameBorderSize + intButtonHeight
+      local x2 = x1 + intButtonWidth + intButtonWidth
+      local y2 = y1 + intButtonHeight
+
+      local fltStringTransparency = fltCurrentTransparency / fltTransparency -- change the RGB of the text based on expected fade level
+      if fltStringTransparency > fltTextVanishingPoint then -- this stops drawing text when the transparency gets too low.
+         graphics.draw_string(x1 + (intButtonWidth * 0.15), y1 + (intButtonHeight * 0.4), cpxpMsgStr, 0, 0, 0)
+      end
+   end
+
+   function tfCPXP_DrawButtons()
+      -- If on ground with engines off allow FO to preflight or packup
+      if not cpxpReady then
+         tfCPXP_DrawCharlieState()
+      elseif cpxpBEACON == 0 and cpxpWEIGHT_ON_WHEELS == 1 then
+         tfCPXP_DrawAlphaState()
+      else
+         tfCPXP_DrawBetaState()
+      end
+   end
+
+   function tfCPXP_Draw()
+      tfCPXP_DrawOutsidePanel()
+      tfCPXP_DrawInsidePanel()
+      tfCPXP_DrawHeadingPanel()
+      tfCPXP_DrawStatusPanel()
+      tfCPXP_DrawButtons()
+   end
+
+   function tfCPXP_DrawThings()
+      XPLMSetGraphicsState(0, 0, 0, 1, 1, 0, 0)
+
+      --check for mouse over before drawing
+      local x1 = intHudXStart
+      local y1 = intHudYStart
+      local x2 = x1 + intFrameBorderSize + intButtonWidth + intButtonWidth + intFrameBorderSize
+      local y2 = y1 + intFrameBorderSize + intButtonHeight + intButtonHeight + intHeadingHeight + intFrameBorderSize
+      if (MOUSE_X < x1 or MOUSE_X > x2 or MOUSE_Y < y1 or MOUSE_Y > y2) then
+         --don't draw - fade out
+         fltCurrentTransparency = fltCurrentTransparency - 0.010
+         if fltCurrentTransparency < 0 then
+            fltCurrentTransparency = 0
+         end
+         tfCPXP_Draw()
+      else
+         fltCurrentTransparency = fltCurrentTransparency + 0.025
+         if fltCurrentTransparency > fltTransparency then
+            fltCurrentTransparency = fltTransparency
          end
 
-        -- Header settigns trigger
-        local x1 = intHudXStart + intFrameBorderSize + (intButtonWidth / 3)
-        local y1 = intHudYStart + intFrameBorderSize + intButtonHeight + intButtonHeight
-        local x2 = x1 + (intButtonWidth * 1.5)
-        local y2 = y1 + intHeadingHeight
-        if MOUSE_X >= x1 and MOUSE_X <= x2 and MOUSE_Y >= y1 and MOUSE_Y < y2 then
-            ToggleCrewPackXPSettings()
-        end
+         tfCPXP_Draw()
 
-    end
+      end
+   end
 
-    do_every_draw("tfCPXP_DrawThings()")
-    do_on_mouse_click("tfCPXP_MouseClick()")
+   function tfCPXP_MouseClick()
+      -- Trigger mouse clicks
+      local x1 = intHudXStart + intFrameBorderSize
+      local y1 = intHudYStart + intFrameBorderSize + intButtonHeight
+      local x2 = x1 + intButtonWidth
+      local y2 = y1 + intButtonHeight
+      -- left button
+      if MOUSE_X >= x1 and MOUSE_X <= x2 and MOUSE_Y >= y1 and MOUSE_Y < y2 then
+         if cpxpBEACON == 0 and cpxpWEIGHT_ON_WHEELS == 1 then
+            cpxpCockpitSetup = false
+            cpxpFoPreflight = true
+            cpxpHorsePlayed = true
+            CPXPCockpitSetup()
+            CPXPShutDown()
+         end
+      end
+      --This bit is the right button
+      x1 = x2
+      x2 = x1 + intButtonWidth
+      y2 = y1 + intButtonHeight
+      if MOUSE_X >= x1 and MOUSE_X <= x2 and MOUSE_Y >= y1 and MOUSE_Y < y2 then
+         print("Right Button")
+         if cpxpBEACON == 0 and cpxpWEIGHT_ON_WHEELS == 1 then
+            cpxpFoShutdownRun = true
+            print("i made it here")
+         end
+      end
 
-    -- end of Togfox code
+      -- Header settigns trigger
+      local x1 = intHudXStart + intFrameBorderSize + (intButtonWidth / 3)
+      local y1 = intHudYStart + intFrameBorderSize + intButtonHeight + intButtonHeight
+      local x2 = x1 + (intButtonWidth * 1.5)
+      local y2 = y1 + intHeadingHeight
+      if MOUSE_X >= x1 and MOUSE_X <= x2 and MOUSE_Y >= y1 and MOUSE_Y < y2 then
+         ToggleCrewPackXPSettings()
+      end
+
+   end
+
+   do_every_draw("tfCPXP_DrawThings()")
+   do_on_mouse_click("tfCPXP_MouseClick()")
+
+   -- end of Togfox code
 
 
 end -- Master End
