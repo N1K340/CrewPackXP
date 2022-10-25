@@ -30,6 +30,14 @@ local coded_aircraft = {
    ["767-200ER_xp11.acf"] = true,
    ["767-300ER_xp11.acf"] = true,
    ["767-F_xp11.acf"] = true,
+   -- XP 12 .acf
+   ["757-200_xp12.acf"] = true,
+   ["757-300_xp12.acf"] = true,
+   ["757-c32_xp12.acf"] = true,
+   ["757-RF_xp12.acf"] = true,
+   ["767-200ER_xp12.acf"] = true,
+   ["767-300ER_xp12.acf"] = true,
+   ["767-F_xp12.acf"] = true,
 }
 
 if coded_aircraft[AIRCRAFT_FILENAME] then
