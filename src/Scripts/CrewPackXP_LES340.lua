@@ -266,6 +266,7 @@ if AIRCRAFT_FILENAME == "LES_Saab_340A_Cargo.acf" or AIRCRAFT_FILENAME == "LES_S
 
    local cpxpPaTimer = 230
    local cpxpFaPlaySeq = 0
+   local cpxpOffBay = false
    local cpxpBeltsOffPlay = false
    local cpxpBeltsOnPlay = false
 
@@ -278,6 +279,10 @@ if AIRCRAFT_FILENAME == "LES_Saab_340A_Cargo.acf" or AIRCRAFT_FILENAME == "LES_S
       if cpxpFaOnboard then
          if cpxpPaTimer < 241 then
             cpxpPaTimer = cpxpPaTimer + 1
+         end
+         if not cpxpOffBay and cpxpENG1_N1 > 50 and cpxpENG2_N1 > 50 and
+             (math.floor(get("sim/flightmodel2/position/groundspeed"))) > 5 then
+            cpxpOffBay = true
          end
 
          if cpxpBEACON == 1 and cpxpWEIGHT_ON_WHEELS == 1 and cpxpENG2_N2 > 10 and cpxpFaPlaySeq == 0 then
@@ -295,12 +300,13 @@ if AIRCRAFT_FILENAME == "LES_Saab_340A_Cargo.acf" or AIRCRAFT_FILENAME == "LES_S
          end
          if cpxpBEACON == 1 and cpxpWEIGHT_ON_WHEELS == 1 and cpxpFaPlaySeq == 1 and cpxpPaTimer == 241 then
             cpxpPaTimer = 76
+            cpxpOffBay = false
             play_sound(cpxpSafetyDemo_snd)
             print("CrewPackXP: Playing Safety Demo")
 
             cpxpFaPlaySeq = 2
          end
-         if cpxpBEACON == 1 and cpxpWEIGHT_ON_WHEELS == 1 and cpxpFaPlaySeq == 2 and cpxpPaTimer == 241 then
+         if cpxpBEACON == 1 and cpxpWEIGHT_ON_WHEELS == 1 and cpxpFaPlaySeq == 2 and cpxpPaTimer == 241 and cpxpOffBay then
             play_sound(cpxpCabinSecure_snd)
             print("CrewPackXP: Played Cabin Secure")
             cpxpFaPlaySeq = 3
